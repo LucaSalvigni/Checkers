@@ -1,0 +1,29 @@
+name: frontend
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+      - name: Test and build
+        run: |
+          cd frontend
+          npm run gulp
