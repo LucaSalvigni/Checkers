@@ -1,4 +1,4 @@
-name: frontend
+name: gameservice
 
 on:
   push:
@@ -19,9 +19,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: |
-          cd Frontend\Checkers-Frontend
+          cd Backend\Checkers-GameService
           npm ci
       - name: Test and build
         run: |
-          cd Frontend\Checkers-Frontend
+          cd Backend\Checkers-GameService
           npm run gulp
