@@ -2,6 +2,8 @@ name: gameservice
 
 on:
   push:
+    paths:
+      - 'Backend/Checkers-GameService/**'
   pull_request:
   workflow_dispatch:
 
