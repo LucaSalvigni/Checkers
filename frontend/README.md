@@ -1,4 +1,4 @@
-# example
+# Checkers
 
 ## Project setup
 ```

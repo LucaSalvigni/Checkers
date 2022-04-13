@@ -10,7 +10,7 @@ const wrapper = mount(Home)
 
 describe('Home mount test', ()=> {
     it('should mount', () => {
-        const wrapper = mount(Home)
+        expect(wrapper.exists()).toBeTruthy()
     })
 })
 
@@ -27,19 +27,11 @@ describe('Home Contain Test', ()=> {
     })
 })
 
-describe('SignUp Inputs Test', ()=> {
-    it('value checks', async ()=> {
+describe('Home Click Test', ()=> {
+    it('should trigger events', async ()=> {
 
-        const lobbyNameInput = wrapper.find('.input-name')
-        await lobbyNameInput.setValue('name')
-        expect(wrapper.find('.input-name').element.value).toBe('name')
-
-        const startInput = wrapper.find('.input-star')
-        await startInput.setValue('stars')
-        expect(wrapper.find('.input-star').element.value).toBe('stars')
-
-        const opponentInput = wrapper.find('.opponent-mail')
-        await opponentInput.setValue('opponent')
-        expect(wrapper.find('.opponent-mail').element.value).toBe('opponent')
+        const lobbyButton = wrapper.find('#btn-menu')
+        expect(lobbyButton.exists()).toBeTruthy()
+        await lobbyButton.trigger('click')
     })
 })

@@ -42,9 +42,11 @@
         <div id="tabDiv" class="card-body">
           <div v-if="tabName === 'User Info'">
             <h2 class="card-title">{{ tabName }}</h2>
+            <DataInfo class="info"></DataInfo>
           </div>
           <div v-else>
             <h2 class="card-title">{{ tabName }}</h2>
+            <MatchInfo class="info"></MatchInfo>
           </div>
         </div>
       </div>
@@ -53,8 +55,15 @@
 </template>
 
 <script>
+import DataInfo from "../components/profileComponents/DataInfo.vue";
+import MatchInfo from "../components/profileComponents/MatchInfo.vue";
+
 export default {
   name: "UserProfile",
+  components: {
+    DataInfo,
+    MatchInfo,
+  },
   data() {
     return {
       avatar: "http://daisyui.com/tailwind-css-component-profile-1@40w.png",
@@ -63,6 +72,32 @@ export default {
       tabName: "User Info",
       stars: "Stars",
     };
+  },
+  methods: {
+    // Show user info when data info tab is active
+    dataInfo() {
+      const elem = document.getElementById("dataInfo");
+      if (!elem.getAttribute("class").includes("tab-active")) {
+        this.tabName = "User Info";
+        elem.setAttribute("class", "tab tab-lg tab-active");
+        document
+          .getElementById("matchInfo")
+          .setAttribute("class", "tab tab-lg");
+        document.getElementsByClassName("card-title")[1].innerHTML =
+          this.tabName;
+      }
+    },
+    // Show match history info when match info tab is active
+    matchInfo() {
+      const elem = document.getElementById("matchInfo");
+      if (!elem.getAttribute("class").includes("tab-active")) {
+        this.tabName = "Match History";
+        elem.setAttribute("class", "tab tab-lg tab-active");
+        document.getElementById("dataInfo").setAttribute("class", "tab tab-lg");
+        document.getElementsByClassName("card-title")[1].innerHTML =
+          this.tabName;
+      }
+    },
   },
 };
 </script>

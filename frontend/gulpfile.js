@@ -6,16 +6,15 @@ const log = require("fancy-log");
 const exec = require("child_process").exec;
 
 const paths = {
-  prod_build: "../frontend-build",
-  vue_src: "../frontend/dist/**/*",
-  vue_dist: "../frontend-build/frontend/dist",
+  prod_build: "./frontend-build",
+  vue_src: "./dist/**/*",
+  vue_dist: "./frontend-build/dist",
   zipped_file_name: "frontend-nodejs.zip",
 };
 
 function cleanPreviousBuild() {
-  //just a commment
   log("removing the old files in the directory");
-  return del("../frontend-build/**", { force: true });
+  return del("./frontend-build/**", { force: true });
 }
 
 function qualityAssurance(cb) {

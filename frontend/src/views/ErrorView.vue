@@ -8,7 +8,7 @@
         The page you are looking is temporarily unavailable. Make sure tou are
         logged in before do something
       </p>
-      <router-link to="/login" @click="buttonClick">Sign in</router-link>
+      <router-link to="/login">Sign in</router-link>
     </div>
   </div>
 </template>

@@ -5,10 +5,13 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import Profile from '../src/views/Profile.vue'
+import DataInfo from '../src/components/profileComponents/DataInfo.vue'
+import MatchInfo from '../src/components/profileComponents/MatchInfo.vue'
 
 describe('Profile Mount Test', () => {
     it('should mount Profile', () => {
         const wrapper = mount(Profile)
+        expect(wrapper.exists()).toBeTruthy()
     })
 })
 
@@ -24,9 +27,9 @@ describe('Profile Contain Test', ()=> {
 
         expect(wrapper.find('.first_last').exists()).toBeTruthy()
 
-        expect(wrapper.find('#dataInfo').exists()).toBeTruthy()
+        expect(wrapper.findComponent(DataInfo).exists()).toBeTruthy()
 
-        expect(wrapper.find('#matchInfo').exists()).toBeTruthy()
+        expect(wrapper.findComponent(MatchInfo).exists()).toBeFalsy()
     })
 })
 
@@ -54,4 +57,15 @@ describe('Profile data Test', () => {
 
     })
 })
-  
+
+describe('Profile switch info', () => {
+    it('should switch', async () => {
+        const wrapper = mount(Profile)
+
+        expect(wrapper.find('#matchInfo').exists()).toBeTruthy()
+
+        await wrapper.find('#matchInfo').trigger('matchInfo')
+
+        //expect(wrapper.findComponent(MatchInfo).exists()).toBeTruthy()
+    })
+})

@@ -10,7 +10,7 @@ const wrapper = mount(Login)
  
 describe('Login Mount Test', ()=> {
     it('should mount', () => {
-        const wrapper = mount(Login)
+        expect(wrapper.find('.mail').exists()).toBeTruthy()
     })
 })
 

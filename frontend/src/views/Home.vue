@@ -20,11 +20,7 @@
         />
       </figure>
 
-      <label
-        id="btn-menu"
-        for="create-lobby-modal"
-        class="btn text-sm"
-        @click="buttonClick"
+      <label id="btn-menu" for="create-lobby-modal" class="btn text-sm"
         >Create a new lobby</label
       >
       <input id="create-lobby-modal" type="checkbox" class="modal-toggle" />
@@ -54,16 +50,8 @@
             />
           </div>
           <div class="flex flex-row modal-action">
-            <label
-              for="create-lobby-modal"
-              class="accept btn"
-              @click="startingMatch"
-            >
-              Create
-            </label>
-            <label for="create-lobby-modal" class="btn" @click="buttonClick"
-              >Cancel</label
-            >
+            <label for="create-lobby-modal" class="accept btn"> Create </label>
+            <label for="create-lobby-modal" class="btn">Cancel</label>
           </div>
         </div>
       </div>
@@ -76,11 +64,7 @@
         >Join a lobby</label
       >
 
-      <label
-        id="btn-menu"
-        for="friends-modal"
-        class="btn mb-7 text-sm"
-        @click="buttonClick"
+      <label id="btn-menu" for="friends-modal" class="btn mb-7 text-sm"
         >Invite a player</label
       >
       <input id="friends-modal" type="checkbox" class="modal-toggle" />
@@ -100,23 +84,15 @@
             />
           </div>
           <div class="flex flex-row modal-action">
-            <label for="friends-modal" class="accept btn" @click="invitePlayer"
-              >Send</label
-            >
-            <label for="friends-modal" class="btn" @click="buttonClick"
-              >Cancel</label
-            >
+            <label for="friends-modal" class="accept btn">Send</label>
+            <label for="friends-modal" class="btn">Cancel</label>
           </div>
         </div>
       </div>
     </div>
 
     <div class="dropdown mt-10">
-      <div
-        tabindex="0"
-        class="flex flex-nowrap flex-column btn h-24"
-        @click="buttonClick"
-      >
+      <div tabindex="0" class="flex flex-nowrap flex-column btn h-24">
         <figure>
           <img
             alt="Modal Logo Image"
@@ -167,16 +143,10 @@
                 />
               </div>
               <div class="flex flex-row modal-action">
-                <label
-                  for="create-lobby-modal"
-                  class="accept btn"
-                  @click="startingMatch"
-                >
+                <label for="create-lobby-modal" class="accept btn">
                   Create
                 </label>
-                <label for="create-lobby-modal" class="btn" @click="buttonClick"
-                  >Cancel</label
-                >
+                <label for="create-lobby-modal" class="btn">Cancel</label>
               </div>
             </div>
           </div>
@@ -191,11 +161,7 @@
           >
         </li>
         <li class="mt-3">
-          <label
-            id="btn-menu"
-            for="friends-modal"
-            class="btn mb-7 text-sm"
-            @click="buttonClick"
+          <label id="btn-menu" for="friends-modal" class="btn mb-7 text-sm"
             >Invite a player</label
           >
           <input id="friends-modal" type="checkbox" class="modal-toggle" />
@@ -215,15 +181,8 @@
                 />
               </div>
               <div class="flex flex-row modal-action">
-                <label
-                  for="friends-modal"
-                  class="accept btn"
-                  @click="invitePlayer"
-                  >Send</label
-                >
-                <label for="friends-modal" class="btn" @click="buttonClick"
-                  >Cancel</label
-                >
+                <label for="friends-modal" class="accept btn">Send</label>
+                <label for="friends-modal" class="btn">Cancel</label>
               </div>
             </div>
           </div>

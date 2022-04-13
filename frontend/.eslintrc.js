@@ -19,20 +19,20 @@ module.exports = {
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "vue/no-empty-component-block": "error",
     /**"vue/html-comment-content-newline": ["error",
-      {
-        "singleline": "always" | "never" | "ignore",
-        "multiline": "always" | "never" | "ignore",
-      },
-      {
-        "exceptions": []
-      }
-    ],
-    "vue/html-comment-content-spacing": ["error",
-      "always" | "never",
-      {
-        "exceptions": []
-      }
-    ],
-    "vue/html-comment-indent": ["error", type],**/
+        {
+          "singleline": "always" | "never" | "ignore",
+          "multiline": "always" | "never" | "ignore",
+        },
+        {
+          "exceptions": []
+        }
+      ],
+      "vue/html-comment-content-spacing": ["error",
+        "always" | "never",
+        {
+          "exceptions": []
+        }
+      ],
+      "vue/html-comment-indent": ["error", type],**/
   },
 };

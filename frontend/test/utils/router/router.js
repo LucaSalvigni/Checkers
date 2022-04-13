@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Error404 from "../../../src/views/ErrorView.vue";
+import Game from "../../../src/views/Game.vue";
 import HomeView from "../../../src/views/Home.vue";
 import LeaderBoard from "../../../src/views/LeaderBoard.vue";
 import Lobbies from "../../../src/views/Lobbies.vue";
@@ -42,6 +43,11 @@ const routes = [
     path: "/lobbies",
     name: "Lobbies",
     component: Lobbies,
+  },
+  {
+    path: "/game",
+    name: "Game",
+    component: Game,
   },
 ];
 
