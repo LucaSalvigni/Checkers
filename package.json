@@ -3,9 +3,12 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
-    "scripts": {
-      "postinstall": "cd frontend && npm i && npm run build"
-    },
+    "workspaces": [
+      "Frontend/Checkers-Frontend",
+      "Backend/Checkers-GameService",
+      "Backend/Checkers-UserService",
+      "Backend/Checkers-CommunicationService"
+    ],
     "keywords": [],
     "author": "",
     "license": "ISC"
