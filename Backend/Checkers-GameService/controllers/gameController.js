@@ -1,3 +1,3 @@
 const Draughts = require('./draughts');
 
-console.log(new Draughts().ascii())
+console.log(new Draughts().ascii());
