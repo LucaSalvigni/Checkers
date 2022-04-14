@@ -2,8 +2,8 @@ name: frontend
 
 on:
   push:
-#    paths:
-#      - 'Frontend/Checkers-Frontend/**'
+    paths:
+      - 'Frontend/Checkers-Frontend/**'
   pull_request:
   workflow_dispatch:
 
@@ -26,4 +26,4 @@ jobs:
       - name: Test and build
         run: |
           cd Frontend/Checkers-Frontend
-          npm run gulp
+          npx turbo run gulp

@@ -26,4 +26,4 @@ jobs:
       - name: Test and build
         run: |
           cd Backend/Checkers-GameService
-          npm run gulp
+          npx turbo run gulp
