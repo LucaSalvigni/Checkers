@@ -26,4 +26,4 @@ jobs:
       - name: Test and build
         run: |
           cd Frontend/Checkers-Frontend
-          npx turbo run gulp
+          npm run gulp
