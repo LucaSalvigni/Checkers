@@ -6,8 +6,3 @@ updates:
       interval: "daily"
     #TODO temporary
     target-branch: "develop"
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "daily"
-    target-branch: "develop"
