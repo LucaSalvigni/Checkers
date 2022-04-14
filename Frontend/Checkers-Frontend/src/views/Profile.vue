@@ -57,12 +57,18 @@
 <script>
 import DataInfo from "../components/profileComponents/DataInfo.vue";
 import MatchInfo from "../components/profileComponents/MatchInfo.vue";
+import { getCurrentInstance } from "vue";
+
+var appInstance = null;
 
 export default {
   name: "UserProfile",
   components: {
     DataInfo,
     MatchInfo,
+  },
+  setup() {
+    appInstance = getCurrentInstance().appContext.config.globalProperties;
   },
   data() {
     return {
@@ -77,6 +83,7 @@ export default {
     // Show user info when data info tab is active
     dataInfo() {
       const elem = document.getElementById("dataInfo");
+      this.buttonClick();
       if (!elem.getAttribute("class").includes("tab-active")) {
         this.tabName = "User Info";
         elem.setAttribute("class", "tab tab-lg tab-active");
@@ -90,6 +97,7 @@ export default {
     // Show match history info when match info tab is active
     matchInfo() {
       const elem = document.getElementById("matchInfo");
+      this.buttonClick();
       if (!elem.getAttribute("class").includes("tab-active")) {
         this.tabName = "Match History";
         elem.setAttribute("class", "tab tab-lg tab-active");
@@ -97,6 +105,9 @@ export default {
         document.getElementsByClassName("card-title")[1].innerHTML =
           this.tabName;
       }
+    },
+    buttonClick() {
+      appInstance.$BUTTON_CLICK.play();
     },
   },
 };

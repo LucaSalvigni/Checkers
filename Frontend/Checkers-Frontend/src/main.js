@@ -11,5 +11,8 @@ app.config.productionTip = false;
 app.config.globalProperties.$BOARD_SIZE = 10;
 app.config.globalProperties.$COLOR_TOP = "color-top";
 app.config.globalProperties.$COLOR_BOTTOM = "color-bottom";
+app.config.globalProperties.$BUTTON_CLICK = new Audio(
+  require("@/assets/sounds/button-click.wav")
+);
 
 app.use(Chat).use(store).use(router).mount("#app");

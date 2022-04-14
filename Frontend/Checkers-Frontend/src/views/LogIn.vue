@@ -53,7 +53,12 @@
             <span class="label-text">If you are not already sign</span>
           </label>
           <router-link to="/signup">
-            <button class="font-bold text-lg btn-link mb-3">Sign up</button>
+            <button
+              class="font-bold text-lg btn-link mb-3"
+              @click="buttonClick"
+            >
+              Sign up
+            </button>
           </router-link>
         </div>
       </div>
@@ -62,8 +67,20 @@
 </template>
 
 <script>
+import { getCurrentInstance } from "vue";
+
+var appInstance = null;
+
 export default {
   name: "LogIn",
+  setup() {
+    appInstance = getCurrentInstance().appContext.config.globalProperties;
+  },
+  methods: {
+    buttonClick() {
+      appInstance.$BUTTON_CLICK.play();
+    },
+  },
 };
 </script>
 

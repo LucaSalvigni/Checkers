@@ -4,6 +4,7 @@
     :to="to"
     class="this.to self-center link rounded-lg flex"
     :class="{ active: isActive }"
+    @click="buttonClick"
   >
     <i class="icon" :class="icon" />
     <button class="btn btn-ghost"><slot /></button>
@@ -11,8 +12,10 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { computed, getCurrentInstance } from "vue";
 import { useRoute } from "vue-router";
+
+var appInstance = null;
 
 export default {
   props: {
@@ -21,9 +24,15 @@ export default {
     click: { type: String, required: false, default: "" },
   },
   setup(props) {
+    appInstance = getCurrentInstance().appContext.config.globalProperties;
     const route = useRoute();
     const isActive = computed(() => route.path === props.to);
     return { isActive };
+  },
+  methods: {
+    buttonClick() {
+      appInstance.$BUTTON_CLICK.play();
+    },
   },
 };
 </script>

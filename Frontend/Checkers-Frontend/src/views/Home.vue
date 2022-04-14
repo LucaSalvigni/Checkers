@@ -20,7 +20,11 @@
         />
       </figure>
 
-      <label id="btn-menu" for="create-lobby-modal" class="btn text-sm"
+      <label
+        id="btn-menu"
+        for="create-lobby-modal"
+        class="btn text-sm"
+        @click="buttonClick"
         >Create a new lobby</label
       >
       <input id="create-lobby-modal" type="checkbox" class="modal-toggle" />
@@ -51,7 +55,9 @@
           </div>
           <div class="flex flex-row modal-action">
             <label for="create-lobby-modal" class="accept btn"> Create </label>
-            <label for="create-lobby-modal" class="btn">Cancel</label>
+            <label for="create-lobby-modal" class="btn" @click="buttonClick"
+              >Cancel</label
+            >
           </div>
         </div>
       </div>
@@ -64,7 +70,11 @@
         >Join a lobby</label
       >
 
-      <label id="btn-menu" for="friends-modal" class="btn mb-7 text-sm"
+      <label
+        id="btn-menu"
+        for="friends-modal"
+        class="btn mb-7 text-sm"
+        @click="buttonClick"
         >Invite a player</label
       >
       <input id="friends-modal" type="checkbox" class="modal-toggle" />
@@ -85,7 +95,9 @@
           </div>
           <div class="flex flex-row modal-action">
             <label for="friends-modal" class="accept btn">Send</label>
-            <label for="friends-modal" class="btn">Cancel</label>
+            <label for="friends-modal" class="btn" @click="buttonClick"
+              >Cancel</label
+            >
           </div>
         </div>
       </div>
@@ -146,7 +158,9 @@
                 <label for="create-lobby-modal" class="accept btn">
                   Create
                 </label>
-                <label for="create-lobby-modal" class="btn">Cancel</label>
+                <label for="create-lobby-modal" class="btn" @click="buttonClick"
+                  >Cancel</label
+                >
               </div>
             </div>
           </div>
@@ -161,7 +175,11 @@
           >
         </li>
         <li class="mt-3">
-          <label id="btn-menu" for="friends-modal" class="btn mb-7 text-sm"
+          <label
+            id="btn-menu"
+            for="friends-modal"
+            class="btn mb-7 text-sm"
+            @click="buttonClick"
             >Invite a player</label
           >
           <input id="friends-modal" type="checkbox" class="modal-toggle" />
@@ -182,7 +200,9 @@
               </div>
               <div class="flex flex-row modal-action">
                 <label for="friends-modal" class="accept btn">Send</label>
-                <label for="friends-modal" class="btn">Cancel</label>
+                <label for="friends-modal" class="btn" @click="buttonClick"
+                  >Cancel</label
+                >
               </div>
             </div>
           </div>
@@ -193,11 +213,21 @@
 </template>
 
 <script>
+import { getCurrentInstance } from "vue";
+
+var appInstance = null;
+
 export default {
   name: "HomeView",
+  setup() {
+    appInstance = getCurrentInstance().appContext.config.globalProperties;
+  },
   methods: {
     lobbyOpened() {
       this.$router.push("/lobbies");
+    },
+    buttonClick() {
+      appInstance.$BUTTON_CLICK.play();
     },
   },
 };
