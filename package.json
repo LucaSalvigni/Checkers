@@ -4,13 +4,15 @@
     "description": "",
     "main": "index.js",
     "workspaces": [
-      "Frontend/Checkers-Frontend",
-      "Backend/Checkers-GameService",
-      "Backend/Checkers-UserService",
-      "Backend/Checkers-CommunicationService"
+        "Frontend/Checkers-Frontend",
+        "Backend/Checkers-GameService",
+        "Backend/Checkers-UserService",
+        "Backend/Checkers-CommunicationService"
     ],
     "keywords": [],
     "author": "",
-    "license": "ISC"
+    "license": "ISC",
+    "devDependencies": {
+        "turbo": "^1.2.3"
+    }
 }
-  

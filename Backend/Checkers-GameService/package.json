@@ -6,8 +6,7 @@
   "scripts": {
     "coverage": "nyc npm run test",
     "gulp": "gulp",
-    "lint": "npx eslint ./**/*.js",
-    "lint-fix": "npx eslint ./**/*.js --fix",
+    "lint": "npx eslint ./**/*.js --fix",
     "test": "mocha"
   },
   "author": "",
