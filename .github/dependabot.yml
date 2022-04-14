@@ -5,4 +5,4 @@ updates:
     schedule:
       interval: "daily"
     #TODO temporary
-    target-branch: "devopsGHA"
+    target-branch: "develop"
