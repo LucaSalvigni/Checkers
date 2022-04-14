@@ -6,33 +6,6 @@ import Cell from '../src/components/boardComponents/Cell.vue'
 import Chat from '../src/components/boardComponents/Chat.vue'
 import Player from '../src/components/boardComponents/Player.vue'
 
-function createGrid() {
-    let grid = [];
-    var cell = 1;
-    for (let i = 0; i < 10; i++) {
-        let row = [];
-        for (let j = 0; j < 10; j++) {
-        if ((i + 1) % 2 == 0) {
-            if ((j + 1) % 2 != 0) {
-            row[j] = cell;
-            cell++;
-            } else {
-            row[j] = 0;
-            }
-        } else {
-            if ((j + 1) % 2 == 0) {
-            row[j] = cell;
-            cell++;
-            } else {
-            row[j] = 0;
-            }
-        }
-        }
-        grid.push(row);
-    }
-    return grid
-}
-
 describe('Game mount test', () => {
     it('should mount', () => {
         const wrapper = mount(Game)
@@ -58,7 +31,7 @@ describe('CheckerBoard mount test', () => {
         const wrapper = mount(CheckerBoard)
 
         await wrapper.setData({
-            board: createGrid()
+            board: wrapper.vm.createGrid(8)
         })
         
         expect(wrapper.findComponent(Cell).exists()).toBeTruthy()
@@ -73,5 +46,35 @@ describe('Cell contain test', () => {
             cell: 0
         })
         expect(cell.find('img').exists()).toBeFalsy()
+    })
+})
+
+describe('Chat Test', () => {
+    it('should fun', async () => {
+        const wrapper = mount(Chat)
+
+        const message1 = {
+            data: {
+                text: "Ciao"
+            },
+            type: String
+        }
+        await wrapper.vm.onMessageWasSent(message1)
+        expect(wrapper.vm.messageList.includes(message1)).toBeTruthy()
+
+        const message2 = {
+            data: {
+                text: "Ciao2"
+            },
+            type: String
+        }
+        await wrapper.vm.sendMessage(message2)
+        expect(wrapper.vm.messageList.includes(message2)).toBeTruthy()
+
+        await wrapper.vm.openChat()
+        expect(wrapper.vm.isChatOpen).toBeTruthy()
+
+        await wrapper.vm.closeChat()
+        expect(wrapper.vm.isChatOpen).toBeFalsy()
     })
 })

@@ -41,38 +41,42 @@ export default {
   },
   // Create the initial board to be filled when the game start
   data() {
-    let grid = [];
-    var cell = 1;
-    for (let i = 0; i < appInstance.$BOARD_SIZE; i++) {
-      let row = [];
-      for (let j = 0; j < appInstance.$BOARD_SIZE; j++) {
-        if ((i + 1) % 2 == 0) {
-          if ((j + 1) % 2 != 0) {
-            row[j] = cell;
-            cell++;
-          } else {
-            row[j] = 0;
-          }
-        } else {
-          if ((j + 1) % 2 == 0) {
-            row[j] = cell;
-            cell++;
-          } else {
-            row[j] = 0;
-          }
-        }
-      }
-      grid.push(row);
-    }
-
     return {
-      board: grid, // The board of the game
+      board: this.createGrid(appInstance.$BOARD_SIZE), // The board of the game
     };
   },
   computed: {
     // Give the size of the board
     getSize() {
       return "0 0 " + 100 / appInstance.$BOARD_SIZE + "%";
+    },
+  },
+  methods: {
+    createGrid(size) {
+      let grid = [];
+      var cell = 1;
+      for (let i = 0; i < size; i++) {
+        let row = [];
+        for (let j = 0; j < size; j++) {
+          if ((i + 1) % 2 == 0) {
+            if ((j + 1) % 2 != 0) {
+              row[j] = cell;
+              cell++;
+            } else {
+              row[j] = 0;
+            }
+          } else {
+            if ((j + 1) % 2 == 0) {
+              row[j] = cell;
+              cell++;
+            } else {
+              row[j] = 0;
+            }
+          }
+        }
+        grid.push(row);
+      }
+      return grid;
     },
   },
 };
