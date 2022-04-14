@@ -22,7 +22,7 @@ function clean() {
 
 function qualityAssurance(cb) {
   log('checking code quality');
-  return exec('npm run lint-fix', (err, stdout, stderr) => {
+  return exec('npm run lint', (err, stdout, stderr) => {
     log(stdout);
     log(stderr);
     cb(err);
