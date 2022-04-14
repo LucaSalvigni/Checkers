@@ -1,8 +1,27 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/package-lock.json"
     schedule:
       interval: "daily"
-    #TODO temporary
+    target-branch: "develop"
+  - package-ecosystem: "npm"
+    directory: "/Frontend/Checkers-Frontend"
+    schedule:
+      interval: "daily"
+    target-branch: "develop"
+  - package-ecosystem: "npm"
+    directory: "/Backend/Checkers-CommunicationService"
+    schedule:
+      interval: "daily"
+    target-branch: "develop"
+  - package-ecosystem: "npm"
+    directory: "/Backend/Checkers-GameService"
+    schedule:
+      interval: "daily"
+    target-branch: "develop"
+  - package-ecosystem: "npm"
+    directory: "/Backend/Checkers-UserService"
+    schedule:
+      interval: "daily"
     target-branch: "develop"
