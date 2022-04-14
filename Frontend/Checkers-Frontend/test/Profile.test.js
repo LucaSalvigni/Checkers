@@ -69,3 +69,24 @@ describe('Profile switch info', () => {
         //expect(wrapper.findComponent(MatchInfo).exists()).toBeTruthy()
     })
 })
+
+describe('DataInfo set Data Test', () => {
+    it('should set', async () => {
+        const wrapper = mount(DataInfo)
+
+        await wrapper.setData({
+            first_name: "Luca",
+            last_name: "Rossi",
+            mail: "info@site.com",
+            username: "User",
+        })
+
+        expect(wrapper.vm.first_name).toBe('Luca')
+
+        expect(wrapper.vm.last_name).toBe('Rossi')
+
+        expect(wrapper.vm.mail).toBe('info@site.com')
+
+        expect(wrapper.vm.username).toBe('User')
+    })
+})
