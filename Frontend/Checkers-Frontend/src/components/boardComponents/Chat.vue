@@ -19,7 +19,6 @@
       :always-scroll-to-bottom="alwaysScrollToBottom"
       :disable-user-list-toggle="false"
       :message-styling="messageStyling"
-      @edit="editMessage"
     />
   </div>
 </template>
@@ -93,11 +92,11 @@ export default {
       this.isChatOpen = false;
     },
     // Edit the new message
-    editMessage(message) {
+    /*editMessage(message) {
       const m = this.messageList.find((m) => m.id === message.id);
       m.isEdited = true;
       m.data.text = message.data.text;
-    },
+    },*/
   },
 };
 </script>

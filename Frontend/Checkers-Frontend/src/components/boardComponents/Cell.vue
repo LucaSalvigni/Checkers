@@ -49,17 +49,6 @@ export default {
       }
       return classes;
     },
-    // Style the cell into the grid
-    style() {
-      return {
-        width: "50px",
-        height: "50px",
-        display: "inline-block",
-        border: "solid black 1px",
-        marginRight: "0px",
-        marginTop: "-3px",
-      };
-    },
   },
 };
 </script>

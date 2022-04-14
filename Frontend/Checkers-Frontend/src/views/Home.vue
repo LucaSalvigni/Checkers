@@ -66,7 +66,7 @@
         id="btn-menu"
         for="join-lobby-modal"
         class="btn text-sm"
-        @click="lobbyOpened"
+        @click="lobbyOpened($router)"
         >Join a lobby</label
       >
 
@@ -170,7 +170,7 @@
             id="btn-menu"
             for="join-lobby-modal"
             class="btn text-sm"
-            @click="lobbyOpened"
+            @click="lobbyOpened($router)"
             >Join a lobby</label
           >
         </li>
@@ -223,8 +223,9 @@ export default {
     appInstance = getCurrentInstance().appContext.config.globalProperties;
   },
   methods: {
-    lobbyOpened() {
-      this.$router.push("/lobbies");
+    lobbyOpened(router) {
+      console.log(router);
+      router.push("/lobbies");
     },
     buttonClick() {
       appInstance.$BUTTON_CLICK.play();

@@ -19,9 +19,9 @@ var appInstance = null;
 
 export default {
   props: {
-    to: { type: String, required: true, default: "" },
-    icon: { type: String, required: true, default: "" },
-    click: { type: String, required: false, default: "" },
+    to: { type: String, default: "" },
+    icon: { type: String, default: "" },
+    click: { type: String, default: "" },
   },
   setup(props) {
     appInstance = getCurrentInstance().appContext.config.globalProperties;
