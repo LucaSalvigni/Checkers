@@ -5,7 +5,7 @@
       <router-link to="/">
         <img
           src="../../assets/logo.png"
-          class="mask w-40 h-40 my-5 ml-5 mask-squircle"
+          class="mask w-36 h-36 my-5 ml-5 mask-squircle"
         />
       </router-link>
 

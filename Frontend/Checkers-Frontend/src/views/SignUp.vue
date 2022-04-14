@@ -82,6 +82,11 @@
             >
             <div class="signup-modal modal modal-close">
               <div class="modal-box">
+                <img
+                  alt="Modal Logo Image"
+                  class="w-40 h-28"
+                  src="../assets/msg_image.png"
+                />
                 <p class="text-base font-semibold msg">Ciao</p>
                 <div class="modal-action">
                   <label class="btn">Accept</label>

@@ -7,7 +7,7 @@
 
     <div class="modal modal-change-location">
       <div class="flex flex-col items-center modal-box">
-        <img alt="Modal Logo" class="w-40 h-28" src="../assets/logo.png" />
+        <img alt="Modal Logo" class="w-40 h-28" src="../assets/msg_image.png" />
         <p id="exit-game-msg" class="text-base font-semibold"></p>
         <div class="modal-action">
           <label for="my-modal-2" class="btn" @click="exitGame">Accept</label>

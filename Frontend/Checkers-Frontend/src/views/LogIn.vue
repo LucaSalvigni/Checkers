@@ -34,6 +34,11 @@
             <label class="btn login-btn text-base font-semibold">Sign in</label>
             <div class="login-fail modal">
               <div class="modal-box">
+                <img
+                  alt="Modal Logo Image"
+                  class="w-40 h-28"
+                  src="../assets/msg_image.png"
+                />
                 <p class="msg text-base font-semibold">Ciao</p>
                 <div class="modal-action">
                   <label class="btn text-base">Accept</label>
@@ -79,7 +84,8 @@ input {
   background-color: #1f1e1e;
 }
 .divider {
-  width: 15em;
+  padding-left: 2em;
+  padding-right: 2em;
 }
 .divider:after,
 .divider:before {

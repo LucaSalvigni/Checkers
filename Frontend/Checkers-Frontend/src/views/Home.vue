@@ -3,7 +3,7 @@
     class="main-div flex flex-row items-center justify-center centralSpace px-28 py-5"
   >
     <img
-      src="../assets/logo.png"
+      src="../assets/checkers.png"
       alt="Main Logo"
       class="main-logo self-center mask min-w-fit min-h-fit w-7/12 h-7/12 mask-square"
     />
@@ -29,7 +29,7 @@
           <img
             alt="Modal Logo Image"
             class="w-40 h-28"
-            src="../assets/logo.png"
+            src="../assets/msg_image.png"
           />
           <div class="form-control items-center">
             <label class="mt-3">
@@ -73,7 +73,7 @@
           <img
             alt="Modal Logo Image"
             class="w-40 h-28"
-            src="../assets/logo.png"
+            src="../assets/msg_image.png"
           />
           <h3 class="font-bold text-lg">Insert mail of the player</h3>
           <div class="form-control items-center mt-2">
@@ -95,7 +95,7 @@
       <div tabindex="0" class="flex flex-nowrap flex-column btn h-24">
         <figure>
           <img
-            alt="Modal Logo Image"
+            alt="Logo Image"
             src="../assets/logo.png"
             class="checkers-img self-center mask w-20 h-20 mask-square"
           />
@@ -120,7 +120,7 @@
               <img
                 alt="Modal Logo Image"
                 class="w-40 h-28"
-                src="../assets/logo.png"
+                src="../assets/msg_image.png"
               />
               <div class="form-control items-center">
                 <label class="mt-3">
@@ -170,7 +170,7 @@
               <img
                 alt="Modal Logo Image"
                 class="w-40 h-28"
-                src="../assets/logo.png"
+                src="../assets/msg_image.png"
               />
               <h3 class="font-bold text-lg">Insert mail of the player</h3>
               <div class="form-control items-center mt-2">
