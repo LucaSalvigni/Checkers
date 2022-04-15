@@ -14,10 +14,13 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
+    "email-validator": "^2.0.4",
     "express": "^4.17.3",
-    "mongoose": "^6.3.0"
+    "mongoose": "^6.3.0",
+    "password-validator": "^5.2.1"
   },
   "devDependencies": {
+    "crypto": "^1.0.1",
     "del": "^6.0.0",
     "eslint": "^8.13.0",
     "eslint-config-airbnb-base": "^15.0.0",
