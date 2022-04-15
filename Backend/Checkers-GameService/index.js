@@ -6,11 +6,15 @@ const cors = require('cors');
 // Load .env
 dotenv.config();
 
+// TODO PASS THROUGH ACTIONS 
+// Load Env variables
+var psw = process.env.DB_PSW;
+
 // Initialize express const
 const app = express();
 app.use(cors());
 // Connect to DB
-const db = '';
+const db = `mongodb+srv://checkersdev:${psw}@checkersdb.p6xm6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 mongoose.connect(db, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

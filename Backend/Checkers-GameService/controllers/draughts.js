@@ -861,7 +861,7 @@ module.exports = class Draughts {
 
   move(move) {
     if (typeof move.to === 'undefined' && typeof move.from === 'undefined') {
-      console.log('HAHAHAHAH UNDEDFINED MOVE');
+      console.log('UNDEDFINED MOVE');
       return false;
     }
     console.log(JSON.stringify(move));
@@ -876,7 +876,7 @@ module.exports = class Draughts {
         return moves[i];
       }
     }
-    console.log('ITS FALSE FUCKER');
+    console.log('ITS FALSE');
     return false;
   }
 };
