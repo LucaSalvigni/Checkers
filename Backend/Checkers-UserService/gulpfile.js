@@ -17,7 +17,7 @@ const paths = {
 
 function clean() {
   log('removing the old files in the directory');
-  return del('../userService-build/**', { force: true });
+  return del('./userService-build/**', { force: true });
 }
 
 function qualityAssurance(cb) {
