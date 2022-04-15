@@ -1,0 +1,29 @@
+name: userservice
+
+on:
+  push:
+    paths:
+      - 'Backend/Checkers-UserService/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          cd Backend/Checkers-UserService
+          npm ci
+      - name: Test and build
+        run: |
+          cd Backend/Checkers-UserService
+          npm run gulp
