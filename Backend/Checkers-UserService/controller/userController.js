@@ -3,6 +3,7 @@ const emailValidator = require('email-validator');
 const PasswordValidator = require('password-validator');
 const User = require('../models/userModel');
 
+// Setting a password validator to user password input
 const pswValidator = new PasswordValidator()
   .is().min(8)
   .is()
