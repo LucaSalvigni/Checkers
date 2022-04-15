@@ -6,9 +6,9 @@ const cors = require('cors');
 // Load .env
 dotenv.config();
 
-// TODO PASS THROUGH ACTIONS 
+// TODO PASS THROUGH ACTIONS
 // Load Env variables
-var psw = process.env.DB_PSW;
+const psw = process.env.DB_PSW;
 
 // Initialize express const
 const app = express();
