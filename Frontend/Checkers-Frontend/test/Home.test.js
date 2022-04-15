@@ -3,22 +3,19 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import router from './utils/router/router.js'
-import App from '../src/App.vue'
 import Home from '../src/views/Home.vue'
 import Lobbies from '../src/views/Lobbies.vue'
+import { h } from 'vue'
 
-const wrapper = mount(App, {
-    global: {
-        plugins: [router]
-    }
-})
 const home = mount(Home, {
     global: {
         plugins: [router]
     }
 })
+
+const lobbies = mount(Lobbies)
 
 describe('Home mount test', ()=> {
     it('should mount', () => {
@@ -42,7 +39,9 @@ describe('Home Contain Test', ()=> {
 describe('Home Click Test', ()=> {
     it('should trigger events', async ()=> {
         await home.vm.lobbyOpened(router)
-        console.log(router)
-        //expect(wrapper.findComponent(Lobbies).exists()).toBeTruthy()
+        await router.isReady()
+        expect(lobbies.exists()).toBeTruthy()
+
+        //await home.vm.buttonClick()
     })
 })

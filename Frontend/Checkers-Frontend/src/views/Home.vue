@@ -224,7 +224,6 @@ export default {
   },
   methods: {
     lobbyOpened(router) {
-      console.log(router);
       router.push("/lobbies");
     },
     buttonClick() {

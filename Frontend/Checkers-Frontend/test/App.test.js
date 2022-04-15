@@ -11,14 +11,16 @@ import SideBarLink from '../src/components/sideBarComponents/SideBarLink.vue'
 
 
 describe('App Test', () => {
-    it('should render child SibeBar', () => {
+    it('should render child SibeBar and SideBarLink', () => {
         const wrapper = mount(App, {
             global: {
                 plugins: [router]
             }
         })
         
-        expect(wrapper.findComponent(SideBar).exists()).toBe(true)
+        expect(wrapper.findComponent(SideBar).exists()).toBeTruthy()
+
+        expect(wrapper.findComponent(SideBarLink).exists()).toBeTruthy()
     })
 })
 
