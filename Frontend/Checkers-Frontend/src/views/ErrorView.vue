@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import toasty from "toasty";
 import { getCurrentInstance } from "vue";
 
 var appInstance = null;
@@ -21,6 +22,8 @@ var appInstance = null;
 export default {
   setup() {
     appInstance = getCurrentInstance();
+    let t = toasty();
+    t.trigger();
   },
   methods: {
     buttonClick() {
