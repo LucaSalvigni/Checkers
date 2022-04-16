@@ -13,4 +13,7 @@ module.exports = {
   },
   rules: {
   },
+  globals: {
+    _: 'readonly',
+  },
 };
