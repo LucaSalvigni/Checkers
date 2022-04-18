@@ -31,6 +31,6 @@ app.use(express.json());
 app.use('/', require('./routes/routes'));
 
 const { PORT } = process.env;
-module.exports = app.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`GameService started on port ${PORT}`);
 });
