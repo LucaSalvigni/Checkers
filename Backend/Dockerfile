@@ -1,0 +1,12 @@
+FROM node:lts-alpine
+
+ARG SERVICENAME
+ARG SERVICEDIR
+ARG PORT
+
+RUN mkdir -p /app/$SERVICENAME
+WORKDIR /app/$SERVICENAME
+COPY ./$SERVICEDIR /app/$SERVICENAME
+RUN npm install --unsafe-perm
+EXPOSE $PORT
+CMD npm run deploy
