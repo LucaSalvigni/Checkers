@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "coverage": "nyc npm run test",
+    "deploy": "node index.js",
     "gulp": "gulp",
     "lint": "npx eslint ./**/*.js --fix",
     "test": "mocha --exit"
