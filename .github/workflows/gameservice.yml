@@ -28,7 +28,7 @@ jobs:
           file: ./Dockerfile
           build-args: |
             SERVICENAME=GameService
-            SERVICEDIR=Backend/Checkers-GameService
+            SERVICEDIR=Checkers-GameService
             ARG_PORT=3032
             ARG_DB_PSW=${{ secrets.DB_PSW }}
           tags: konradgomulkadev/checkers:gameservice
