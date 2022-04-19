@@ -10,7 +10,7 @@ ENV DB_PSW=ARG_DB_PSW
 
 RUN mkdir -p /app/$SERVICENAME
 WORKDIR /app/$SERVICENAME
-COPY ./$SERVICEDIR /app/$SERVICENAME
+COPY ./$SERVICEDIR ./app/$SERVICENAME
 RUN npm install --unsafe-perm
 EXPOSE $ARG_PORT
 CMD npm run deploy
