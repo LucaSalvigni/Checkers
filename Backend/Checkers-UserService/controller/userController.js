@@ -1,6 +1,8 @@
 const crypto = require('crypto');
 const emailValidator = require('email-validator');
 const PasswordValidator = require('password-validator');
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
 const User = require('../models/userModel');
 
 // Setting a password validator to user password input
@@ -19,6 +21,9 @@ const pswValidator = new PasswordValidator()
   .spaces()
   .has()
   .symbols(1);
+
+// Setting the token
+const jsecretPath = './jwt_secret';
 
 /**
  * Simple method to log some messages
@@ -49,6 +54,21 @@ function saltFunction(psw, salt) {
   hash.update(psw);
   return hash.digest('hex');
 }
+
+/**
+ * Trie to load the token
+ * @returns the new secret
+ */
+function loadJwtSecret() {
+  if (fs.existsSync(jsecretPath)) {
+    return fs.readFileSync(jsecretPath, 'utf-8');
+  }
+  const newSecret = randomString(32);
+  fs.writeFileSync(jsecretPath, newSecret);
+  return newSecret;
+}
+
+const jwtSecret = loadJwtSecret();
 
 /**
  * Tries to sign up a new user
@@ -102,5 +122,114 @@ exports.signup = async function (req, res) {
       log(`Sadly someone else is already registered with ${email}`);
       res.status(400).send({ message: 'An existing account has already been associated with this email.' });
     }
+  }
+};
+
+/**
+ * Methods for tries to login a user
+ * @param {*} req
+ * @param {*} res
+ */
+exports.login = async function (req, res) {
+  const email = req.body.mail;
+  const { password } = req.body;
+  log(`${email}is trying to login`);
+  if (email.trim() === '' || password.trim() === '') {
+    res.status(400).send({ message: "Login parameters can't have empty values" });
+  } else {
+    const registeredUser = await User.findOne({ mail: email }, 'username first_name last_name mail salt password stars nationality wins losses avatar');
+    if (registeredUser) {
+      const allegedPassword = saltFunction(password, registeredUser.salt);
+      if (allegedPassword === registeredUser.password) {
+        log(`${email} just logged in successfully`);
+        // Will those two lines work?
+        const token = await jwt.sign({ user: { email: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
+        res.status(200).json({
+          token,
+          message: `Authentication successfull, welcome back ${registeredUser.username}!`,
+          user: {
+            username: registeredUser.username,
+            first_name: registeredUser.first_name,
+            last_name: registeredUser.last_name,
+            mail: email,
+            stars: registeredUser.stars,
+            wins: registeredUser.wins,
+            losses: registeredUser.losses,
+            avatar: registeredUser.avatar,
+          },
+        });
+      } else {
+        log(`${email} just failed authentication`);
+        res.status(400).send({ message: 'Authentication failed, wrong email and/or password' });
+      }
+    } else {
+      log(`${email} is not registered so he cannot authenticate`);
+      res.status(400).send({ message: 'Authentication failed, wrong email and/or password' });
+    }
+  }
+};
+
+/**
+ * Tries to get a new token for a user
+ */
+exports.refresh_token = async function (req, res) {
+  const { mail } = req.query;
+  const { token } = req.query;
+  const tokenMail = JSON.parse(Buffer.from(token.split('.')[1], 'base64')).user.email;
+  if (mail === tokenMail) {
+    const registeredUser = await User.findOne({ mail }, 'username first_name last_name mail stars nationality wins losses avatar');
+    if (registeredUser) {
+      // Check this await
+      const checkToken = await jwt.sign({ user: { email: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
+      if (checkToken) {
+        res.status(200).json({
+          checkToken,
+          user: {
+            username: registeredUser.username,
+            first_name: registeredUser.first_name,
+            last_name: registeredUser.last_name,
+            mail: registeredUser.mail,
+            stars: registeredUser.stars,
+            wins: registeredUser.wins,
+            losses: registeredUser.losses,
+            avatar: registeredUser.avatar,
+          },
+        });
+      } else {
+        res.status(500).send({ message: 'Error while refreshing token' });
+      }
+    } else {
+      res.status(400).send({ message: 'No such user' });
+    }
+  } else {
+    res.status(400).send({ message: 'Wrong mail' });
+  }
+};
+
+/**
+ * Tries to verify the current user's token
+ * @param {*} req
+ * @param {*} res
+ */
+exports.verify_token = async function (req, res) {
+  const bHeader = req.headers.authorization;
+  try {
+    if (typeof bHeader !== 'undefined') {
+      const bearer = bHeader.split(' ');
+      const bToken = bearer[1];
+      req.token = bToken;
+      const token = await jwt.verify(req.token, jwtSecret);
+      log(`veryfing token for ${token.user.email}`);
+      if (token) {
+        log(`token ok for user ${token.user.email}`);
+        res.status(200).json({ token, user: token.user });
+      } else {
+        log(`token error for user ${token.user.email}`);
+        res.status(400).send({ message: 'Token verification error, please log-in again.' });
+      }
+    }
+  } catch (err) {
+    log('Someone is trying to do some nasty illegal things');
+    res.status(400).send({ message: 'User not authenticated, please log-in again.' });
   }
 };
