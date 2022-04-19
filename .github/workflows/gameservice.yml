@@ -24,7 +24,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: ./Backend
+          context: "{{defaultContext}}:Backend"
           file: ./Dockerfile
           build-args: |
             SERVICENAME=GameService
