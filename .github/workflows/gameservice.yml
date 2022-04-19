@@ -23,9 +23,13 @@ jobs:
         run: |
           cd Backend/Checkers-GameService
           npm ci
-      - name: MongoDB in GitHub Actions
-        uses: supercharge/mongodb-github-action@1.7.0
+      - name: Run Server
+        if: success() || failure() # Wait for previous steps to finish
+        run: |
+          cd Backend/Checkers-GameService
+          node index.js
       - name: Test and build
+        if: success() || failure() # Wait for server to start  
         run: |
           cd Backend/Checkers-GameService
           npm run gulp
