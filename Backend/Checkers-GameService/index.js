@@ -8,13 +8,14 @@ dotenv.config();
 
 // TODO PASS THROUGH ACTIONS
 // Load Env variables
-const psw = process.env.DB_PSW;
+const { DB_PSW } = process.env;
+const { PORT } = process.env;
 
 // Initialize express const
 const app = express();
 app.use(cors());
 // Connect to DB
-const db = `mongodb+srv://checkersdev:${psw}@checkersdb.p6xm6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const db = `mongodb+srv://checkersdev:${DB_PSW}@checkersdb.p6xm6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 mongoose.connect(db, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -30,7 +31,6 @@ app.use(express.json());
 // Routes
 app.use('/', require('./routes/routes'));
 
-const { PORT } = process.env;
 module.exports = app.listen(PORT, () => {
   console.log(`GameService started on port ${PORT}`);
 });

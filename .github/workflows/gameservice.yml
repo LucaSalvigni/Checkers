@@ -7,6 +7,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  PORT: 3032   
+  DB_PSW: ${{secrets.DB_PSW}}
+
 jobs:
   build:
     strategy:
