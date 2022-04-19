@@ -30,7 +30,7 @@ jobs:
             SERVICEDIR=Backend/Checkers-GameService
             ARG_PORT=3032
             ARG_DB_PSW=${{ secrets.DB_PSW }}
-          tags: gameService:latest
+          tags: konradgomulkadev/checkers:gameservice
   container-job:
     needs: docker-build
     strategy:
