@@ -25,6 +25,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./Backend
+          file: ./Dockerfile
           build-args: |
             SERVICENAME=GameService
             SERVICEDIR=Backend/Checkers-GameService
