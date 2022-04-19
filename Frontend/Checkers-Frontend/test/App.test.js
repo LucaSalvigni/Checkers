@@ -2,7 +2,7 @@
  * @vitest-enviroment
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import router from './utils/router/router.js'
 import App from '../src/App.vue'
@@ -37,6 +37,8 @@ describe('SidebarLink Test', () => {
 
         await wrapper.setProps({ to: "/profile" })
 
-        //await wrapper.vm.buttonClick()
+        const spy = vi.spyOn(wrapper.vm, 'buttonClick').mockImplementation(() => {})
+        await wrapper.find('button').trigger('click')
+        expect(spy).toHaveBeenCalled()
     })
 })

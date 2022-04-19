@@ -2,12 +2,11 @@
  * @vitest-enviroment
  */
 
-import { describe, it, expect } from 'vitest'
-import { flushPromises, mount } from '@vue/test-utils'
+import { describe, it, expect, vi } from 'vitest'
+import { mount } from '@vue/test-utils'
 import router from './utils/router/router.js'
 import Home from '../src/views/Home.vue'
 import Lobbies from '../src/views/Lobbies.vue'
-import { h } from 'vue'
 
 const home = mount(Home, {
     global: {
@@ -42,6 +41,8 @@ describe('Home Click Test', ()=> {
         await router.isReady()
         expect(lobbies.exists()).toBeTruthy()
 
-        //await home.vm.buttonClick()
+        const spy = vi.spyOn(home.vm, 'buttonClick').mockImplementation(() => {})
+        await home.find('label').trigger('click')
+        expect(spy).toHaveBeenCalled()
     })
 })

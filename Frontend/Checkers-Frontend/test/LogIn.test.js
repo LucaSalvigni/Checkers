@@ -2,7 +2,7 @@
  * @vitest-enviroment
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import Login from '../src/views/LogIn.vue'
 
@@ -39,5 +39,13 @@ describe('Login Inputs Test', ()=> {
         const passwordInput = wrapper.find('.password')
         await passwordInput.setValue('pass')
         expect(wrapper.find('.password').element.value).toBe('pass')
+    })
+})
+
+describe('Login check trigger', ()=> {
+    it('should trigger', async ()=> {
+        const spy = vi.spyOn(wrapper.vm, 'buttonClick').mockImplementation(() => {})
+        await wrapper.find('button').trigger('click')
+        expect(spy).toHaveBeenCalled()
     })
 })
