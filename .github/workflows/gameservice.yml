@@ -38,9 +38,12 @@ jobs:
   container-job:
     needs: docker-build
     runs-on: ubuntu-latest
+    container: node:lts-alpine
     services:
       gameService:
         image: gameService
+        ports:
+          - 3032:3032
   build:
     needs: [docker-build, container-job]
     strategy:
