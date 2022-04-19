@@ -22,8 +22,7 @@ var appInstance = null;
 export default {
   setup() {
     appInstance = getCurrentInstance();
-    let t = toasty();
-    t.trigger();
+    toasty().trigger();
   },
   methods: {
     buttonClick() {
