@@ -50,7 +50,7 @@ describe('Cell contain test', () => {
 })
 
 describe('Chat Test', () => {
-    it('should fun', async () => {
+    it('should work', async () => {
         const wrapper = mount(Chat)
 
         const message1 = {
@@ -76,5 +76,12 @@ describe('Chat Test', () => {
 
         await wrapper.vm.closeChat()
         expect(wrapper.vm.isChatOpen).toBeFalsy()
+
+        const nMessage = wrapper.vm.newMessagesCount
+        await wrapper.vm.sendMessage(message2)
+        expect(wrapper.vm.newMessagesCount).toBe(nMessage+1)
+        await wrapper.vm.openChat()
+        await wrapper.vm.sendMessage(message2)
+        expect(wrapper.vm.newMessagesCount).toBe(0)
     })
 })

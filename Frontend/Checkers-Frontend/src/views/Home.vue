@@ -23,7 +23,7 @@
       <label
         id="btn-menu"
         for="create-lobby-modal"
-        class="btn text-sm"
+        class="create-lobby btn text-sm"
         @click="buttonClick"
         >Create a new lobby</label
       >
@@ -55,7 +55,10 @@
           </div>
           <div class="flex flex-row modal-action">
             <label for="create-lobby-modal" class="accept btn"> Create </label>
-            <label for="create-lobby-modal" class="btn" @click="buttonClick"
+            <label
+              for="create-lobby-modal"
+              class="cancel-create btn"
+              @click="buttonClick"
               >Cancel</label
             >
           </div>
@@ -65,7 +68,7 @@
       <label
         id="btn-menu"
         for="join-lobby-modal"
-        class="btn text-sm"
+        class="check-lobbies btn text-sm"
         @click="lobbyOpened($router)"
         >Join a lobby</label
       >
@@ -73,7 +76,7 @@
       <label
         id="btn-menu"
         for="friends-modal"
-        class="btn mb-7 text-sm"
+        class="invite-player btn mb-7 text-sm"
         @click="buttonClick"
         >Invite a player</label
       >
@@ -95,7 +98,10 @@
           </div>
           <div class="flex flex-row modal-action">
             <label for="friends-modal" class="accept btn">Send</label>
-            <label for="friends-modal" class="btn" @click="buttonClick"
+            <label
+              for="friends-modal"
+              class="cancel-invite btn"
+              @click="buttonClick"
               >Cancel</label
             >
           </div>
@@ -122,7 +128,7 @@
           <label
             id="btn-menu"
             for="create-lobby-modal"
-            class="btn text-sm"
+            class="drop-create-lobby btn text-sm"
             @click="buttonClick"
             >Create a new Lobby</label
           >
@@ -158,7 +164,10 @@
                 <label for="create-lobby-modal" class="accept btn">
                   Create
                 </label>
-                <label for="create-lobby-modal" class="btn" @click="buttonClick"
+                <label
+                  for="create-lobby-modal"
+                  class="drop-cancel-create btn"
+                  @click="buttonClick"
                   >Cancel</label
                 >
               </div>
@@ -169,7 +178,7 @@
           <label
             id="btn-menu"
             for="join-lobby-modal"
-            class="btn text-sm"
+            class="drop-check-lobbies btn text-sm"
             @click="lobbyOpened($router)"
             >Join a lobby</label
           >
@@ -178,7 +187,7 @@
           <label
             id="btn-menu"
             for="friends-modal"
-            class="btn mb-7 text-sm"
+            class="drop-invite-player btn mb-7 text-sm"
             @click="buttonClick"
             >Invite a player</label
           >
@@ -200,7 +209,10 @@
               </div>
               <div class="flex flex-row modal-action">
                 <label for="friends-modal" class="accept btn">Send</label>
-                <label for="friends-modal" class="btn" @click="buttonClick"
+                <label
+                  for="friends-modal"
+                  class="drop-cancel-invite btn"
+                  @click="buttonClick"
                   >Cancel</label
                 >
               </div>

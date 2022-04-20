@@ -9,6 +9,7 @@ import LeaderBoard from '../src/views/LeaderBoard.vue'
 describe('LeaderBoard Mount Test', () => {
     it('should mount LeaderBoard', () => {
         const wrapper = mount(LeaderBoard)
+        expect(wrapper.exists()).toBeTruthy()
     })
 })
 

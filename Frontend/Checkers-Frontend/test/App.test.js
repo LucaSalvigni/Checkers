@@ -38,7 +38,7 @@ describe('SidebarLink Test', () => {
         await wrapper.setProps({ to: "/profile" })
 
         const spy = vi.spyOn(wrapper.vm, 'buttonClick').mockImplementation(() => {})
-        await wrapper.find('button').trigger('click')
+        await wrapper.find('router-link').trigger('click')
         expect(spy).toHaveBeenCalled()
     })
 })

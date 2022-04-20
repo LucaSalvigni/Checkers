@@ -42,7 +42,35 @@ describe('Home Click Test', ()=> {
         expect(lobbies.exists()).toBeTruthy()
 
         const spy = vi.spyOn(home.vm, 'buttonClick').mockImplementation(() => {})
-        await home.find('label').trigger('click')
+
+        await home.find('label.create-lobby').trigger('click')
+        expect(spy).toHaveBeenCalled()
+
+        await home.find('label.cancel-create').trigger('click')
+        expect(spy).toHaveBeenCalled()
+
+        await home.find('label.check-lobbies').trigger('click')
+        expect(spy).toHaveBeenCalled()
+
+        await home.find('label.invite-player').trigger('click')
+        expect(spy).toHaveBeenCalled()
+
+        await home.find('label.cancel-invite').trigger('click')
+        expect(spy).toHaveBeenCalled()
+
+        await home.find('label.drop-create-lobby').trigger('click')
+        expect(spy).toHaveBeenCalled()
+
+        await home.find('label.drop-cancel-create').trigger('click')
+        expect(spy).toHaveBeenCalled()
+
+        await home.find('label.drop-check-lobbies').trigger('click')
+        expect(spy).toHaveBeenCalled()
+
+        await home.find('label.drop-invite-player').trigger('click')
+        expect(spy).toHaveBeenCalled()
+
+        await home.find('label.drop-cancel-invite').trigger('click')
         expect(spy).toHaveBeenCalled()
     })
 })

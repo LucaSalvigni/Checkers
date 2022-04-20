@@ -31,7 +31,6 @@ describe('Login Contain Test', ()=> {
 
 describe('Login Inputs Test', ()=> {
     it('value checks', async ()=> {
-
         const mailInput = wrapper.find('.mail')
         await mailInput.setValue('value')
         expect(wrapper.find('.mail').element.value).toBe('value')

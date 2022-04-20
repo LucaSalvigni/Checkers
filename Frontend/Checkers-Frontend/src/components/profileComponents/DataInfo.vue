@@ -57,7 +57,6 @@
         ref="file-input"
         type="file"
         accept="image/png, image/gif, image/jpeg"
-        @input="uploadImage"
       />
     </div>
 

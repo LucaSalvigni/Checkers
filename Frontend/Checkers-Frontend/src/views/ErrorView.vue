@@ -21,12 +21,12 @@ var appInstance = null;
 
 export default {
   setup() {
-    appInstance = getCurrentInstance();
+    appInstance = getCurrentInstance().appContext.config.globalProperties;
     toasty().trigger();
   },
   methods: {
     buttonClick() {
-      appInstance.appContext.config.globalProperties.$BUTTON_CLICK.play();
+      appInstance.$BUTTON_CLICK.play();
     },
   },
 };

@@ -2,7 +2,7 @@
  * @vitest-enviroment
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import Profile from '../src/views/Profile.vue'
 import DataInfo from '../src/components/profileComponents/DataInfo.vue'
@@ -58,18 +58,6 @@ describe('Profile data Test', () => {
     })
 })
 
-describe('Profile switch info', () => {
-    it('should switch', async () => {
-        const wrapper = mount(Profile)
-
-        expect(wrapper.find('#matchInfo').exists()).toBeTruthy()
-
-        await wrapper.find('#matchInfo').trigger('matchInfo')
-
-        //expect(wrapper.findComponent(MatchInfo).exists()).toBeTruthy()
-    })
-})
-
 describe('DataInfo set Data Test', () => {
     it('should set', async () => {
         const wrapper = mount(DataInfo)
@@ -88,5 +76,30 @@ describe('DataInfo set Data Test', () => {
         expect(wrapper.vm.mail).toBe('info@site.com')
 
         expect(wrapper.vm.username).toBe('User')
+    })
+})
+
+
+
+describe('Profile trigger test', () => {
+    it('should trigger', async () => {
+        const wrapper = mount(Profile)
+
+        const spySound = vi.spyOn(wrapper.vm, 'buttonClick').mockImplementation(() => {})
+        const spyData = vi.spyOn(wrapper.vm, 'dataInfo').mockImplementation(() => {})
+        const spyMatch = vi.spyOn(wrapper.vm, 'matchInfo').mockImplementation(() => {})
+
+        await wrapper.vm.buttonClick()
+        expect(spySound).toHaveBeenCalled()
+        
+        await wrapper.find('#dataInfo').trigger('click')
+        expect(spyData).toHaveBeenCalled()
+        expect(spySound).toHaveBeenCalled()
+        expect(wrapper.vm.tabName).toBe('User Info')
+        
+        await wrapper.find('#matchInfo').trigger('click')
+        expect(spyMatch).toHaveBeenCalled()
+        expect(spySound).toHaveBeenCalled()
+        //expect(wrapper.vm.tabName).toBe('Match History')
     })
 })
