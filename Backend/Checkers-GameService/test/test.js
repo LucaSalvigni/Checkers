@@ -10,9 +10,12 @@ const opponent = 'opponent@gmail.com';
 chai.use(chaiHttp);
 chai.should();
 
+// Get env variables
+const { NODE_ENV } = process.env;
+const { PORT } = process.env;
+
 async function createGame(game) {
-  const environment = process.env.NODE_ENV;
-  const host = environment === 'development' ? gameService : 'localhost:3032';
+  const host = NODE_ENV === 'development' ? gameService : `localhost:${PORT}`;
 
   return chai.request(host)
     .post('/game/lobbies/create_game')
