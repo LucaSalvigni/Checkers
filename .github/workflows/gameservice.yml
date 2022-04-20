@@ -57,6 +57,10 @@ jobs:
         run: |
           cd Backend/Checkers-GameService
           npm ci
+      - name: Test TOREMOVE
+        run: |
+          cd Backend/Checkers-GameService
+          npm test
       - name: Test and build
         run: |
           cd Backend/Checkers-GameService
