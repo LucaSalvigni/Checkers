@@ -57,13 +57,6 @@ jobs:
         run: |
           cd Backend/Checkers-GameService
           npm ci
-      - name: Test TOREMOVE
-        run: |
-          cd Backend/Checkers-GameService
-          npm test
-        env:
-          PORT: 3032
-          NODE_ENV: production
       - name: Test and build
         run: |
           cd Backend/Checkers-GameService
