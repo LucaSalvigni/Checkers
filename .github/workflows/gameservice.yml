@@ -43,7 +43,7 @@ jobs:
     container: node:lts-alpine
     services:
       gameservice:
-        image: gameservice
+        image: konradgomulkadev/checkers:gameservice
         ports:
           - 3032:3032
 
