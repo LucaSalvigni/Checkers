@@ -33,4 +33,3 @@ const { PORT } = process.env;
 app.listen(PORT, () => {
   console.log(`UserService started on port ${PORT}`);
 });
-//AA
