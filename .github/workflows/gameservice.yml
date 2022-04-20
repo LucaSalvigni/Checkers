@@ -32,6 +32,7 @@ jobs:
             ARG_PORT=3032
             ARG_DB_PSW=${{ secrets.DB_PSW }}
           tags: konradgomulkadev/checkers:gameservice
+          push: true
   container-job:
     needs: docker-build
     strategy:
@@ -41,8 +42,8 @@ jobs:
     runs-on: ${{matrix.os}}
     container: node:lts-alpine
     services:
-      gameService:
-        image: gameService
+      gameservice:
+        image: gameservice
         ports:
           - 3032:3032
 
