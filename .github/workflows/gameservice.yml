@@ -31,6 +31,7 @@ jobs:
             SERVICEDIR=Checkers-GameService
             ARG_PORT=3032
             ARG_DB_PSW=${{ secrets.DB_PSW }}
+            NODE_ENV =production
           tags: konradgomulkadev/checkers:gameservice
           push: true
   container-job:

@@ -2,8 +2,7 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 // Require server and model
-// const gameService = require('../index');
-const Game = require('../models/gameModel');
+const gameService = require('../index');
 
 const host = 'host@gmail.com';
 const opponent = 'opponent@gmail.com';
@@ -12,7 +11,10 @@ chai.use(chaiHttp);
 chai.should();
 
 async function createGame(game) {
-  return chai.request("http://localhost:3032")
+  var environment = process.env.NODE_ENV;
+  var host = environment === "development" ? gameService : 'localhost:3032';
+  
+  return chai.request(host)
     .post('/game/lobbies/create_game')
     .send({ gameId: game.gameId, host_id: game.host_id, opponent: game.opponent_id });
 }
@@ -20,9 +22,6 @@ async function createGame(game) {
 // Game testing
 
 describe('Game', async () => {
-  before(async () => {
-    await Game.deleteMany({ winner: opponent });
-  });
   describe('POST Game', async () => {
     it('should create a new game', async () => {
       const newGame = {
