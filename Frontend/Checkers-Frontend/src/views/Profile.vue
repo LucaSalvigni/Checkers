@@ -12,7 +12,7 @@
         <div class="flex mt-2.5 ml-2">
           <h2
             :innerText="username"
-            class="font-semibold text-2xl card-title"
+            class="username font-semibold text-2xl card-title"
           ></h2>
         </div>
         <div class="flex flex-row ml-2 font-semibold text-xl">

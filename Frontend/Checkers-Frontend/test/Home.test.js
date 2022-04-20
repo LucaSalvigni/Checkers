@@ -42,14 +42,12 @@ describe('Home Click Test', ()=> {
         expect(lobbies.exists()).toBeTruthy()
 
         const spy = vi.spyOn(home.vm, 'buttonClick').mockImplementation(() => {})
+        const spyLobbies = vi.spyOn(home.vm, 'lobbyOpened').mockImplementation(() => {})
 
         await home.find('label.create-lobby').trigger('click')
         expect(spy).toHaveBeenCalled()
 
         await home.find('label.cancel-create').trigger('click')
-        expect(spy).toHaveBeenCalled()
-
-        await home.find('label.check-lobbies').trigger('click')
         expect(spy).toHaveBeenCalled()
 
         await home.find('label.invite-player').trigger('click')
@@ -64,13 +62,16 @@ describe('Home Click Test', ()=> {
         await home.find('label.drop-cancel-create').trigger('click')
         expect(spy).toHaveBeenCalled()
 
-        await home.find('label.drop-check-lobbies').trigger('click')
-        expect(spy).toHaveBeenCalled()
-
         await home.find('label.drop-invite-player').trigger('click')
         expect(spy).toHaveBeenCalled()
 
         await home.find('label.drop-cancel-invite').trigger('click')
         expect(spy).toHaveBeenCalled()
+
+        await home.find('label.check-lobbies').trigger('click')
+        expect(spyLobbies).toHaveBeenCalled()
+
+        await home.find('label.drop-check-lobbies').trigger('click')
+        expect(spyLobbies).toHaveBeenCalled()
     })
 })

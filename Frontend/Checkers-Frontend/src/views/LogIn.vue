@@ -69,16 +69,16 @@
 <script>
 import { getCurrentInstance } from "vue";
 
-var appInstance = null;
-
 export default {
   name: "LogIn",
-  setup() {
-    appInstance = getCurrentInstance().appContext.config.globalProperties;
+  data() {
+    return {
+      appInstance: getCurrentInstance().appContext.config.globalProperties,
+    };
   },
   methods: {
     buttonClick() {
-      appInstance.$BUTTON_CLICK.play();
+      this.appInstance.$BUTTON_CLICK.play();
     },
   },
 };

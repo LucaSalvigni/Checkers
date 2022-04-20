@@ -21,11 +21,17 @@ describe('Profile Contain Test', ()=> {
         
         expect(wrapper.find('img').exists()).toBeTruthy()
 
-        expect(wrapper.find('h2').exists()).toBeTruthy()
+        expect(wrapper.find('h2.username').exists()).toBeTruthy()
 
         expect(wrapper.find('.stars').exists()).toBeTruthy()
 
         expect(wrapper.find('.first_last').exists()).toBeTruthy()
+
+        expect(wrapper.find('.profile-info').exists()).toBeTruthy()
+
+        expect(wrapper.find('#dataInfo').exists()).toBeTruthy()
+
+        expect(wrapper.find('#matchInfo').exists()).toBeTruthy()
 
         expect(wrapper.findComponent(DataInfo).exists()).toBeTruthy()
 
@@ -54,6 +60,10 @@ describe('Profile data Test', () => {
         expect(wrapper.vm.tabName).toBe('Info')
 
         expect(wrapper.vm.stars).toBe('Stars')
+
+        expect(wrapper.find('h2.username').element.getAttribute('innerText')).toBe('Username')
+        expect(wrapper.find('p.stars').element.getAttribute('innerText')).toBe('Stars')
+        expect(wrapper.find('p.first_last').element.getAttribute('innerText')).toBe('First Last')
 
     })
 })
@@ -100,6 +110,5 @@ describe('Profile trigger test', () => {
         await wrapper.find('#matchInfo').trigger('click')
         expect(spyMatch).toHaveBeenCalled()
         expect(spySound).toHaveBeenCalled()
-        //expect(wrapper.vm.tabName).toBe('Match History')
     })
 })

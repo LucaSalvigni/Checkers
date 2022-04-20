@@ -46,5 +46,8 @@ describe('Login check trigger', ()=> {
         const spy = vi.spyOn(wrapper.vm, 'buttonClick').mockImplementation(() => {})
         await wrapper.find('button').trigger('click')
         expect(spy).toHaveBeenCalled()
+
+        await wrapper.setData({appInstance: null})
+        expect(() => wrapper.vm.buttonClick()).toThrowError('No instance here')
     })
 })
