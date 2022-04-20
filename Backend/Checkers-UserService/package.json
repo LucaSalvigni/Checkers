@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "email-validator": "^2.0.4",
@@ -21,6 +22,8 @@
     "password-validator": "^5.2.1"
   },
   "devDependencies": {
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
     "crypto": "^1.0.1",
     "del": "^6.0.0",
     "eslint": "^8.13.0",
