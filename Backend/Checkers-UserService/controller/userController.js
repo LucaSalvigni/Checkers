@@ -3,6 +3,7 @@ const emailValidator = require('email-validator');
 const PasswordValidator = require('password-validator');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
+const _ = require('lodash');
 const User = require('../models/userModel');
 
 // Setting a password validator to user password input
@@ -234,99 +235,100 @@ exports.verify_token = async function (req, res) {
   }
 };
 
-exports.getProfile = async function(req,res){
-  //WILL THIS QUERY WORK?
-  const mail = req.query.mail
-  log("Getting " +mail+ " profile")
+exports.getProfile = async function (req, res) {
+  // WILL THIS QUERY WORK?
+  const { mail } = req.query;
+  log(`Getting ${mail} profile`);
   try {
-      const data = await User.findOne({mail:mail},'username avatar first_name last_name stars mail').lean()
-      if(data === null){
-          log("Didn't found any profile associated to "+mail)
-          res.status(400).json({error: "Cannot find any player with such ID"})
-      }else{
-          log("Found profile associated to "+mail+", sending it back")
-          res.json({
-              username: data.username,
-              avatar: data.avatar == "" ? "https://picsum.photos/id/1005/400/250" : data.avatar ,
-              first_name: data.first_name,
-              last_name: data.last_name,
-              stars: data.stars,
-              mail:data.mail
-          })
-      }
-  }catch{
-      res.status(500).json({error: "Error while retrieving player profile from DB"})
+    const data = await User.findOne({ mail }, 'username avatar first_name last_name stars mail').lean();
+    if (data === null) {
+      log(`Didn't found any profile associated to ${mail}`);
+      res.status(400).json({ error: 'Cannot find any player with such ID' });
+    } else {
+      log(`Found profile associated to ${mail}, sending it back`);
+      res.json({
+        username: data.username,
+        avatar: data.avatar === '' ? 'https://picsum.photos/id/1005/400/250' : data.avatar,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        stars: data.stars,
+        mail: data.mail,
+      });
+    }
+  } catch {
+    res.status(500).json({ error: 'Error while retrieving player profile from DB' });
   }
-}
-exports.getHistory = async function(req,res){
-  try{
-      const user_mail = req.query.mail
-      const user = await User.find({mail:user_mail},'wins losses')
-      const data = []
-      log("Getting history for user "+user_mail)
-      if(user === null){
-          log("lol there's no such user as "+user_mail)
-          res.status(400).json({error: "Cannot find any player with such ID"})
-      }
-      log("Successfully got history for "+user_mail)
-      data.push(user.wins)
-      data.push(user.losses)
-      res.status(200).json(data)
-  }catch{
-      res.status(500).json({error: "Error while retrieving player profile from DB"})
+};
+exports.getHistory = async function (req, res) {
+  try {
+    const userMail = req.query.mail;
+    const user = await User.find({ mail: userMail }, 'wins losses');
+    const data = [];
+    log(`Getting history for user ${userMail}`);
+    if (user === null) {
+      log(`lol there's no such user as ${userMail}`);
+      res.status(400).json({ error: 'Cannot find any player with such ID' });
+    }
+    log(`Successfully got history for ${userMail}`);
+    data.push(user.wins);
+    data.push(user.losses);
+    res.status(200).json(data);
+  } catch {
+    res.status(500).json({ error: 'Error while retrieving player profile from DB' });
   }
-}
+};
 
-exports.updateProfile = async function(req,res){
-  const user_mail = req.body.mail
-  const mail = req.body.params.mail
-  if(mail == user_mail){
-      log("Updating "+user_mail+" profile")
-      try{
-          let new_values = {
-              first_name : req.body.params.first_name,
-              last_name : req.body.params.last_name,
-              username : req.body.params.username,
-              avatar: req.body.params.avatar
-          }
-          new_values = _.pickBy(new_values, _.identity);
-          new_user = await User.findOneAndUpdate({"mail": user_mail},
-      { $set:new_values})
-      log("Successfully updated profile for "+user_mail)
-          res.status(200).json({
-              username: new_user.username,
-              first_name: new_user.first_name, 
-              last_name: new_user.last_name,
-              mail: new_user.mail,
-              stars:new_user.stars,
-              avatar:new_user.avatar
-          })
-      }catch(err){
-          log("Something went wrong while updating "+user_mail+" profile")
-          log(err)
-          res.status(400).send({message: "Something went wrong while updating a user, please try again"})
-      }
-  }else{
-          res.status(400).json({message: "You can't change the email associated to an account."})
+exports.updateProfile = async function (req, res) {
+  const userMail = req.body.mail;
+  const { mail } = req.body.params;
+  if (mail === userMail) {
+    log(`Updating ${userMail} profile`);
+    try {
+      let newValues = {
+        first_name: req.body.params.first_name,
+        last_name: req.body.params.last_name,
+        username: req.body.params.username,
+        avatar: req.body.params.avatar,
+      };
+      newValues = _.pickBy(newValues, _.identity);
+      const newUser = await User.findOneAndUpdate(
+        { mail: userMail },
+        { $set: newValues },
+      );
+      log(`Successfully updated profile for ${userMail}`);
+      res.status(200).json({
+        username: newUser.username,
+        first_name: newUser.first_name,
+        last_name: newUser.last_name,
+        mail: newUser.mail,
+        stars: newUser.stars,
+        avatar: newUser.avatar,
+      });
+    } catch (err) {
+      log(`Something went wrong while updating ${userMail} profile`);
+      log(err);
+      res.status(400).send({ message: 'Something went wrong while updating a user, please try again' });
+    }
+  } else {
+    res.status(400).json({ message: "You can't change the email associated to an account." });
   }
-}
-//WILL THIS WORK?
-exports.getLeaderboard = async function(_,res){
-  try{
-      const users = await User.find({},'username avatar stars wins losses ties').sort({ stars: 'desc'})
-      if(users != null){ 
-          users.map(user =>{
-              user.avatar = user.avatar == "" ? "https://picsum.photos/id/1005/400/250" : user.avatar
-          })
-          log("Retrieving and sending leaderboard")
-          res.status(200).json(users);
-      }else{
-          res.status(200).send({message: "There is no one in the leaderboard."})
-      }
-  }catch(err){
-      log("Something went wrong while retrieving leaderboard"+"\n"+err)
-      res.status(500).send({message: "Something went wrong."})
+};
+// WILL THIS WORK?
+exports.getLeaderboard = async function (__, res) {
+  try {
+    const users = await User.find({}, 'username avatar stars wins losses ties').sort({ stars: 'desc' });
+    if (users != null) {
+      users.map((user) => {
+        user.avatar = user.avatar === '' ? 'https://picsum.photos/id/1005/400/250' : user.avatar;
+        return users;
+      });
+      log('Retrieving and sending leaderboard');
+      res.status(200).json(users);
+    } else {
+      res.status(200).send({ message: 'There is no one in the leaderboard.' });
+    }
+  } catch (err) {
+    log(`Something went wrong while retrieving leaderboard\n${err}`);
+    res.status(500).send({ message: 'Something went wrong.' });
   }
-
-}
-
+};

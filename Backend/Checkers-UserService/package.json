@@ -12,12 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "email-validator": "^2.0.4",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
     "mongoose": "^6.3.0",
     "password-validator": "^5.2.1"
   },
