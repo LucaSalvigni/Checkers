@@ -11,7 +11,6 @@ chai.use(chaiHttp);
 chai.should();
 
 async function createGame(game) {
-  console.log(process.env.PORT);
   const environment = process.env.NODE_ENV;
   const host = environment === 'development' ? gameService : 'localhost:3032';
 
