@@ -8,7 +8,9 @@
         The page you are looking is temporarily unavailable. Make sure tou are
         logged in before do something
       </p>
-      <router-link to="/login" @click="buttonClick">Sign in</router-link>
+      <router-link to="/login" @click="buttonClick(buttonSound)"
+        >Sign in</router-link
+      >
     </div>
   </div>
 </template>
@@ -17,16 +19,20 @@
 import toasty from "toasty";
 import { getCurrentInstance } from "vue";
 
-var appInstance = null;
-
 export default {
-  setup() {
-    appInstance = getCurrentInstance().appContext.config.globalProperties;
-    toasty().trigger();
+  data() {
+    return {
+      toasty: toasty(),
+      buttonSound:
+        getCurrentInstance().appContext.config.globalProperties.$BUTTON_CLICK,
+    };
+  },
+  mounted() {
+    this.toasty.trigger();
   },
   methods: {
-    buttonClick() {
-      appInstance.$BUTTON_CLICK.play();
+    buttonClick(sound) {
+      sound.play();
     },
   },
 };

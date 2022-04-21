@@ -55,7 +55,7 @@
           <router-link to="/signup">
             <button
               class="font-bold text-lg btn-link mb-3"
-              @click="buttonClick"
+              @click="buttonClick(buttonSound)"
             >
               Sign up
             </button>
@@ -73,12 +73,13 @@ export default {
   name: "LogIn",
   data() {
     return {
-      appInstance: getCurrentInstance().appContext.config.globalProperties,
+      buttonSound:
+        getCurrentInstance().appContext.config.globalProperties.$BUTTON_CLICK,
     };
   },
   methods: {
-    buttonClick() {
-      this.appInstance.$BUTTON_CLICK.play();
+    buttonClick(sound) {
+      sound.play();
     },
   },
 };

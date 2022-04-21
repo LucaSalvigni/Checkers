@@ -24,7 +24,7 @@
         id="btn-menu"
         for="create-lobby-modal"
         class="create-lobby btn text-sm"
-        @click="buttonClick"
+        @click="buttonClick(buttonSound)"
         >Create a new lobby</label
       >
       <input id="create-lobby-modal" type="checkbox" class="modal-toggle" />
@@ -58,7 +58,7 @@
             <label
               for="create-lobby-modal"
               class="cancel-create btn"
-              @click="buttonClick"
+              @click="buttonClick(buttonSound)"
               >Cancel</label
             >
           </div>
@@ -77,7 +77,7 @@
         id="btn-menu"
         for="friends-modal"
         class="invite-player btn mb-7 text-sm"
-        @click="buttonClick"
+        @click="buttonClick(buttonSound)"
         >Invite a player</label
       >
       <input id="friends-modal" type="checkbox" class="modal-toggle" />
@@ -101,7 +101,7 @@
             <label
               for="friends-modal"
               class="cancel-invite btn"
-              @click="buttonClick"
+              @click="buttonClick(buttonSound)"
               >Cancel</label
             >
           </div>
@@ -110,7 +110,11 @@
     </div>
 
     <div class="dropdown mt-10">
-      <div tabindex="0" class="flex flex-nowrap flex-column btn h-24">
+      <div
+        tabindex="0"
+        class="drop-div flex flex-nowrap flex-column btn h-24"
+        @click="buttonClick(buttonSound)"
+      >
         <figure>
           <img
             alt="Logo Image"
@@ -129,7 +133,7 @@
             id="btn-menu"
             for="create-lobby-modal"
             class="drop-create-lobby btn text-sm"
-            @click="buttonClick"
+            @click="buttonClick(buttonSound)"
             >Create a new Lobby</label
           >
           <input id="create-lobby-modal" type="checkbox" class="modal-toggle" />
@@ -167,7 +171,7 @@
                 <label
                   for="create-lobby-modal"
                   class="drop-cancel-create btn"
-                  @click="buttonClick"
+                  @click="buttonClick(buttonSound)"
                   >Cancel</label
                 >
               </div>
@@ -188,7 +192,7 @@
             id="btn-menu"
             for="friends-modal"
             class="drop-invite-player btn mb-7 text-sm"
-            @click="buttonClick"
+            @click="buttonClick(buttonSound)"
             >Invite a player</label
           >
           <input id="friends-modal" type="checkbox" class="modal-toggle" />
@@ -212,7 +216,7 @@
                 <label
                   for="friends-modal"
                   class="drop-cancel-invite btn"
-                  @click="buttonClick"
+                  @click="buttonClick(buttonSound)"
                   >Cancel</label
                 >
               </div>
@@ -227,19 +231,20 @@
 <script>
 import { getCurrentInstance } from "vue";
 
-var appInstance = null;
-
 export default {
   name: "HomeView",
-  setup() {
-    appInstance = getCurrentInstance().appContext.config.globalProperties;
+  data() {
+    return {
+      buttonSound:
+        getCurrentInstance().appContext.config.globalProperties.$BUTTON_CLICK,
+    };
   },
   methods: {
     lobbyOpened(router) {
       router.push("/lobbies");
     },
-    buttonClick() {
-      appInstance.$BUTTON_CLICK.play();
+    buttonClick(sound) {
+      sound.play();
     },
   },
 };

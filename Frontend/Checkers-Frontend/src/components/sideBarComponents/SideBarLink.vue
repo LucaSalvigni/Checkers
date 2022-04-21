@@ -4,7 +4,7 @@
     :to="to"
     class="this.to self-center link rounded-lg flex"
     :class="{ active: isActive }"
-    @click="buttonClick"
+    @click="buttonClick(buttonSound)"
   >
     <i class="icon" :class="icon" />
     <button class="btn btn-ghost"><slot /></button>
@@ -15,8 +15,6 @@
 import { computed, getCurrentInstance } from "vue";
 import { useRoute } from "vue-router";
 
-var appInstance = null;
-
 export default {
   props: {
     to: { type: String, default: "" },
@@ -24,14 +22,19 @@ export default {
     click: { type: String, default: "" },
   },
   setup(props) {
-    appInstance = getCurrentInstance().appContext.config.globalProperties;
     const route = useRoute();
     const isActive = computed(() => route.path === props.to);
     return { isActive };
   },
+  data() {
+    return {
+      buttonSound:
+        getCurrentInstance().appContext.config.globalProperties.$BUTTON_CLICK,
+    };
+  },
   methods: {
-    buttonClick() {
-      appInstance.$BUTTON_CLICK.play();
+    buttonClick(sound) {
+      sound.play();
     },
   },
 };

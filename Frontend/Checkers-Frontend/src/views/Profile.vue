@@ -31,10 +31,13 @@
 
     <div class="profile-info rounded-xl bordered mt-5 w-9/12">
       <div class="tabs tabs-boxed pl-5 justify-center">
-        <a id="dataInfo" class="tab tab-lg tab-active" @click="dataInfo"
+        <a
+          id="dataInfo"
+          class="tab tab-lg tab-active"
+          @click="dataInfo(buttonSound)"
           >User Info</a
         >
-        <a id="matchInfo" class="tab tab-lg" @click="matchInfo"
+        <a id="matchInfo" class="tab tab-lg" @click="matchInfo(buttonSound)"
           >Match History</a
         >
       </div>
@@ -59,16 +62,11 @@ import DataInfo from "../components/profileComponents/DataInfo.vue";
 import MatchInfo from "../components/profileComponents/MatchInfo.vue";
 import { getCurrentInstance } from "vue";
 
-var appInstance = null;
-
 export default {
   name: "UserProfile",
   components: {
     DataInfo,
     MatchInfo,
-  },
-  setup() {
-    appInstance = getCurrentInstance().appContext.config.globalProperties;
   },
   data() {
     return {
@@ -77,13 +75,15 @@ export default {
       username: "Username",
       tabName: "User Info",
       stars: "Stars",
+      buttonSound:
+        getCurrentInstance().appContext.config.globalProperties.$BUTTON_CLICK,
     };
   },
   methods: {
     // Show user info when data info tab is active
-    dataInfo() {
+    dataInfo(sound) {
       const elem = document.getElementById("dataInfo");
-      this.buttonClick();
+      this.buttonClick(sound);
       if (!elem.getAttribute("class").includes("tab-active")) {
         this.tabName = "User Info";
         elem.setAttribute("class", "tab tab-lg tab-active");
@@ -95,9 +95,9 @@ export default {
       }
     },
     // Show match history info when match info tab is active
-    matchInfo() {
+    matchInfo(sound) {
       const elem = document.getElementById("matchInfo");
-      this.buttonClick();
+      this.buttonClick(sound);
       if (!elem.getAttribute("class").includes("tab-active")) {
         this.tabName = "Match History";
         elem.setAttribute("class", "tab tab-lg tab-active");
@@ -106,8 +106,8 @@ export default {
           this.tabName;
       }
     },
-    buttonClick() {
-      appInstance.$BUTTON_CLICK.play();
+    buttonClick(sound) {
+      sound.play();
     },
   },
 };
