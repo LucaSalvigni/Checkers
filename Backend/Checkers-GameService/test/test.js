@@ -11,11 +11,12 @@ chai.use(chaiHttp);
 chai.should();
 
 // Get env variables
-const { NODE_ENV } = process.env;
-const { PORT } = process.env;
+//const { NODE_ENV } = process.env;
+//const { PORT } = process.env;
 
 async function createGame(game) {
-  const host = NODE_ENV === 'development' ? gameService : `localhost:${PORT}`;
+  //const host = NODE_ENV === 'development' ? gameService : `localhost:${PORT}`;
+  const host = gameService;
 
   return chai.request(host)
     .post('/game/lobbies/create_game')
