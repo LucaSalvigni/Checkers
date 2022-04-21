@@ -31,11 +31,6 @@ app.use(express.json());
 // Routes
 app.use('/', require('./routes/routes'));
 
-<<<<<<< HEAD
-const { PORT } = process.env;
-app.listen(PORT, () => {
-=======
 module.exports = app.listen(PORT, () => {
->>>>>>> feature-GHAdockerTesting
   console.log(`GameService started on port ${PORT}`);
 });
