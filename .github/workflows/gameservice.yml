@@ -27,3 +27,5 @@ jobs:
         run: |
           cd Backend/Checkers-GameService
           npm run gulp
+        env:
+          PORT: 3032

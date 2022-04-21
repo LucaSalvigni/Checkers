@@ -1,0 +1,15 @@
+FROM node:lts-alpine
+
+ARG SERVICENAME
+ARG SERVICEDIR
+ARG PORT
+ARG ARG_DB_PSW
+
+ENV DB_PSW=$ARG_DB_PSW
+
+RUN mkdir -p /app/$SERVICENAME
+WORKDIR /app/$SERVICENAME
+COPY /$SERVICEDIR .
+RUN npm install --unsafe-perm
+EXPOSE $PORT
+CMD npm run deploy
