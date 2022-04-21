@@ -7,6 +7,7 @@ import { mount } from '@vue/test-utils'
 import Profile from '../src/views/Profile.vue'
 import DataInfo from '../src/components/profileComponents/DataInfo.vue'
 import MatchInfo from '../src/components/profileComponents/MatchInfo.vue'
+import AudioPlayer from './utils/AudioPlayer'
 
 describe('Profile Mount Test', () => {
     it('should mount Profile', () => {
@@ -92,14 +93,18 @@ describe('DataInfo set Data Test', () => {
 
 
 describe('Profile trigger test', () => {
+    const wrapper = mount(Profile)
+    const mockAudio = new AudioPlayer('ciao.mp3')
     it('should trigger', async () => {
-        const wrapper = mount(Profile)
+        await wrapper.vm.buttonClick(mockAudio)
+
+        //await wrapper.vm.dataInfo(mockAudio)
 
         const spySound = vi.spyOn(wrapper.vm, 'buttonClick').mockImplementation(() => {})
         const spyData = vi.spyOn(wrapper.vm, 'dataInfo').mockImplementation(() => {})
         const spyMatch = vi.spyOn(wrapper.vm, 'matchInfo').mockImplementation(() => {})
 
-        await wrapper.vm.buttonClick()
+        await wrapper.vm.buttonClick(mockAudio)
         expect(spySound).toHaveBeenCalled()
         
         await wrapper.find('#dataInfo').trigger('click')

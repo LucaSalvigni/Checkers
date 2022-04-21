@@ -5,10 +5,15 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import ErrorView from '../src/views/ErrorView.vue'
+import AudioPlayer from './utils/AudioPlayer'
 
-const wrapper = mount(ErrorView)
-//const playToasty = vi.spyOn(window.HTMLMediaElement.prototype, 'play').mockImplementation( () => {})
-//expect(playToasty).toHaveBeenCalled()
+const wrapper = mount(ErrorView, {
+    data() {
+        return {
+            toasty: new AudioPlayer('ciao.mp3'),
+        }
+    },
+})
 
 describe('ErrorView mount test', ()=> {
     it('should mount', () => {
@@ -18,7 +23,6 @@ describe('ErrorView mount test', ()=> {
 
 describe('ErrorView contain test', ()=> {
     it('should coontain', () => {
-
         expect(wrapper.find('#notfound').exists()).toBeTruthy()
 
         expect(wrapper.find('.notfound').exists()).toBeTruthy()
@@ -34,7 +38,10 @@ describe('ErrorView contain test', ()=> {
 })
 
 describe('ErrorView trigger click test', ()=> {
+    const mockAudio = new AudioPlayer('ciao.mp3')
     it('should trigger', async ()=> {
+        await wrapper.vm.buttonClick(mockAudio)
+
         const spy = vi.spyOn(wrapper.vm, 'buttonClick').mockImplementation(() => {})
         await wrapper.find('router-link').trigger('click')
         expect(spy).toHaveBeenCalled()

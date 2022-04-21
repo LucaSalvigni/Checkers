@@ -7,6 +7,7 @@ import { mount } from '@vue/test-utils'
 import router from './utils/router/router.js'
 import Home from '../src/views/Home.vue'
 import Lobbies from '../src/views/Lobbies.vue'
+import AudioPlayer from './utils/AudioPlayer'
 
 const home = mount(Home, {
     global: {
@@ -36,42 +37,59 @@ describe('Home Contain Test', ()=> {
 })
 
 describe('Home Click Test', ()=> {
+    const mockAudio = new AudioPlayer('ciao.mp3')
     it('should trigger events', async ()=> {
         await home.vm.lobbyOpened(router)
         await router.isReady()
         expect(lobbies.exists()).toBeTruthy()
+        
+        await home.vm.buttonClick(mockAudio)
 
         const spy = vi.spyOn(home.vm, 'buttonClick').mockImplementation(() => {})
         const spyLobbies = vi.spyOn(home.vm, 'lobbyOpened').mockImplementation(() => {})
 
         await home.find('label.create-lobby').trigger('click')
         expect(spy).toHaveBeenCalled()
+        spy.mockClear()
 
         await home.find('label.cancel-create').trigger('click')
         expect(spy).toHaveBeenCalled()
+        spy.mockClear()
 
         await home.find('label.invite-player').trigger('click')
         expect(spy).toHaveBeenCalled()
+        spy.mockClear()
 
         await home.find('label.cancel-invite').trigger('click')
         expect(spy).toHaveBeenCalled()
+        spy.mockClear()
 
         await home.find('label.drop-create-lobby').trigger('click')
         expect(spy).toHaveBeenCalled()
+        spy.mockClear()
+
+        await home.find('div.drop-div').trigger('click')
+        expect(spy).toHaveBeenCalled()
+        spy.mockClear()
 
         await home.find('label.drop-cancel-create').trigger('click')
         expect(spy).toHaveBeenCalled()
+        spy.mockClear()
 
         await home.find('label.drop-invite-player').trigger('click')
         expect(spy).toHaveBeenCalled()
+        spy.mockClear()
 
         await home.find('label.drop-cancel-invite').trigger('click')
         expect(spy).toHaveBeenCalled()
+        spy.mockClear()
 
         await home.find('label.check-lobbies').trigger('click')
         expect(spyLobbies).toHaveBeenCalled()
+        spyLobbies.mockClear()
 
         await home.find('label.drop-check-lobbies').trigger('click')
         expect(spyLobbies).toHaveBeenCalled()
+        spyLobbies.mockClear()
     })
 })

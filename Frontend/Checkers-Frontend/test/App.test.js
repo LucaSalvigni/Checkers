@@ -8,6 +8,7 @@ import router from './utils/router/router.js'
 import App from '../src/App.vue'
 import SideBar from '../src/components/sideBarComponents/SideBar.vue'
 import SideBarLink from '../src/components/sideBarComponents/SideBarLink.vue'
+import AudioPlayer from './utils/AudioPlayer';
 
 
 describe('App Test', () => {
@@ -25,6 +26,7 @@ describe('App Test', () => {
 })
 
 describe('SidebarLink Test', () => {
+    const mockAudio = new AudioPlayer('ciao.mp3')
     it('should work', async () => {
         const wrapper = mount(SideBarLink, {
             props: {
@@ -36,6 +38,8 @@ describe('SidebarLink Test', () => {
         })
 
         await wrapper.setProps({ to: "/profile" })
+
+        await wrapper.vm.buttonClick(mockAudio)
 
         const spy = vi.spyOn(wrapper.vm, 'buttonClick').mockImplementation(() => {})
         await wrapper.find('router-link').trigger('click')
