@@ -93,12 +93,24 @@ describe('DataInfo set Data Test', () => {
 
 
 describe('Profile trigger test', () => {
-    const wrapper = mount(Profile)
     const mockAudio = new AudioPlayer('ciao.mp3')
+    const wrapper = mount(Profile, {
+        data() {
+            return {
+                buttonSound: mockAudio
+            }
+        },
+    })
     it('should trigger', async () => {
         await wrapper.vm.buttonClick(mockAudio)
 
-        //await wrapper.vm.dataInfo(mockAudio)
+        expect(wrapper.vm.tabName).toBe('User Info')
+        
+        await wrapper.vm.matchInfo()
+        expect(wrapper.vm.tabName).toBe('Match History')
+
+        await wrapper.vm.dataInfo()
+        expect(wrapper.vm.tabName).toBe('User Info')
 
         const spySound = vi.spyOn(wrapper.vm, 'buttonClick').mockImplementation(() => {})
         const spyData = vi.spyOn(wrapper.vm, 'dataInfo').mockImplementation(() => {})

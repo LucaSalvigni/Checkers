@@ -33,22 +33,37 @@
       <div class="tabs tabs-boxed pl-5 justify-center">
         <a
           id="dataInfo"
+          ref="dataInfo"
           class="tab tab-lg tab-active"
-          @click="dataInfo(buttonSound)"
+          @click="dataInfo()"
           >User Info</a
         >
-        <a id="matchInfo" class="tab tab-lg" @click="matchInfo(buttonSound)"
+        <a
+          id="matchInfo"
+          ref="matchInfo"
+          class="tab tab-lg"
+          @click="matchInfo()"
           >Match History</a
         >
       </div>
       <div id="content" class="card shadow-lg">
         <div id="tabDiv" class="card-body">
           <div v-if="tabName === 'User Info'">
-            <h2 class="card-title">{{ tabName }}</h2>
+            <h2
+              id="tabName"
+              :innerText="tabName"
+              refs="tabName"
+              class="card-title"
+            ></h2>
             <DataInfo class="info"></DataInfo>
           </div>
           <div v-else>
-            <h2 class="card-title">{{ tabName }}</h2>
+            <h2
+              id="tabName"
+              :innerText="tabName"
+              refs="tabName"
+              class="card-title"
+            ></h2>
             <MatchInfo class="info"></MatchInfo>
           </div>
         </div>
@@ -81,29 +96,21 @@ export default {
   },
   methods: {
     // Show user info when data info tab is active
-    dataInfo(sound) {
-      const elem = document.getElementById("dataInfo");
-      this.buttonClick(sound);
-      if (!elem.getAttribute("class").includes("tab-active")) {
+    dataInfo() {
+      this.buttonClick(this.buttonSound);
+      if (!this.$refs.dataInfo.getAttribute("class").includes("tab-active")) {
         this.tabName = "User Info";
-        elem.setAttribute("class", "tab tab-lg tab-active");
-        document
-          .getElementById("matchInfo")
-          .setAttribute("class", "tab tab-lg");
-        document.getElementsByClassName("card-title")[1].innerHTML =
-          this.tabName;
+        this.$refs.dataInfo.setAttribute("class", "tab tab-lg tab-active");
+        this.$refs.matchInfo.setAttribute("class", "tab tab-lg");
       }
     },
     // Show match history info when match info tab is active
-    matchInfo(sound) {
-      const elem = document.getElementById("matchInfo");
-      this.buttonClick(sound);
-      if (!elem.getAttribute("class").includes("tab-active")) {
+    matchInfo() {
+      this.buttonClick(this.buttonSound);
+      if (!this.$refs.matchInfo.getAttribute("class").includes("tab-active")) {
         this.tabName = "Match History";
-        elem.setAttribute("class", "tab tab-lg tab-active");
-        document.getElementById("dataInfo").setAttribute("class", "tab tab-lg");
-        document.getElementsByClassName("card-title")[1].innerHTML =
-          this.tabName;
+        this.$refs.matchInfo.setAttribute("class", "tab tab-lg tab-active");
+        this.$refs.dataInfo.setAttribute("class", "tab tab-lg");
       }
     },
     buttonClick(sound) {
