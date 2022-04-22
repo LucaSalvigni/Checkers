@@ -10,10 +10,8 @@ const opponent = 'opponent@gmail.com';
 chai.use(chaiHttp);
 chai.should();
 
-const chaiAppServer = chai.request(gameService.app).keepOpen();
-
 async function createGame(game) {
-  return chaiAppServer
+  return chai.request(gameService.app)
     .post('/game/lobbies/create_game')
     .send({ gameId: game.gameId, host_id: game.host_id, opponent: game.opponent_id });
 }
@@ -31,9 +29,5 @@ describe('Game', async () => {
       const game = await createGame(newGame);
       game.should.have.status(200);
     });
-  });
-
-  after(() => {
-    chaiAppServer.close();
   });
 });
