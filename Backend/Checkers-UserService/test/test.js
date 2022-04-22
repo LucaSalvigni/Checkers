@@ -48,13 +48,13 @@ async function updateUserProfile(mail, user) {
   return updateProfileRes;
 }
 
-describe('Users', async () => {
+describe('Users', () => {
   beforeEach(async () => {
     await User.deleteMany({ mail: 'userok@testusers.com' });
   });
 
   // TESTING POST REQUESTS
-  describe('POST users', async () => {
+  describe('POST users', () => {
     it('should register a new user', async () => {
       const newUser = await registerUser(neOKUser());
       newUser.should.have.status(200);
@@ -76,7 +76,7 @@ describe('Users', async () => {
     });
   });
   // TESTING PUT REQUESTS
-  describe('Testing PUT users', async () => {
+  describe('Testing PUT users', () => {
     it('should update profile', async () => {
       const newUser = neOKUser();
       await registerUser(newUser);
