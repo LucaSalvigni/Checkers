@@ -29,3 +29,4 @@ jobs:
           npm run gulp
         env:
           PORT: 3031
+          DB_PSW: ${{secrets.DB_PSW}}
