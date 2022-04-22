@@ -7,7 +7,7 @@
     "coverage": "nyc npm run test",
     "gulp": "gulp",
     "lint": "npx eslint ./**/*.js --fix",
-    "test": "mocha --exit"
+    "test": "mocha  --timeout 10000 --exit"
   },
   "author": "",
   "license": "ISC",
