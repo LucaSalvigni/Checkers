@@ -27,3 +27,5 @@ jobs:
         run: |
           cd Backend/Checkers-UserService
           npm run gulp
+        env:
+          PORT: 3031
