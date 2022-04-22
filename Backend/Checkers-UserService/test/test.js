@@ -8,6 +8,7 @@ const User = require('../models/userModel');
 chai.use(chaiHttp);
 chai.should();
 
+// Just a comment
 function neOKUser() {
   return {
     first_name: 'Tests',
