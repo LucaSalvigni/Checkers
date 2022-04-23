@@ -8,24 +8,13 @@ const User = require('../models/userModel');
 chai.use(chaiHttp);
 chai.should();
 
-// Just a comment
-function neOKUser() {
+function createUser(mail, username, password) {
   return {
     first_name: 'Tests',
     last_name: 'User',
-    mail: 'userok@testusers.com',
-    username: 'filippo23',
-    password: '1231AAcc*',
-  };
-}
-
-function newWrongUser() {
-  return {
-    first_name: 'Tests',
-    last_name: 'User',
-    mail: 'manuele.pasini@gmail',
-    username: 'filippo23',
-    password: '12',
+    mail,
+    username,
+    password,
   };
 }
 
@@ -42,6 +31,7 @@ async function loginUser(user) {
     .send({ mail: user.mail, password: user.password });
   return loginRes;
 }
+
 async function updateUserProfile(mail, user) {
   const updateProfileRes = await chai.request(userService)
     .put('/profile/updateProfile')
@@ -49,39 +39,64 @@ async function updateUserProfile(mail, user) {
   return updateProfileRes;
 }
 
-describe('Users', () => {
+describe('User tests', () => {
   beforeEach(async () => {
     await User.deleteMany({ mail: 'userok@testusers.com' });
   });
-
-  // TESTING POST REQUESTS
-  describe('POST users', () => {
+  describe('Sign Up Test', () => {
     it('should register a new user', async () => {
-      const newUser = await registerUser(neOKUser());
+      const newUser = await registerUser(createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
       newUser.should.have.status(200);
     });
-    it('should FAIL to register a new user', async () => {
-      const newUser = await registerUser(newWrongUser());
+
+    it('should get wrong mail to register', async () => {
+      const newUser = await registerUser(createUser('manuele.pasini@gmail', 'filippo23', '12'));
       newUser.should.have.status(400);
     });
-    it('should login a user', async () => {
-      const user = neOKUser();
-      const registeredUser = await registerUser(user);
-      const loggedUser = await loginUser({ mail: user.mail, password: user.password });
-      registeredUser.should.have.status(200);
-      loggedUser.should.have.status(200);
+
+    it('should get wrong username to register', async () => {
+      const newUser = await registerUser(createUser('ciao@ciao.com', 'c', '1231AAcc*'));
+      newUser.should.have.status(400);
     });
-    it('should FAIL to login a user', async () => {
-      const loggedUser = await loginUser({ mail: 'ciao@ciao.ciao', password: 'filippo23' });
-      loggedUser.should.have.status(400);
+
+    it('should get wrong password to register', async () => {
+      const newUser = await registerUser(createUser('manuele.pasini@gmail.com', 'filippo23', '12'));
+      newUser.should.have.status(400);
+    });
+
+    it('should user already exist', async () => {
+      const newUser = await registerUser(createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
+      newUser.should.have.status(200);
+      const newUserFail = await registerUser(createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
+      newUserFail.should.have.status(400);
     });
   });
-  // TESTING PUT REQUESTS
-  describe('Testing PUT users', () => {
+
+  describe('Login Test', () => {
+    it('should login', async () => {
+      const newUser = await registerUser(createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
+      newUser.should.have.status(200);
+      const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
+      loggedUser.should.have.status(200);
+    });
+    it('should fail login', async () => {
+      const newUser = await registerUser(createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
+      newUser.should.have.status(200);
+      const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: 'ciao' });
+      loggedUser.should.have.status(400);
+      const loggedRandomUser = await loginUser({ mail: 'ciao@ciao.ciao', password: 'filippo23' });
+      loggedRandomUser.should.have.status(400);
+      const loggedUserFailMail = await loginUser({ mail: '', password: 'filippo23' });
+      loggedUserFailMail.should.have.status(400);
+      const loggedUserFailPsw = await loginUser({ mail: 'userok@testusers.com', password: '' });
+      loggedUserFailPsw.should.have.status(400);
+    });
+  });
+
+  describe('Update profile Test', () => {
     it('should update profile', async () => {
-      const newUser = neOKUser();
+      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
       await registerUser(newUser);
-      console.log(`HELLO THERE${newUser.mail}`);
       const newValues = {
         first_name: 'Riccardo',
         last_name: 'Fogli',
@@ -91,9 +106,8 @@ describe('Users', () => {
       updatedUser.should.have.status(200);
     });
     it('should FAIL to  update profile', async () => {
-      const newUser = neOKUser();
+      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
       await registerUser(newUser);
-      console.log(`HELLO THERE${newUser.mail}`);
       const newValues = {
         first_name: 'Riccardo',
         last_name: 'Fogli',
