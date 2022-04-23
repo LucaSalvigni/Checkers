@@ -43,7 +43,7 @@ async function gameEnd(gameId, tie, winner, loser) {
   const game = games.get(gameId);
   try {
     if (!tie) {
-      log(`game ${gameId}didn't end in tie`);
+      log(`game ${gameId} didn't end in tie`);
       const match = new Game({
         fen: game.draughts.fen(),
         winner,
@@ -81,7 +81,7 @@ exports.tieGame = function (req, res) {
  */
 exports.leaveGame = async function (req, res) {
   const { gameId } = req.body;
-  const quitter = req.body.player_id;
+  const quitter = req.body.playerId;
   try {
     if (games.has(gameId)) {
       log(`${quitter} is leaving game ${gameId}`);
