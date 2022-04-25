@@ -30,7 +30,7 @@ describe('Game', async () => {
   // Clear the DB
   after(async () => {
     if (typeof testGame !== 'undefined') {
-      console.log(`Deleting game ${testGame._id}`)
+      console.log(`Deleting game ${testGame._id}`);
       await gameModel.findByIdAndDelete(testGame._id);
     }
   });
@@ -46,7 +46,7 @@ describe('Game', async () => {
       testGame = newGame.body.game;
     });
   });
-  
+
   describe('DELETE Game', async () => {
     it('should fail to terminate a game', async () => {
       const gameToQuit = {

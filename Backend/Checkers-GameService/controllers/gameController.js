@@ -83,10 +83,10 @@ exports.leaveGame = async function (req, res) {
     const game = await Game.findById(gameId);
     if (game) {
       log(`${quitter} is leaving game ${gameId}`);
-      if (game.white == quitter) {
+      if (game.white.equals(quitter)) {
         log(`${quitter} is the host of game ${gameId}`);
         await gameEnd(gameId, false, game.black, game.white);
-      } else if (game.black == quitter) {
+      } else if (game.black.equals(quitter)) {
         log(`${quitter} is not the host of game ${gameId}`);
         await gameEnd(gameId, false, game.white, game.black);
       } else {
