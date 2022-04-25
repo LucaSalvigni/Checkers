@@ -23,9 +23,17 @@ jobs:
         run: |
           cd Backend/Checkers-GameService
           npm ci
+      - name: Debugging info
+        run: |
+          cd Backend/Checkers-GameService
+          npm run test
+        env:
+          PORT: 3032
+          DB_PSW: ${{secrets.DB_PSW}}
       - name: Test and build
         run: |
           cd Backend/Checkers-GameService
           npm run gulp
         env:
           PORT: 3032
+          DB_PSW: ${{secrets.DB_PSW}}

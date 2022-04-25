@@ -7,7 +7,7 @@
     "coverage": "nyc npm run test",
     "gulp": "gulp",
     "lint": "npx eslint ./**/*.js --fix",
-    "test": "mocha --exit"
+    "test": "mocha --timeout 10000 --exit"
   },
   "author": "",
   "license": "ISC",
@@ -32,5 +32,8 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "mongoose": "^6.3.1"
+  },
+  "nyc": {
+    "exclude": "**/draughts.js" 
   }
 }
