@@ -80,7 +80,7 @@ describe('User tests', () => {
   describe('Sign Up Test', () => {
     it('should register a new user', async () => {
       const newUser = await registerUser(createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
-      if(newUser.status !== 200) {
+      if (newUser.status !== 200) {
         newUser.should.have.status(500);
       } else {
         newUser.should.have.status(200);
@@ -138,7 +138,7 @@ describe('User tests', () => {
       const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
       const { token } = loggedUser.body;
       const refreshUserToken = await refreshTokenUser('userok@testusers.com', token);
-      if(refreshUserToken.status === 200) {
+      if (refreshUserToken.status === 200) {
         refreshUserToken.should.have.status(200);
       } else {
         refreshUserToken.should.have.status(500);
@@ -182,7 +182,7 @@ describe('User tests', () => {
   describe('Get profile Test', () => {
     it('should get profile', async () => {
       const profile = await getProfile('ciao@ciao.com');
-      if(profile.status === 200) {
+      if (profile.status === 200) {
         profile.should.have.status(200);
       } else {
         profile.should.have.status(500);
@@ -197,7 +197,7 @@ describe('User tests', () => {
   describe('Get history Test', () => {
     it('should get history', async () => {
       const history = await getHistory('ciao@ciao.com');
-      if(history.status === 200) {
+      if (history.status === 200) {
         history.should.have.status(200);
       } else {
         history.should.have.status(500);
@@ -212,7 +212,7 @@ describe('User tests', () => {
   describe('Get leaderboard Test', () => {
     it('should get leaderboard', async () => {
       const leaderboard = await getLeaderboard();
-      if(leaderboard.status === 200) {
+      if (leaderboard.status === 200) {
         leaderboard.should.have.status(200);
       } else {
         leaderboard.should.have.status(500);

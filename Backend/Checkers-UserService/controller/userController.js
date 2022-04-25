@@ -31,9 +31,7 @@ const jsecretPath = './jwt_secret';
  * @param {*} msg to log
  */
 function log(msg) {
-  if (process.env.DEBUG) {
-    console.log(msg);
-  }
+  console.log(msg);
 }
 
 /**
@@ -263,7 +261,7 @@ exports.getProfile = async function (req, res) {
 exports.getHistory = async function (req, res) {
   try {
     const { mail } = req.body.params;
-    const user = await User.find({ mail: mail }, 'wins losses');
+    const user = await User.find({ mail }, 'wins losses');
     const data = [];
     log(`Getting history for user ${mail}`);
     if (user.length === 0) {
