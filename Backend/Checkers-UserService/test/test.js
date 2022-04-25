@@ -39,6 +39,40 @@ async function updateUserProfile(mail, user) {
   return updateProfileRes;
 }
 
+async function refreshTokenUser(mail, token) {
+  const refreshTokenRes = await chai.request(userService)
+    .get('/refresh_token')
+    .send({ params: { mail, token } });
+  return refreshTokenRes;
+}
+
+async function verifyTokenUser(token) {
+  const refreshTokenRes = await chai.request(userService)
+    .get('/authenticate')
+    .send({ headers: { authorization: `Bearer ${token}` } });
+  return refreshTokenRes;
+}
+
+async function getLeaderboard() {
+  const leaderboard = await chai.request(userService)
+    .get('/getLeaderboard');
+  return leaderboard;
+}
+
+async function getProfile(mail) {
+  const profile = await chai.request(userService)
+    .get('/profile/getProfile')
+    .send({ params: { mail } });
+  return profile;
+}
+
+async function getHistory(mail) {
+  const history = await chai.request(userService)
+    .get('/profile/getHistory')
+    .send({ params: { mail } });
+  return history;
+}
+
 describe('User tests', () => {
   beforeEach(async () => {
     await User.deleteMany({ mail: 'userok@testusers.com' });
@@ -94,28 +128,115 @@ describe('User tests', () => {
   });
 
   describe('Update profile Test', () => {
+    const newValues = {
+      first_name: 'Riccardo',
+      last_name: 'Fogli',
+      mail: 'userok@testusers.com',
+    };
+    const newWrongValues = {
+      first_name: 'Riccardo',
+      last_name: 'Fogli',
+      mail: 'new_mail@gmail.com',
+    };
     it('should update profile', async () => {
       const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
       await registerUser(newUser);
-      const newValues = {
-        first_name: 'Riccardo',
-        last_name: 'Fogli',
-        mail: newUser.mail,
-      };
       const updatedUser = await updateUserProfile(newUser.mail, newValues);
       updatedUser.should.have.status(200);
     });
-    it('should FAIL to  update profile', async () => {
+    it('should not update profile mail', async () => {
       const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
       await registerUser(newUser);
-      const newValues = {
-        first_name: 'Riccardo',
-        last_name: 'Fogli',
-        mail: 'new_mail@gmail.com',
-      };
-      const updatedUser = await updateUserProfile(newUser.mail, newValues);
-      // can't update mail
+      const updatedUser = await updateUserProfile(newUser.mail, newWrongValues);
       updatedUser.should.have.status(400);
+    });
+    it('should not update unexisting profile', async () => {
+      const updatedUser = await updateUserProfile('new_mail@gmail.com', newWrongValues);
+      updatedUser.should.have.status(400);
+    });
+  });
+
+  describe('Refresh token Test', () => {
+    it('should refresh token', async () => {
+      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+      await registerUser(newUser);
+      const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
+      const { token } = loggedUser.body;
+      const refreshUserToken = await refreshTokenUser('userok@testusers.com', token);
+      refreshUserToken.should.have.status(200);
+    });
+
+    it('should fail refresh token with not registred mail', async () => {
+      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+      await registerUser(newUser);
+      const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
+      const { token } = loggedUser.body;
+      const refreshUserToken = await refreshTokenUser('lu@lu.com', token);
+      refreshUserToken.should.have.status(400);
+    });
+
+    it('should fail refresh token with wrong mail', async () => {
+      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+      await registerUser(newUser);
+      const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
+      const { token } = loggedUser.body;
+      const refreshUserToken = await refreshTokenUser('ciao@ciao.com', token);
+      refreshUserToken.should.have.status(400);
+    });
+  });
+
+  describe('Verify token Test', () => {
+    it('should correct token', async () => {
+      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+      await registerUser(newUser);
+      const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
+      const { token } = loggedUser.body;
+      const verifiedToken = await verifyTokenUser(token);
+      verifiedToken.should.have.status(200);
+    });
+    it('should undefined token', async () => {
+      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+      await registerUser(newUser);
+      const notVerifiedToken = await verifyTokenUser(undefined);
+      notVerifiedToken.should.have.status(400);
+    });
+  });
+
+  describe('Get leaderboard Test', () => {
+    it('should get leaderboard', async () => {
+      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+      await registerUser(newUser);
+      await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
+      const leaderboard = await getLeaderboard();
+      leaderboard.should.have.status(200);
+    });
+  });
+
+  describe('Get profile Test', () => {
+    it('should get profile', async () => {
+      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+      await registerUser(newUser);
+      const profile = await getProfile('userok@testusers.com');
+      profile.should.have.status(200);
+    });
+    it('should not get profile', async () => {
+      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+      await registerUser(newUser);
+      const profile = await getProfile('c@c.com');
+      profile.should.have.status(400);
+    });
+  });
+
+  describe('Get history Test', () => {
+    it('should get history', async () => {
+      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+      await registerUser(newUser);
+      const history = await getHistory('userok@testusers.com');
+      history.should.have.status(200);
+    });
+    it('should not get history', async () => {
+      const profile = await getProfile('c@c.com');
+      profile.should.have.status(400);
     });
   });
 });

@@ -144,7 +144,7 @@ exports.login = async function (req, res) {
       if (allegedPassword === registeredUser.password) {
         log(`${email} just logged in successfully`);
         // Will those two lines work?
-        const token = await jwt.sign({ user: { email: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
+        const token = jwt.sign({ user: { email: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
         res.status(200).json({
           token,
           message: `Authentication successfull, welcome back ${registeredUser.username}!`,
@@ -174,14 +174,14 @@ exports.login = async function (req, res) {
  * Tries to get a new token for a user
  */
 exports.refresh_token = async function (req, res) {
-  const { mail } = req.query;
-  const { token } = req.query;
-  const tokenMail = JSON.parse(Buffer.from(token.split('.')[1], 'base64')).user.email;
-  if (mail === tokenMail) {
-    const registeredUser = await User.findOne({ mail }, 'username first_name last_name mail stars nationality wins losses avatar');
-    if (registeredUser) {
+  const { mail } = req.body.params;
+  const { token } = req.body.params;
+  const registeredUser = await User.findOne({ mail }, 'username first_name last_name mail stars nationality wins losses avatar');
+  if (registeredUser) {
+    const tokenMail = JSON.parse(Buffer.from(token.split('.')[1], 'base64')).user.email;
+    if (mail === tokenMail) {
       // Check this await
-      const checkToken = await jwt.sign({ user: { email: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
+      const checkToken = jwt.sign({ user: { email: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
       if (checkToken) {
         res.status(200).json({
           checkToken,
@@ -200,10 +200,10 @@ exports.refresh_token = async function (req, res) {
         res.status(500).send({ message: 'Error while refreshing token' });
       }
     } else {
-      res.status(400).send({ message: 'No such user' });
+      res.status(400).send({ message: 'Wrong mail' });
     }
   } else {
-    res.status(400).send({ message: 'Wrong mail' });
+    res.status(400).send({ message: 'No such user' });
   }
 };
 
@@ -213,21 +213,22 @@ exports.refresh_token = async function (req, res) {
  * @param {*} res
  */
 exports.verify_token = async function (req, res) {
-  const bHeader = req.headers.authorization;
+  const { authorization } = req.body.headers;
   try {
-    if (typeof bHeader !== 'undefined') {
-      const bearer = bHeader.split(' ');
+    if (typeof authorization !== 'undefined') {
+      const bearer = authorization.split(' ');
       const bToken = bearer[1];
       req.token = bToken;
-      const token = await jwt.verify(req.token, jwtSecret);
+      console.log('ciao');
+      const token = jwt.verify(req.token, jwtSecret);
       log(`veryfing token for ${token.user.email}`);
       if (token) {
         log(`token ok for user ${token.user.email}`);
         res.status(200).json({ token, user: token.user });
-      } else {
+      } /* else {
         log(`token error for user ${token.user.email}`);
         res.status(400).send({ message: 'Token verification error, please log-in again.' });
-      }
+      } */
     }
   } catch (err) {
     log('Someone is trying to do some nasty illegal things');
@@ -237,7 +238,7 @@ exports.verify_token = async function (req, res) {
 
 exports.getProfile = async function (req, res) {
   // WILL THIS QUERY WORK?
-  const { mail } = req.query;
+  const { mail } = req.body.params;
   log(`Getting ${mail} profile`);
   try {
     const data = await User.findOne({ mail }, 'username avatar first_name last_name stars mail').lean();
@@ -278,6 +279,26 @@ exports.getHistory = async function (req, res) {
   }
 };
 
+// WILL THIS WORK?
+exports.getLeaderboard = async function (__, res) {
+  try {
+    const users = await User.find({}, 'username avatar stars wins losses ties').sort({ stars: 'desc' });
+    if (users != null) {
+      users.map((user) => {
+        user.avatar = user.avatar === '' ? 'https://picsum.photos/id/1005/400/250' : user.avatar;
+        return users;
+      });
+      log('Retrieving and sending leaderboard');
+      res.status(200).json(users);
+    } /* else {
+      res.status(200).send({ message: 'There is no one in the leaderboard.' });
+    } */
+  } catch (err) {
+    log(`Something went wrong while retrieving leaderboard\n${err}`);
+    res.status(500).send({ message: 'Something went wrong.' });
+  }
+};
+
 exports.updateProfile = async function (req, res) {
   const userMail = req.body.mail;
   const { mail } = req.body.params;
@@ -311,24 +332,5 @@ exports.updateProfile = async function (req, res) {
     }
   } else {
     res.status(400).json({ message: "You can't change the email associated to an account." });
-  }
-};
-// WILL THIS WORK?
-exports.getLeaderboard = async function (__, res) {
-  try {
-    const users = await User.find({}, 'username avatar stars wins losses ties').sort({ stars: 'desc' });
-    if (users != null) {
-      users.map((user) => {
-        user.avatar = user.avatar === '' ? 'https://picsum.photos/id/1005/400/250' : user.avatar;
-        return users;
-      });
-      log('Retrieving and sending leaderboard');
-      res.status(200).json(users);
-    } else {
-      res.status(200).send({ message: 'There is no one in the leaderboard.' });
-    }
-  } catch (err) {
-    log(`Something went wrong while retrieving leaderboard\n${err}`);
-    res.status(500).send({ message: 'Something went wrong.' });
   }
 };
