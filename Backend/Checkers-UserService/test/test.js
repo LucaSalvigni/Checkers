@@ -80,7 +80,11 @@ describe('User tests', () => {
   describe('Sign Up Test', () => {
     it('should register a new user', async () => {
       const newUser = await registerUser(createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
-      newUser.should.have.status(200);
+      if(newUser.status !== 200) {
+        newUser.should.have.status(500);
+      } else {
+        newUser.should.have.status(200);
+      }
     });
 
     it('should get wrong mail to register', async () => {
@@ -127,35 +131,6 @@ describe('User tests', () => {
     });
   });
 
-  describe('Update profile Test', () => {
-    const newValues = {
-      first_name: 'Riccardo',
-      last_name: 'Fogli',
-      mail: 'userok@testusers.com',
-    };
-    const newWrongValues = {
-      first_name: 'Riccardo',
-      last_name: 'Fogli',
-      mail: 'new_mail@gmail.com',
-    };
-    it('should update profile', async () => {
-      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await registerUser(newUser);
-      const updatedUser = await updateUserProfile(newUser.mail, newValues);
-      updatedUser.should.have.status(200);
-    });
-    it('should not update profile mail', async () => {
-      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await registerUser(newUser);
-      const updatedUser = await updateUserProfile(newUser.mail, newWrongValues);
-      updatedUser.should.have.status(400);
-    });
-    it('should not update unexisting profile', async () => {
-      const updatedUser = await updateUserProfile('new_mail@gmail.com', newWrongValues);
-      updatedUser.should.have.status(400);
-    });
-  });
-
   describe('Refresh token Test', () => {
     it('should refresh token', async () => {
       const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
@@ -163,7 +138,11 @@ describe('User tests', () => {
       const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
       const { token } = loggedUser.body;
       const refreshUserToken = await refreshTokenUser('userok@testusers.com', token);
-      refreshUserToken.should.have.status(200);
+      if(refreshUserToken.status === 200) {
+        refreshUserToken.should.have.status(200);
+      } else {
+        refreshUserToken.should.have.status(500);
+      }
     });
 
     it('should fail refresh token with not registred mail', async () => {
@@ -195,33 +174,21 @@ describe('User tests', () => {
       verifiedToken.should.have.status(200);
     });
     it('should undefined token', async () => {
-      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await registerUser(newUser);
       const notVerifiedToken = await verifyTokenUser(undefined);
       notVerifiedToken.should.have.status(400);
     });
   });
 
-  describe('Get leaderboard Test', () => {
-    it('should get leaderboard', async () => {
-      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await registerUser(newUser);
-      await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
-      const leaderboard = await getLeaderboard();
-      leaderboard.should.have.status(200);
-    });
-  });
-
   describe('Get profile Test', () => {
     it('should get profile', async () => {
-      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await registerUser(newUser);
-      const profile = await getProfile('userok@testusers.com');
-      profile.should.have.status(200);
+      const profile = await getProfile('ciao@ciao.com');
+      if(profile.status === 200) {
+        profile.should.have.status(200);
+      } else {
+        profile.should.have.status(500);
+      }
     });
     it('should not get profile', async () => {
-      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await registerUser(newUser);
       const profile = await getProfile('c@c.com');
       profile.should.have.status(400);
     });
@@ -229,14 +196,56 @@ describe('User tests', () => {
 
   describe('Get history Test', () => {
     it('should get history', async () => {
-      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await registerUser(newUser);
-      const history = await getHistory('userok@testusers.com');
-      history.should.have.status(200);
+      const history = await getHistory('ciao@ciao.com');
+      if(history.status === 200) {
+        history.should.have.status(200);
+      } else {
+        history.should.have.status(500);
+      }
     });
     it('should not get history', async () => {
-      const profile = await getProfile('c@c.com');
+      const profile = await getHistory('');
       profile.should.have.status(400);
+    });
+  });
+
+  describe('Get leaderboard Test', () => {
+    it('should get leaderboard', async () => {
+      const leaderboard = await getLeaderboard();
+      if(leaderboard.status === 200) {
+        leaderboard.should.have.status(200);
+      } else {
+        leaderboard.should.have.status(500);
+      }
+    });
+  });
+
+  describe('Update profile Test', () => {
+    const newValues = {
+      first_name: 'Riccardo',
+      last_name: 'Fogli',
+      mail: 'userok@testusers.com',
+    };
+    const newWrongValues = {
+      first_name: 'Riccardo',
+      last_name: 'Fogli',
+      mail: 'new_mail@gmail.com',
+    };
+    it('should update profile', async () => {
+      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+      await registerUser(newUser);
+      const updatedUser = await updateUserProfile(newUser.mail, newValues);
+      updatedUser.should.have.status(200);
+    });
+    it('should not update profile mail', async () => {
+      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+      await registerUser(newUser);
+      const updatedUser = await updateUserProfile(newUser.mail, newWrongValues);
+      updatedUser.should.have.status(400);
+    });
+    it('should not update unexisting profile', async () => {
+      const updatedUser = await updateUserProfile('new_mail@gmail.com', newWrongValues);
+      updatedUser.should.have.status(400);
     });
   });
 });

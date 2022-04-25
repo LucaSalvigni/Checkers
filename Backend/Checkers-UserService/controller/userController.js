@@ -262,18 +262,19 @@ exports.getProfile = async function (req, res) {
 };
 exports.getHistory = async function (req, res) {
   try {
-    const userMail = req.query.mail;
-    const user = await User.find({ mail: userMail }, 'wins losses');
+    const { mail } = req.body.params;
+    const user = await User.find({ mail: mail }, 'wins losses');
     const data = [];
-    log(`Getting history for user ${userMail}`);
-    if (user === null) {
-      log(`lol there's no such user as ${userMail}`);
+    log(`Getting history for user ${mail}`);
+    if (user.length === 0) {
+      log(`lol there's no such user as ${mail}`);
       res.status(400).json({ error: 'Cannot find any player with such ID' });
+    } else {
+      log(`Successfully got history for ${mail}`);
+      data.push(user.wins);
+      data.push(user.losses);
+      res.status(200).json(data);
     }
-    log(`Successfully got history for ${userMail}`);
-    data.push(user.wins);
-    data.push(user.losses);
-    res.status(200).json(data);
   } catch {
     res.status(500).json({ error: 'Error while retrieving player profile from DB' });
   }
