@@ -12,6 +12,7 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   rules: {
+    'no-underscore-dangle': ['error', { allow: ['_id'] }],
   },
   globals: {
     _: 'readonly',

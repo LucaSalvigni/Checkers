@@ -2,27 +2,26 @@ const Draughts = require('./draughts');
 const { log } = require('../../Utils/utils');
 const Game = require('../models/gameModel');
 
-const games = new Map();
 const winStars = 100;
 const lossStars = -70;
 
-exports.create_game = function (req, res) {
+exports.create_game = async function (req, res) {
   try {
-    const { gameId } = req.body;
     const { hostId } = req.body;
     const { opponent } = req.body;
-    const game = {};
-    game.white = hostId;
-    game.black = opponent;
-    game.draughts = new Draughts();
-    game.finished = false;
-    game.fen = game.draughts.fen();
-    game.winner = '';
-    game.loser = '';
-    game.turn = game.white;
-    games.set(gameId, game);
-    log(`Just created game ${gameId}`);
+
+    let newGame = new Game({
+      white: hostId,
+      black: opponent,
+      finished: false,
+      fen: new Draughts().fen(),
+      turn: hostId,
+    });
+
+    newGame = await newGame.save();
+    log(`Just created game ${newGame._id}`);
     res.status(200).json({
+      game: newGame,
     });
   } catch (err) {
     log(err);
@@ -38,29 +37,27 @@ exports.create_game = function (req, res) {
  * @param {*} loser player who lost (same as winner if "tie" param is set to TRUE)
  * @returns true if game was terminated correctly and successfully saved into DB, false otherwise.
  */
-async function gameEnd(gameId, tie, winner, loser) {
-  log(`game ${gameId} just ended, ${winner} won and ${loser} lost`);
-  const game = games.get(gameId);
+async function gameEnd(gameId, tie, winner) {
+  log(`game ${gameId} just ended`);
   try {
-    if (!tie) {
-      log(`game ${gameId} didn't end in tie`);
-      const match = new Game({
-        fen: game.draughts.fen(),
-        winner,
-        loser,
-      });
-      await match.save();
-      games.delete(gameId);
-    } else {
-      const match = new Game({
-        fen: game.draughts.fen(),
-        winner: 'Game has been settled with a tie.',
-        loser: 'Game has been settled with a tie.',
-      });
-      await match.save();
-      games.delete(gameId);
+    const game = await Game.findById(gameId);
+    if (game) {
+      if (!tie) {
+        log(`game ${gameId} didn't end in tie`);
+        await Game.findByIdAndUpdate(gameId, {
+          finished: true,
+          winner,
+        });
+      } else {
+        log(`game ${gameId} ended in a tie`);
+        await Game.findByIdAndUpdate(gameId, {
+          finished: true,
+        });
+      }
+      log('Game not found');
+      return true;
     }
-    return true;
+    return false;
   } catch (err) {
     log(`Something went wrong while closing game ${gameId}`);
     log(err);
@@ -83,17 +80,17 @@ exports.leaveGame = async function (req, res) {
   const { gameId } = req.body;
   const quitter = req.body.playerId;
   try {
-    if (games.has(gameId)) {
+    const game = await Game.findById(gameId);
+    if (game) {
       log(`${quitter} is leaving game ${gameId}`);
-      const game = games.get(gameId);
-      if (game.white === quitter) {
+      if (game.white == quitter) {
         log(`${quitter} is the host of game ${gameId}`);
         await gameEnd(gameId, false, game.black, game.white);
-      } else if (game.black === quitter) {
+      } else if (game.black == quitter) {
         log(`${quitter} is not the host of game ${gameId}`);
         await gameEnd(gameId, false, game.white, game.black);
       } else {
-        log(`Wat apparently ${quitter} has nothing to do with this game`);
+        log(`WAT, apparently ${quitter} has nothing to do with this game`);
         res.status(400).send({ message: `${quitter} is not in any game` });
         return;
       }
