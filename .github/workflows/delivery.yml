@@ -42,8 +42,8 @@ jobs:
         
       - name: Debug
         run: |
-          echo "${{ steps.gitversion.outputs.fullSemVer }}"
-          echo ${{ steps.gitversion.outputs.fullSemVer }}
+          echo "${{ steps.getVersion.outputs.fullSemVer }}"
+          echo ${{ steps.getVersion.outputs.fullSemVer }}
 
       - name: Build container image
         run: |
