@@ -35,6 +35,7 @@ jobs:
 
   build_and_push:
     runs-on: ubuntu-latest
+    needs: getVersion
     steps:
       - name: Checkout the repo 
         uses: actions/checkout@v2
