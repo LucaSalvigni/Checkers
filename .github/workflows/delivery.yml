@@ -41,7 +41,10 @@ jobs:
         uses: actions/checkout@v2
         
       - name: Build container image
-        run: docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo steps.gitversion.outputs.FullSemVer) .
+        run: |
+          docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo steps.gitversion.outputs.FullSemVer) ./Backend \
+          --build-arg SERVICENAME=GameService --build-arg SERVICEDIR=Checkers-GameService --build-arg ARG_PORT=3032 \
+          --build-arg ARG_DB_PSW=${{ secrets.DB_PSW }} --build-arg NODE_ENV=production
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
