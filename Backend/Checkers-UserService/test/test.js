@@ -80,11 +80,7 @@ describe('User tests', () => {
   describe('Sign Up Test', () => {
     it('should register a new user', async () => {
       const newUser = await registerUser(createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
-      if (newUser.status !== 200) {
-        newUser.should.have.status(500);
-      } else {
-        newUser.should.have.status(200);
-      }
+      newUser.should.have.status(200);
     });
 
     it('should get wrong mail to register', async () => {
@@ -138,11 +134,7 @@ describe('User tests', () => {
       const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
       const { token } = loggedUser.body;
       const refreshUserToken = await refreshTokenUser('userok@testusers.com', token);
-      if (refreshUserToken.status === 200) {
-        refreshUserToken.should.have.status(200);
-      } else {
-        refreshUserToken.should.have.status(500);
-      }
+      refreshUserToken.should.have.status(200);
     });
 
     it('should fail refresh token with not registred mail', async () => {
@@ -225,11 +217,15 @@ describe('User tests', () => {
       first_name: 'Riccardo',
       last_name: 'Fogli',
       mail: 'userok@testusers.com',
+      username: 'pippo23',
+      avatar: '',
     };
     const newWrongValues = {
       first_name: 'Riccardo',
       last_name: 'Fogli',
       mail: 'new_mail@gmail.com',
+      username: 'ricky23',
+      avatar: '',
     };
     it('should update profile', async () => {
       const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');

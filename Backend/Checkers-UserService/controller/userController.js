@@ -79,7 +79,6 @@ exports.signup = async function (req, res) {
   const { firstName } = req.body;
   const { lastName } = req.body;
   log(`${email} is trying to sign up`);
-  log(email);
   if (!emailValidator.validate(email)) {
     log(`${email} not valid`);
     res.status(400).send({ message: 'Email not valid.' }).end();
@@ -112,11 +111,12 @@ exports.signup = async function (req, res) {
         nationality: '',
       });
       await newUser.save();
-      if (newUser === null) {
+      res.status(200).send({ message: 'Sign up completed successfully.' });
+      /*if (newUser === null) {
         res.status(500).send({ message: 'Something went wrong during sign up, please try again' });
       } else {
         res.status(200).send({ message: 'Sign up completed successfully.' });
-      }
+      }*/
     } else {
       log(`Sadly someone else is already registered with ${email}`);
       res.status(400).send({ message: 'An existing account has already been associated with this email.' });
@@ -178,9 +178,23 @@ exports.refresh_token = async function (req, res) {
   if (registeredUser) {
     const tokenMail = JSON.parse(Buffer.from(token.split('.')[1], 'base64')).user.email;
     if (mail === tokenMail) {
+      log('Check token')
       // Check this await
       const checkToken = jwt.sign({ user: { email: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
-      if (checkToken) {
+      res.status(200).json({
+        checkToken,
+        user: {
+          username: registeredUser.username,
+          first_name: registeredUser.first_name,
+          last_name: registeredUser.last_name,
+          mail: registeredUser.mail,
+          stars: registeredUser.stars,
+          wins: registeredUser.wins,
+          losses: registeredUser.losses,
+          avatar: registeredUser.avatar,
+        },
+      });
+      /*if (checkToken) {
         res.status(200).json({
           checkToken,
           user: {
@@ -196,7 +210,7 @@ exports.refresh_token = async function (req, res) {
         });
       } else {
         res.status(500).send({ message: 'Error while refreshing token' });
-      }
+      }*/
     } else {
       res.status(400).send({ message: 'Wrong mail' });
     }
@@ -240,7 +254,16 @@ exports.getProfile = async function (req, res) {
   log(`Getting ${mail} profile`);
   try {
     const data = await User.findOne({ mail }, 'username avatar first_name last_name stars mail').lean();
-    if (data === null) {
+    res.json({
+      username: data.username,
+      avatar: data.avatar === '' ? 'https://picsum.photos/id/1005/400/250' : data.avatar,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      stars: data.stars,
+      mail: data.mail,
+    });
+    log(`Found profile associated to ${mail}, sending it back`);
+    /*if (data === null) {
       log(`Didn't found any profile associated to ${mail}`);
       res.status(400).json({ error: 'Cannot find any player with such ID' });
     } else {
@@ -253,13 +276,15 @@ exports.getProfile = async function (req, res) {
         stars: data.stars,
         mail: data.mail,
       });
-    }
+    }*/
   } catch {
-    res.status(500).json({ error: 'Error while retrieving player profile from DB' });
+    log(`Didn't found any profile associated to ${mail}`);
+    res.status(400).json({ error: 'Cannot find any player with such ID' });
+    //res.status(400).json({ error: 'Error while retrieving player profile from DB' });
   }
 };
 exports.getHistory = async function (req, res) {
-  try {
+  //try {
     const { mail } = req.body.params;
     const user = await User.find({ mail }, 'wins losses');
     const data = [];
@@ -273,9 +298,9 @@ exports.getHistory = async function (req, res) {
       data.push(user.losses);
       res.status(200).json(data);
     }
-  } catch {
+  /*} catch {
     res.status(500).json({ error: 'Error while retrieving player profile from DB' });
-  }
+  }*/
 };
 
 // WILL THIS WORK?
@@ -315,7 +340,6 @@ exports.updateProfile = async function (req, res) {
         { mail: userMail },
         { $set: newValues },
       );
-      log(`Successfully updated profile for ${userMail}`);
       res.status(200).json({
         username: newUser.username,
         first_name: newUser.first_name,
@@ -324,9 +348,9 @@ exports.updateProfile = async function (req, res) {
         stars: newUser.stars,
         avatar: newUser.avatar,
       });
+      log(`Successfully updated profile for ${userMail}`);
     } catch (err) {
       log(`Something went wrong while updating ${userMail} profile`);
-      log(err);
       res.status(400).send({ message: 'Something went wrong while updating a user, please try again' });
     }
   } else {
