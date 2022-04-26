@@ -107,15 +107,14 @@ describe('User tests', () => {
   });
 
   describe('Login Test', () => {
+    beforeEach(async () => {
+      await registerUser(createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
+    });
     it('should login', async () => {
-      const newUser = await registerUser(createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
-      newUser.should.have.status(200);
       const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
       loggedUser.should.have.status(200);
     });
     it('should fail login', async () => {
-      const newUser = await registerUser(createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
-      newUser.should.have.status(200);
       const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: 'ciao' });
       loggedUser.should.have.status(400);
       const loggedRandomUser = await loginUser({ mail: 'ciao@ciao.ciao', password: 'filippo23' });
@@ -128,40 +127,36 @@ describe('User tests', () => {
   });
 
   describe('Refresh token Test', () => {
-    it('should refresh token', async () => {
-      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await registerUser(newUser);
+    let token = null;
+    beforeEach(async () => {
+      await registerUser(createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
       const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
-      const { token } = loggedUser.body;
+      token = loggedUser.body.token;
+    });
+    it('should refresh token', async () => {
       const refreshUserToken = await refreshTokenUser('userok@testusers.com', token);
       refreshUserToken.should.have.status(200);
     });
 
     it('should fail refresh token with not registred mail', async () => {
-      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await registerUser(newUser);
-      const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
-      const { token } = loggedUser.body;
       const refreshUserToken = await refreshTokenUser('lu@lu.com', token);
       refreshUserToken.should.have.status(400);
     });
 
     it('should fail refresh token with wrong mail', async () => {
-      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await registerUser(newUser);
-      const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
-      const { token } = loggedUser.body;
       const refreshUserToken = await refreshTokenUser('ciao@ciao.com', token);
       refreshUserToken.should.have.status(400);
     });
   });
 
   describe('Verify token Test', () => {
-    it('should correct token', async () => {
-      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await registerUser(newUser);
+    let token = null;
+    beforeEach(async () => {
+      await registerUser(createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
       const loggedUser = await loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
-      const { token } = loggedUser.body;
+      token = loggedUser.body.token;
+    });
+    it('should correct token', async () => {
       const verifiedToken = await verifyTokenUser(token);
       verifiedToken.should.have.status(200);
     });
@@ -227,15 +222,16 @@ describe('User tests', () => {
       username: 'ricky23',
       avatar: '',
     };
-    it('should update profile', async () => {
-      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+    let newUser = null;
+    beforeEach(async () => {
+      newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
       await registerUser(newUser);
+    });
+    it('should update profile', async () => {
       const updatedUser = await updateUserProfile(newUser.mail, newValues);
       updatedUser.should.have.status(200);
     });
     it('should not update profile mail', async () => {
-      const newUser = createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await registerUser(newUser);
       const updatedUser = await updateUserProfile(newUser.mail, newWrongValues);
       updatedUser.should.have.status(400);
     });

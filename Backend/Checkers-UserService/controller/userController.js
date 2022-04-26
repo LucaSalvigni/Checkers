@@ -112,11 +112,11 @@ exports.signup = async function (req, res) {
       });
       await newUser.save();
       res.status(200).send({ message: 'Sign up completed successfully.' });
-      /*if (newUser === null) {
+      /* if (newUser === null) {
         res.status(500).send({ message: 'Something went wrong during sign up, please try again' });
       } else {
         res.status(200).send({ message: 'Sign up completed successfully.' });
-      }*/
+      } */
     } else {
       log(`Sadly someone else is already registered with ${email}`);
       res.status(400).send({ message: 'An existing account has already been associated with this email.' });
@@ -178,7 +178,7 @@ exports.refresh_token = async function (req, res) {
   if (registeredUser) {
     const tokenMail = JSON.parse(Buffer.from(token.split('.')[1], 'base64')).user.email;
     if (mail === tokenMail) {
-      log('Check token')
+      log('Check token');
       // Check this await
       const checkToken = jwt.sign({ user: { email: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
       res.status(200).json({
@@ -194,7 +194,7 @@ exports.refresh_token = async function (req, res) {
           avatar: registeredUser.avatar,
         },
       });
-      /*if (checkToken) {
+      /* if (checkToken) {
         res.status(200).json({
           checkToken,
           user: {
@@ -210,7 +210,7 @@ exports.refresh_token = async function (req, res) {
         });
       } else {
         res.status(500).send({ message: 'Error while refreshing token' });
-      }*/
+      } */
     } else {
       res.status(400).send({ message: 'Wrong mail' });
     }
@@ -231,7 +231,6 @@ exports.verify_token = async function (req, res) {
       const bearer = authorization.split(' ');
       const bToken = bearer[1];
       req.token = bToken;
-      console.log('ciao');
       const token = jwt.verify(req.token, jwtSecret);
       log(`veryfing token for ${token.user.email}`);
       if (token) {
@@ -263,7 +262,7 @@ exports.getProfile = async function (req, res) {
       mail: data.mail,
     });
     log(`Found profile associated to ${mail}, sending it back`);
-    /*if (data === null) {
+    /* if (data === null) {
       log(`Didn't found any profile associated to ${mail}`);
       res.status(400).json({ error: 'Cannot find any player with such ID' });
     } else {
@@ -276,31 +275,31 @@ exports.getProfile = async function (req, res) {
         stars: data.stars,
         mail: data.mail,
       });
-    }*/
+    } */
   } catch {
     log(`Didn't found any profile associated to ${mail}`);
     res.status(400).json({ error: 'Cannot find any player with such ID' });
-    //res.status(400).json({ error: 'Error while retrieving player profile from DB' });
+    // res.status(400).json({ error: 'Error while retrieving player profile from DB' });
   }
 };
 exports.getHistory = async function (req, res) {
-  //try {
-    const { mail } = req.body.params;
-    const user = await User.find({ mail }, 'wins losses');
-    const data = [];
-    log(`Getting history for user ${mail}`);
-    if (user.length === 0) {
-      log(`lol there's no such user as ${mail}`);
-      res.status(400).json({ error: 'Cannot find any player with such ID' });
-    } else {
-      log(`Successfully got history for ${mail}`);
-      data.push(user.wins);
-      data.push(user.losses);
-      res.status(200).json(data);
-    }
-  /*} catch {
+  // try {
+  const { mail } = req.body.params;
+  const user = await User.find({ mail }, 'wins losses');
+  const data = [];
+  log(`Getting history for user ${mail}`);
+  if (user.length === 0) {
+    log(`lol there's no such user as ${mail}`);
+    res.status(400).json({ error: 'Cannot find any player with such ID' });
+  } else {
+    log(`Successfully got history for ${mail}`);
+    data.push(user.wins);
+    data.push(user.losses);
+    res.status(200).json(data);
+  }
+  /* } catch {
     res.status(500).json({ error: 'Error while retrieving player profile from DB' });
-  }*/
+  } */
 };
 
 // WILL THIS WORK?
