@@ -40,6 +40,11 @@ jobs:
       - name: Checkout the repo 
         uses: actions/checkout@v2
         
+      - name: Debug
+        run: |
+          echo "$GITVERSION_SEMVER"
+          echo "$GITHUB_CONTEXT"
+
       - name: Build container image
         run: |
           docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITVERSION_SEMVER) ./Backend \
