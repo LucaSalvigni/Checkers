@@ -42,8 +42,7 @@ jobs:
         
       - name: Debug
         run: |
-          echo "$GITVERSION_SEMVER"
-          echo "$GITHUB_CONTEXT"
+          echo "$steps.gitversion.outputs.FullSemVer"
 
       - name: Build container image
         run: |
