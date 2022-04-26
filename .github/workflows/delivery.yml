@@ -21,7 +21,7 @@ jobs:
   getVersion:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.gitversion.outputs.FullSemVer }}
+      version: ${{ steps.gitversion.outputs.SemVer }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -86,4 +86,4 @@ jobs:
             docker run -d \
             --restart always \
             --name $(echo $IMAGE_NAME) \
-            $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}
+            $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo ${{ needs.getVersion.outputs.version }})
