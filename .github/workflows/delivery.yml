@@ -42,7 +42,7 @@ jobs:
         
       - name: Debug
         run: |
-          echo "$steps.gitversion.outputs.FullSemVer"
+          echo "$FullSemVer"
 
       - name: Build container image
         run: |
