@@ -41,7 +41,7 @@ jobs:
         
       - name: Build container image
         run: |
-          docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$GITVERSION_FULLSEMVER ./Backend \
+          docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITVERSION_FULLSEMVER) ./Backend \
           --build-arg SERVICENAME=GameService --build-arg SERVICEDIR=Checkers-GameService --build-arg ARG_PORT=3032 \
           --build-arg ARG_DB_PSW=${{ secrets.DB_PSW }} --build-arg NODE_ENV=production
 
@@ -57,7 +57,7 @@ jobs:
         run: if [ ! -z "$(doctl registry repository list | grep "$(echo $IMAGE_NAME)")" ]; then doctl registry repository delete-manifest $(echo $IMAGE_NAME) $(doctl registry repository list-tags $(echo $IMAGE_NAME) | grep -o "sha.*") --force; else echo "No repository"; fi
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$GITVERSION_FULLSEMVER
+        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITVERSION_FULLSEMVER)
         
   deploy:
     runs-on: ubuntu-latest
@@ -83,4 +83,4 @@ jobs:
             docker run -d \
             --restart always \
             --name $(echo $IMAGE_NAME) \
-            $(echo $REGISTRY)/$(echo $IMAGE_NAME):$GITVERSION_FULLSEMVER
+            $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITVERSION_FULLSEMVER)
