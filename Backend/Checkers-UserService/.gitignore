@@ -41,7 +41,7 @@ build/Release
 node_modules/
 jspm_packages/
 userService-build/
-./jwt_secret
+jwt_secret
 
 # TypeScript v1 declaration files
 typings/
