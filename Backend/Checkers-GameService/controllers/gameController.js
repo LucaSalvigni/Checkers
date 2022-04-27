@@ -1,11 +1,18 @@
 const Draughts = require('./draughts');
-const { log } = require('../../Utils/utils');
 const Game = require('../models/gameModel');
 
 const winStars = 100;
 const lossStars = -70;
 
-exports.create_game = async function (req, res) {
+// Utils
+function log(msg) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(msg);
+  }
+}
+
+// Exports
+exports.create_game = async function createGame(req, res) {
   try {
     const { hostId } = req.body;
     const { opponent } = req.body;
@@ -65,7 +72,7 @@ async function gameEnd(gameId, tie, winner) {
   }
 }
 
-exports.tieGame = function (req, res) {
+exports.tieGame = function tieGame(req, res) {
   gameEnd(req.body.gameId, true, _, _).then(
     res.status(200).send({ message: 'Game has been settled with a tie, each player will not earn nor lose stars' }),
   ).catch(
@@ -76,7 +83,7 @@ exports.tieGame = function (req, res) {
 /**
  * Handles user leaving a game
  */
-exports.leaveGame = async function (req, res) {
+exports.leaveGame = async function leaveGame(req, res) {
   const { gameId } = req.body;
   const quitter = req.body.playerId;
   try {
