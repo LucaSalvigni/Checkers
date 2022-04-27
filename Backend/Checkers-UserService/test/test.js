@@ -1,6 +1,8 @@
 const api = require('./utils/api');
 const User = require('../models/userModel');
 
+// Testing
+
 describe('User tests', () => {
   beforeEach(async () => {
     await User.deleteMany({ mail: 'userok@testusers.com' });
