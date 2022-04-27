@@ -285,9 +285,9 @@ exports.getProfile = async function (req, res) {
 exports.getHistory = async function (req, res) {
   // try {
   const { mail } = req.body.params;
-  const user = await User.find({ mail }, 'wins losses');
   const data = [];
   log(`Getting history for user ${mail}`);
+  const user = await User.find({ mail }, 'wins losses');
   if (user.length === 0) {
     log(`lol there's no such user as ${mail}`);
     res.status(400).json({ error: 'Cannot find any player with such ID' });
@@ -304,8 +304,19 @@ exports.getHistory = async function (req, res) {
 
 // WILL THIS WORK?
 exports.getLeaderboard = async function (__, res) {
-  try {
-    const users = await User.find({}, 'username avatar stars wins losses ties').sort({ stars: 'desc' });
+  const users = await User.find({}, 'username avatar stars wins losses ties').sort({ stars: 'desc' });
+  if (users.length !== 0) {
+    users.map((user) => {
+      user.avatar = user.avatar === '' ? 'https://picsum.photos/id/1005/400/250' : user.avatar;
+      return users;
+    });
+    log('Retrieving and sending leaderboard');
+    res.status(200).json(users);
+  } else {
+    res.status(200).send({ message: 'There is no one in the leaderboard.' });
+  }
+  /* try {
+const users = await User.find({}, 'username avatar stars wins losses ties').sort({ stars: 'desc' });
     if (users != null) {
       users.map((user) => {
         user.avatar = user.avatar === '' ? 'https://picsum.photos/id/1005/400/250' : user.avatar;
@@ -313,13 +324,13 @@ exports.getLeaderboard = async function (__, res) {
       });
       log('Retrieving and sending leaderboard');
       res.status(200).json(users);
-    } /* else {
+    } else {
       res.status(200).send({ message: 'There is no one in the leaderboard.' });
-    } */
+    }
   } catch (err) {
     log(`Something went wrong while retrieving leaderboard\n${err}`);
     res.status(500).send({ message: 'Something went wrong.' });
-  }
+  } */
 };
 
 exports.updateProfile = async function (req, res) {
