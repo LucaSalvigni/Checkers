@@ -31,7 +31,7 @@ function qualityAssurance(cb) {
 
 function doTest(cb) {
   log('checking all tests');
-  return exec('npm run test', (err, stdout, stderr) => {
+  return exec('npm test', (err, stdout, stderr) => {
     log(stdout);
     log(stderr);
     cb(err);
