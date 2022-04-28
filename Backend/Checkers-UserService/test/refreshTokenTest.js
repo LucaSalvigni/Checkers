@@ -1,6 +1,6 @@
 const api = require('./utils/api');
 
-describe('Refresh token Test', () => {
+describe('Refresh token Test', async () => {
   let token = null;
   beforeEach(async () => {
     await api.registerUser(api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));

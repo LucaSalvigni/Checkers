@@ -1,6 +1,6 @@
 const api = require('./utils/api');
 
-describe('Get profile Test', () => {
+describe('Get profile Test', async () => {
   it('should get profile', async () => {
     const profile = await api.getProfile('ciao@ciao.com');
     if (profile.status === 200) {

@@ -1,6 +1,6 @@
 const api = require('./utils/api');
 
-describe('Login Test', () => {
+describe('Login Test', async () => {
   beforeEach(async () => {
     await api.registerUser(api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
   });

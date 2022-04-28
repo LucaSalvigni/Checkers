@@ -1,6 +1,6 @@
 const api = require('./utils/api');
 
-describe('Update profile Test', () => {
+describe('Update profile Test', async () => {
   const newValues = {
     first_name: 'Riccardo',
     last_name: 'Fogli',

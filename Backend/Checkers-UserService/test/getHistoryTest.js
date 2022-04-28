@@ -1,6 +1,6 @@
 const api = require('./utils/api');
 
-describe('Get history Test', () => {
+describe('Get history Test', async () => {
   it('should get history', async () => {
     const history = await api.getHistory('ciao@ciao.com');
     if (history.status === 200) {
