@@ -39,7 +39,6 @@ const api = {
     return chai.request(userService)
       .get('/refresh_token')
       .send({ params: { mail, token } });
-    return refreshTokenRes;
   },
 
   async verifyTokenUser(token) {

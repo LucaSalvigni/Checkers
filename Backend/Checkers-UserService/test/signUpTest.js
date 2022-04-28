@@ -5,7 +5,7 @@ describe('Sign Up Test', async () => {
   beforeEach(async () => {
     await User.deleteMany({ mail: 'userok@testusers.com' });
   });
-  
+
   it('should register a new user', async () => {
     const newUser = await api.registerUser(api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
     newUser.should.have.status(200);
