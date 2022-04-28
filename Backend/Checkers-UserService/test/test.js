@@ -7,6 +7,7 @@ describe('User tests', () => {
   beforeEach(async () => {
     await User.deleteMany({ mail: 'userok@testusers.com' });
   });
+  
   describe('Sign Up Test', () => {
     it('should register a new user', async () => {
       const newUser = await api.registerUser(api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
@@ -64,6 +65,7 @@ describe('User tests', () => {
       token = loggedUser.body.token;
     });
     it('should refresh token', async () => {
+      console.log(token)
       const refreshUserToken = await api.refreshTokenUser('userok@testusers.com', token);
       refreshUserToken.should.have.status(200);
     });

@@ -282,6 +282,7 @@ exports.getProfile = async function (req, res) {
     // res.status(400).json({ error: 'Error while retrieving player profile from DB' });
   }
 };
+
 exports.getHistory = async function (req, res) {
   // try {
   const { mail } = req.body.params;

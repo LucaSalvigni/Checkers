@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'Backend/Checkers-GameService/**'
-  pull_request:
+  #pull_request:
   workflow_dispatch:
 
 env:
