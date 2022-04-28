@@ -3,8 +3,8 @@ const User = require('../models/userModel');
 
 describe('Sign Up Test', async () => {
   before(async () => {
-    const checkUser = await User.find({ mail: 'userok@testusers.com'})
-    if(checkUser.length > 0) {
+    const checkUser = await User.find({ mail: 'userok@testusers.com' });
+    if (checkUser.length > 0) {
       await User.deleteMany({ mail: 'userok@testusers.com' });
     }
   });
