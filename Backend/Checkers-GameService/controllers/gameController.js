@@ -12,6 +12,12 @@ function log(msg) {
 }
 
 // Exports
+
+/**
+ * Creates a new game
+ * @param {*} hostId  Player which created the game
+ * @param {*} opponent Second player
+ */
 exports.create_game = async function createGame(req, res) {
   try {
     const { hostId } = req.body;
@@ -82,6 +88,8 @@ exports.tieGame = function tieGame(req, res) {
 
 /**
  * Handles user leaving a game
+ * @param {*} gameId  Id of the game to leave
+ * @param {*} playerId Player leaving the game
  */
 exports.leaveGame = async function leaveGame(req, res) {
   const { gameId } = req.body;
