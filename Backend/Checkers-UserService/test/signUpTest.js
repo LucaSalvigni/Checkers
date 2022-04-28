@@ -33,9 +33,12 @@ describe('Sign Up Test', async () => {
   it('should user already exist', async () => {
     const newUser = await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
     const register = await api.registerUser(newUser);
-    register.should.have.status(200);
-    const newUserFail = await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-    const registerFail = await api.registerUser(newUserFail);
-    registerFail.should.have.status(400);
+    if(register.status === 200) {
+      const newUserFail = await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+      const registerFail = await api.registerUser(newUserFail);
+      registerFail.should.have.status(400);
+    } else {
+      registerFail.should.have.status(400);
+    }
   });
 });
