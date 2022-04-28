@@ -1,8 +1,9 @@
 const api = require('./utils/api');
 
+let token = null;
+
 describe('Refresh token Test', async () => {
-  let token = null;
-  beforeEach(async () => {
+  before(async () => {
     const user = await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
     await api.registerUser(user);
     const loggedUser = await api.loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });

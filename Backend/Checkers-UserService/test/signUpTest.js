@@ -2,8 +2,11 @@ const api = require('./utils/api');
 const User = require('../models/userModel');
 
 describe('Sign Up Test', async () => {
-  beforeEach(async () => {
-    await User.deleteMany({ mail: 'userok@testusers.com' });
+  before(async () => {
+    const checkUser = await User.find({ mail: 'userok@testusers.com'})
+    if(checkUser.length > 0) {
+      await User.deleteMany({ mail: 'userok@testusers.com' });
+    }
   });
 
   it('should register a new user', async () => {
@@ -31,14 +34,8 @@ describe('Sign Up Test', async () => {
   });
 
   it('should user already exist', async () => {
-    const newUser = await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-    const register = await api.registerUser(newUser);
-    if (register.status === 200) {
-      const newUserFail = await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      const registerFail = await api.registerUser(newUserFail);
-      registerFail.should.have.status(400);
-    } else {
-      register.should.have.status(400);
-    }
+    const newUserFail = await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+    const registerFail = await api.registerUser(newUserFail);
+    registerFail.should.have.status(400);
   });
 });
