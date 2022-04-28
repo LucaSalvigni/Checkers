@@ -7,7 +7,7 @@ chai.use(chaiHttp);
 chai.should();
 
 const api = {
-  createUser(mail, username, password) {
+  async createUser(mail, username, password) {
     return {
       first_name: 'Tests',
       last_name: 'User',

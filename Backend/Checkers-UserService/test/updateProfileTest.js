@@ -17,7 +17,7 @@ describe('Update profile Test', async () => {
   };
   let newUser = null;
   beforeEach(async () => {
-    newUser = api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+    newUser = await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
     await api.registerUser(newUser);
   });
   it('should update profile', async () => {

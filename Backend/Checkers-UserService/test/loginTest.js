@@ -2,7 +2,7 @@ const api = require('./utils/api');
 
 describe('Login Test', async () => {
   beforeEach(async () => {
-    await api.registerUser(api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
+    await api.registerUser(await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
   });
   it('should login', async () => {
     const loggedUser = await api.loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
