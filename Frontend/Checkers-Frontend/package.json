@@ -52,7 +52,7 @@
     "postcss": "^8.4.12",
     "prettier": "^2.4.1",
     "tailwindcss": "^3.0.23",
-    "vite": "^2.9.5",
+    "vite": "^2.9.6",
     "vitest": "^0.9.4"
   },
   "resolutions": {
