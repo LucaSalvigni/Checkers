@@ -7,7 +7,7 @@ describe('User tests', () => {
   beforeEach(async () => {
     await User.deleteMany({ mail: 'userok@testusers.com' });
   });
-  
+
   describe('Sign Up Test', () => {
     it('should register a new user', async () => {
       const newUser = await api.registerUser(api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
@@ -71,11 +71,13 @@ describe('User tests', () => {
     });
 
     it('should fail refresh token with not registred mail', async () => {
+      console.log(token)
       const refreshUserToken = await api.refreshTokenUser('lu@lu.com', token);
       refreshUserToken.should.have.status(400);
     });
 
     it('should fail refresh token with wrong mail', async () => {
+      console.log(token)
       const refreshUserToken = await api.refreshTokenUser('ciao@ciao.com', token);
       refreshUserToken.should.have.status(400);
     });
