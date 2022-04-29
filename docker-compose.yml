@@ -1,7 +1,7 @@
 services:
   userservice:
     build: 
-      context: /Backend
+      context: ./Backend
       args:
         - SERVICENAME=UserService
         - SERVICEDIR=Checkers-UserService
@@ -13,7 +13,7 @@ services:
       - 3031:3031
   gameservice:
     build: 
-      context: /Backend
+      context: ./Backend
       args:
         - SERVICENAME=GameService
         - SERVICEDIR=Checkers-GameService

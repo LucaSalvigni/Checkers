@@ -35,11 +35,14 @@ jobs:
       - name: Checkout the repo 
         uses: actions/checkout@v2
 
-      - name: Build container image
+      - name: Build container images
         run: |
-          docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }} ./Backend \
+          docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME)-gameservice:${{ needs.getVersion.outputs.version }} ./Backend \
           --build-arg SERVICENAME=GameService --build-arg SERVICEDIR=Checkers-GameService --build-arg ARG_PORT=3032 \
           --build-arg NODE_ENV=production
+          docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME)-userservice:${{ needs.getVersion.outputs.version }} ./Backend \
+          --build-arg SERVICENAME=UserService --build-arg SERVICEDIR=Checkers-UserService --build-arg ARG_PORT=3031 \
+          --build-arg NODE_ENV=production 
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -53,7 +56,9 @@ jobs:
         run: if [ ! -z "$(doctl registry repository list | grep "$(echo $IMAGE_NAME)")" ]; then doctl registry repository delete-manifest $(echo $IMAGE_NAME) $(doctl registry repository list-tags $(echo $IMAGE_NAME) | grep -o "sha.*") --force; else echo "No repository"; fi
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}
+        run: |
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME)-gameservice:${{ needs.getVersion.outputs.version }}
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME)-userservice:${{ needs.getVersion.outputs.version }}
         
   deploy:
     runs-on: ubuntu-latest
@@ -71,14 +76,20 @@ jobs:
           script: |
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
-            # Stop running container
+            # Stop running containers
             docker stop $(echo $IMAGE_NAME)
-            # Remove old container
+            # Remove old containers
             docker rm $(echo $IMAGE_NAME)
-            # Run a new container from a new image
+            # Run new containers from new images
             docker run -d \
             -p 3032:3032 \
             -e DB_PSW=${{ secrets.DB_PSW }} \
             --restart always \
-            --name $(echo $IMAGE_NAME) \
-            $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}
+            --name $(echo $IMAGE_NAME)-gameservice \
+            $(echo $REGISTRY)/$(echo $IMAGE_NAME)-gameservice:${{ needs.getVersion.outputs.version }}
+            docker run -d \
+            -p 3031:3031 \
+            -e DB_PSW=${{ secrets.DB_PSW }} \
+            --restart always \
+            --name $(echo $IMAGE_NAME)-userservice \
+            $(echo $REGISTRY)/$(echo $IMAGE_NAME)-userservice:${{ needs.getVersion.outputs.version }}
