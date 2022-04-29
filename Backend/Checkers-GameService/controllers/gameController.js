@@ -38,40 +38,14 @@ function log(msg) {
     }
 }
 
-// Exports
-exports.create_game = async function createGame(req, res) {
-  try {
-    const { hostId } = req.body;
-    const { opponent } = req.body;
-
-    let newGame = new Game({
-      white: hostId,
-      black: opponent,
-      finished: false,
-      fen: new Draughts().fen(),
-      turn: hostId,
-    });
-
-    newGame = await newGame.save();
-    log(`Just created game ${newGame._id}`);
-    res.status(200).json({
-      game: newGame,
-    });
-  } catch (err) {
-    log(err);
-    res.status(500).send({ message: 'Something went wrong while creating a game' });
-  }
-};
-
 /**
  * Handles a game end.
  * @param {*} gameId  game that just ended
  * @param {*} tie whether it resulted in a tie.
  * @param {*} winner player who won (same as loser if "tie" param is set to TRUE)
- * @param {*} loser player who lost (same as winner if "tie" param is set to TRUE)
  * @returns true if game was terminated correctly and successfully saved into DB, false otherwise.
  */
-async function gameEnd(gameId, tie, winner) {
+ async function gameEnd(gameId, tie, winner) {
   log(`game ${gameId} just ended`);
   try {
     const game = await Game.findById(gameId);
@@ -99,6 +73,32 @@ async function gameEnd(gameId, tie, winner) {
     return false;
   }
 }
+
+// Exports
+exports.create_game = async function createGame(req, res) {
+  try {
+    const { hostId } = req.body;
+    const { opponent } = req.body;
+
+    let newGame = new Game({
+      white: hostId,
+      black: opponent,
+      finished: false,
+      fen: new Draughts().fen(),
+      turn: hostId,
+    });
+
+    newGame = await newGame.save();
+    log(`Just created game ${newGame._id}`);
+    res.status(200).json({
+      game: newGame,
+    });
+  } catch (err) {
+    log(err);
+    res.status(500).send({ message: 'Something went wrong while creating a game' });
+  }
+};
+
 
 exports.tieGame = function tieGame(req, res) {
   gameEnd(req.body.gameId, true, _, _).then(
@@ -144,6 +144,27 @@ exports.leaveGame = async function leaveGame(req, res) {
     res.status(500).send({ message: 'Internal server error while leaving game' });
   }
 };
+
+/**
+ * Gets called whenever a user's turn time expires.
+ */
+exports.turnChange = function(req,res){
+  const { game_id } = req.body
+  const game_obj = await Game.findById(game_id)
+  if(game_obj){
+    const game = new Draughts(game_obj.fen)
+    log(`Changing turn for game ${game_id}`)
+    game.change_turn()
+    await Game.findByIdAndUpdate(game_id, {
+      fen: game.fen(),
+    });
+    res.status(200).json()
+  }else{
+    log(`Someone tried to change turn for game ${game_id} but such game doesn't exist`)
+    res.status(400).json({message:"No such game"})
+  }
+}
+
 /**
  * A user moves a piece inside the board
  */
@@ -180,11 +201,16 @@ exports.leaveGame = async function leaveGame(req, res) {
               }
           }else{
               log(`Moving a piece from game ${gameId}` )
+
               res.json({
                   winner: "",
                   board: data
               })
           }
+        //After making a move, update saved fen on MongoDB
+        await Game.findByIdAndUpdate(gameId,{
+          fen: game.fen()
+        })
       }else{
           log(`Something wrong while trying to move a piece for game ${gameId}`)
           res.status(400).send({message: "Error while making such move, you can try again or select a different move."})
