@@ -37,10 +37,10 @@ jobs:
 
       - name: Build container images
         run: |
-          docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME)-gameservice:${{ needs.getVersion.outputs.version }} ./Backend \
+          docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}-gameservice ./Backend \
           --build-arg SERVICENAME=GameService --build-arg SERVICEDIR=Checkers-GameService --build-arg ARG_PORT=3032 \
           --build-arg NODE_ENV=production
-          docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME)-userservice:${{ needs.getVersion.outputs.version }} ./Backend \
+          docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}-userservice ./Backend \
           --build-arg SERVICENAME=UserService --build-arg SERVICEDIR=Checkers-UserService --build-arg ARG_PORT=3031 \
           --build-arg NODE_ENV=production 
 
@@ -57,8 +57,8 @@ jobs:
 
       - name: Push image to DigitalOcean Container Registry
         run: |
-          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME)-gameservice:${{ needs.getVersion.outputs.version }}
-          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME)-userservice:${{ needs.getVersion.outputs.version }}
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}-gameservice
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME)-userservice:${{ needs.getVersion.outputs.version }}-userservice
         
   deploy:
     runs-on: ubuntu-latest
@@ -86,10 +86,10 @@ jobs:
             -e DB_PSW=${{ secrets.DB_PSW }} \
             --restart always \
             --name $(echo $IMAGE_NAME)-gameservice \
-            $(echo $REGISTRY)/$(echo $IMAGE_NAME)-gameservice:${{ needs.getVersion.outputs.version }}
+            $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}-gameservice
             docker run -d \
             -p 3031:3031 \
             -e DB_PSW=${{ secrets.DB_PSW }} \
             --restart always \
             --name $(echo $IMAGE_NAME)-userservice \
-            $(echo $REGISTRY)/$(echo $IMAGE_NAME)-userservice:${{ needs.getVersion.outputs.version }}
+            $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}-userservice
