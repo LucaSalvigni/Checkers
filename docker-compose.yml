@@ -2,14 +2,24 @@ services:
   userservice:
     build: 
       context: /Backend
+      args:
+        - SERVICENAME=UserService
+        - SERVICEDIR=Checkers-UserService
+        - ARG_PORT=3031
+    environment:
+      - DB_PSW=${DB_PSW}
     restart: always
     ports:
       - 3031:3031
-    command: node ./index.js
   gameservice:
     build: 
       context: /Backend
+      args:
+        - SERVICENAME=GameService
+        - SERVICEDIR=Checkers-GameService
+        - ARG_PORT=3032
+    environment:
+      - DB_PSW=${DB_PSW}
     restart: always
     ports:
       - 3032:3032
-    command: node ./index.js

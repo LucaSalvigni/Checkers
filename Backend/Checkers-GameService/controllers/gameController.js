@@ -10,9 +10,8 @@ function log(msg) {
     console.log(msg);
   }
 }
+
 /**
-  *
-  *
   * @param {*} game draughs instance
   * @returns whether such game is over because someone won.
   */
@@ -139,9 +138,11 @@ exports.create_game = async function createGame(req, res) {
 
     newGame = await newGame.save();
     log(`Just created game ${newGame._id}`);
+
     res.status(200).json({
       game: newGame,
     });
+
   } catch (err) {
     log(err);
     res.status(500).send({ message: 'Something went wrong while creating a game' });
@@ -178,6 +179,7 @@ exports.leaveGame = async function leaveGame(req, res) {
         return;
       }
 
+      //TODO ?
       const data = [];
       data.push(`You successfully left the game!\n ${winStars} stars have been removed from your profile!`);
       data.push(`The opponent has left the game!\n ${lossStars} stars have been added to your profile`);

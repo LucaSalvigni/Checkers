@@ -46,7 +46,7 @@ jobs:
         run: |
           docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }} ./Backend \
           --build-arg SERVICENAME=GameService --build-arg SERVICEDIR=Checkers-GameService --build-arg ARG_PORT=3032 \
-          --build-arg ARG_DB_PSW=${{ secrets.DB_PSW }} --build-arg NODE_ENV=production
+          --build-arg NODE_ENV=production
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -85,6 +85,7 @@ jobs:
             # Run a new container from a new image
             docker run -d \
             -p 3032:3032 \
+            -e DB_PSW=${{ secrets.DB_PSW }} \
             --restart always \
             --name $(echo $IMAGE_NAME) \
             $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}
