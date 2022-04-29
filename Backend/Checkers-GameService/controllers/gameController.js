@@ -10,14 +10,35 @@ function log(msg) {
     console.log(msg);
   }
 }
+ /**
+  * 
+  * 
+  * @param {*} game draughs instance
+  * @returns whether such game is over because someone won.
+  */
+  function winCheck(game){
+    if(game.fen().split(':')[1].length <= 1){
+      return{
+        status:true,
+        winner: game.black,
+        loser : game.white
+      }
+    }
+    else if(game.fen().split(':')[2].length <= 1 ){
+      return{
+        status:true,
+        winner: game.white,
+        loser : game.black
+      }
+    }
+    return {
+      status:false,
+      winner:game.white,
+      loser:game.black
+    }
+}
 
 // Exports
-
-/**
- * Creates a new game
- * @param {*} hostId  Player which created the game
- * @param {*} opponent Second player
- */
 exports.create_game = async function createGame(req, res) {
   try {
     const { hostId } = req.body;
@@ -67,10 +88,11 @@ async function gameEnd(gameId, tie, winner) {
           finished: true,
         });
       }
-      log('Game not found');
       return true;
+    }else{
+      log(`Game ${gameId} not found`);
+      return false;
     }
-    return false;
   } catch (err) {
     log(`Something went wrong while closing game ${gameId}`);
     log(err);
@@ -88,8 +110,6 @@ exports.tieGame = function tieGame(req, res) {
 
 /**
  * Handles user leaving a game
- * @param {*} gameId  Id of the game to leave
- * @param {*} playerId Player leaving the game
  */
 exports.leaveGame = async function leaveGame(req, res) {
   const { gameId } = req.body;
@@ -124,3 +144,112 @@ exports.leaveGame = async function leaveGame(req, res) {
     res.status(500).send({ message: 'Internal server error while leaving game' });
   }
 };
+/**
+ * A user moves a piece inside the board
+ */
+ exports.movePiece = async function(req,res){
+  const { gameId } = req.body;
+  const { from } = req.body;
+  const { to } = req.body;
+  try{
+    const game_obj = await Game.findById(gameId);
+    if(game_obj){
+      const game = new Draughts(game_obj.fen)
+      if(game.move({from: from, to: to }) != false){
+          const data = parseFEN(game)
+          log(`Moving a piece in ${gameId} from ${from} to ${to}`)
+          if(game.gameOver()){
+              log(`Game ${gameId} is over!`)
+              const game_result = winCheck(game)
+              if(game_result.status){
+                  log(`Someone won game ${gameId}`)
+                  await gameEnd(gameId,false,game_result.winner)
+                  res.json({
+                      winner: game_result.winner,
+                      loser: game_result.loser,
+                      board: data
+                  })
+              }else{
+                  log(`Game ${gameId} just resulted in a tie, how lucky are you to be able to witness such a rare event?"`)
+                  await gameEnd(gameId,true,game_result.winner)
+                  res.json({
+                      winner:"",
+                      tie:true,
+                      board:data
+                  })
+              }
+          }else{
+              log(`Moving a piece from game ${gameId}` )
+              res.json({
+                  winner: "",
+                  board: data
+              })
+          }
+      }else{
+          log(`Something wrong while trying to move a piece for game ${gameId}`)
+          res.status(400).send({message: "Error while making such move, you can try again or select a different move."})
+      }
+    }else{
+      res.status(400).send({message: "Can't find such game"});
+    }
+  }catch (err) {
+    log(`Something wrong while processing game ${gameId} request of moving a piece from ${from} to ${to}`);
+    log(err);
+    res.status(500).send({ message: 'Internal server error while leaving game' });
+  }
+
+}
+
+/**
+ ** UTILITIES
+ */
+
+/*Attaches to every Piece on the board its list of available moves for frontend purposes.
+* String is to be sent to client on the form of:
+* let data = [TURN, Map(WHITE_PIECE->MOVES),Map(BLACK_PIECE->MOVES)]
+* es: [B,WHITE(3->(5,10,3)10K->(5,2,5,4)),BLACK(4->(5,10)10K->(5,2))]
+* OBV a draught that's not a king can only have max 2 moves.
+* K after a number means that piece is a KING
+*/
+function parseFEN(game) {
+  let data = []
+  const fields = game.fen.split(':')
+  data.push(fields[0])
+  
+  let white_pieces = fields[1].split(',')
+  let black_pieces = fields[2].split(',')
+
+  white_pieces[0] = white_pieces[0].substring(1)
+  black_pieces[0] = black_pieces[0].substring(1)
+
+  const white_pieces_with_moves = new Map()
+  const black_pieces_with_moves = new Map()
+
+  for (let i = 0; i < black_pieces.length; i++) {
+    const piece = black_pieces[i]
+    if(piece !== "" && piece !== null){
+      if(piece.charAt(0).equals("K")){
+        const moves = game.getLegalMoves(piece.substring(1))
+        black_pieces_with_moves.set(piece,moves)
+      }else{
+        const moves = game.getLegalMoves(piece)
+          black_pieces_with_moves.set(piece,moves)
+      }
+    }
+  }
+  for (let i = 0; i < white_pieces.length; i++) {
+    const piece = white_pieces[i]
+    if(piece !== "" && piece !== null){
+      if(piece.charAt(0).equals("K")){
+        const moves = game.getLegalMoves(piece.substring(1))
+          white_pieces_with_moves.set(piece,moves)
+      }else{
+        const moves = game.getLegalMoves(piece)
+          white_pieces_with_moves.set(piece,moves)
+      }
+    }
+  }
+  data.push(Object.fromEntries(white_pieces_with_moves))
+  data.push(Object.fromEntries(black_pieces_with_moves))
+  return data
+}
