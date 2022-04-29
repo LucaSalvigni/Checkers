@@ -58,7 +58,7 @@ jobs:
       - name: Push image to DigitalOcean Container Registry
         run: |
           docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}-gameservice
-          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME)-userservice:${{ needs.getVersion.outputs.version }}-userservice
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}-userservice
         
   deploy:
     runs-on: ubuntu-latest
