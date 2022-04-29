@@ -148,7 +148,7 @@ exports.leaveGame = async function leaveGame(req, res) {
 /**
  * Gets called whenever a user's turn time expires.
  */
-exports.turnChange = function(req,res){
+exports.turnChange = async function(req,res){
   const { game_id } = req.body
   const game_obj = await Game.findById(game_id)
   if(game_obj){
