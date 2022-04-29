@@ -172,8 +172,8 @@ exports.login = async function (req, res) {
  * Tries to get a new token for a user
  */
 exports.refresh_token = async function (req, res) {
-  const { mail } = req.body.params;
-  const { token } = req.body.params;
+  const { mail } = req.query;
+  const { token } = req.query;
   const registeredUser = await User.findOne({ mail }, 'username first_name last_name mail stars nationality wins losses avatar');
   if (registeredUser) {
     const tokenMail = JSON.parse(Buffer.from(token.split('.')[1], 'base64')).user.email;
@@ -249,7 +249,7 @@ exports.verify_token = async function (req, res) {
 
 exports.getProfile = async function (req, res) {
   // WILL THIS QUERY WORK?
-  const { mail } = req.body.params;
+  const { mail } = req.query;
   log(`Getting ${mail} profile`);
   try {
     const data = await User.findOne({ mail }, 'username avatar first_name last_name stars mail').lean();
@@ -285,7 +285,7 @@ exports.getProfile = async function (req, res) {
 
 exports.getHistory = async function (req, res) {
   // try {
-  const { mail } = req.body.params;
+  const { mail } = req.query;
   const data = [];
   log(`Getting history for user ${mail}`);
   const user = await User.find({ mail }, 'wins losses');
@@ -340,12 +340,7 @@ exports.updateProfile = async function (req, res) {
   if (mail === userMail) {
     log(`Updating ${userMail} profile`);
     try {
-      let newValues = {
-        first_name: req.body.params.first_name,
-        last_name: req.body.params.last_name,
-        username: req.body.params.username,
-        avatar: req.body.params.avatar,
-      };
+      let newValues = req.body.params;
       newValues = _.pickBy(newValues, _.identity);
       const newUser = await User.findOneAndUpdate(
         { mail: userMail },

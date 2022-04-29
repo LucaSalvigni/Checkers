@@ -38,7 +38,7 @@ const api = {
   async refreshTokenUser(mail, token) {
     return chai.request(userService)
       .get('/refresh_token')
-      .send({ params: { mail, token } });
+      .query({ mail, token });
   },
 
   async verifyTokenUser(token) {
@@ -55,13 +55,13 @@ const api = {
   async getProfile(mail) {
     return chai.request(userService)
       .get('/profile/getProfile')
-      .send({ params: { mail } });
+      .query({ mail });
   },
 
   async getHistory(mail) {
     return chai.request(userService)
       .get('/profile/getHistory')
-      .send({ params: { mail } });
+      .query({ mail });
   },
 };
 module.exports = api;
