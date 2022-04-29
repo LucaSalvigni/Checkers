@@ -36,4 +36,8 @@ describe('Update profile Test', async () => {
     const updatedUser = await api.updateUserProfile('new_mail@gmail.com', newWrongValues);
     updatedUser.should.have.status(400);
   });
+  it('should not update without values', async () => {
+    const updatedUser = await api.updateUserProfile('new_mail@gmail.com');
+    updatedUser.should.have.status(400);
+  });
 });

@@ -335,31 +335,34 @@ const users = await User.find({}, 'username avatar stars wins losses ties').sort
 };
 
 exports.updateProfile = async function (req, res) {
-  const userMail = req.body.mail;
-  const { mail } = req.body.params;
-  if (mail === userMail) {
-    log(`Updating ${userMail} profile`);
-    try {
-      let newValues = req.body.params;
-      newValues = _.pickBy(newValues, _.identity);
-      const newUser = await User.findOneAndUpdate(
-        { mail: userMail },
-        { $set: newValues },
-      );
-      res.status(200).json({
-        username: newUser.username,
-        first_name: newUser.first_name,
-        last_name: newUser.last_name,
-        mail: newUser.mail,
-        stars: newUser.stars,
-        avatar: newUser.avatar,
-      });
-      log(`Successfully updated profile for ${userMail}`);
-    } catch (err) {
-      log(`Something went wrong while updating ${userMail} profile`);
-      res.status(400).send({ message: 'Something went wrong while updating a user, please try again' });
-    }
+  let newValues = req.body.params;
+  if (newValues === undefined) {
+    res.status(400).send({ message: "Need some new values to update data" });
   } else {
-    res.status(400).json({ message: "You can't change the email associated to an account." });
+    const { mail } = req.body;
+    if (newValues.mail === mail) {
+      log(`Updating ${mail} profile`);
+      try {
+        newValues = _.pickBy(newValues, _.identity);
+        const newUser = await User.findOneAndUpdate(
+          { mail },
+          { $set: newValues },
+        );
+        res.status(200).json({
+          username: newUser.username,
+          first_name: newUser.first_name,
+          last_name: newUser.last_name,
+          mail: newUser.mail,
+          stars: newUser.stars,
+          avatar: newUser.avatar,
+        });
+        log(`Successfully updated profile for ${mail}`);
+      } catch (err) {
+        log(`Something went wrong while updating ${mail} profile`);
+        res.status(400).send({ message: 'Something went wrong while updating a user, please try again' });
+      }
+    } else {
+      res.status(400).json({ message: "You can't change the email associated to an account." });
+    }
   }
 };
