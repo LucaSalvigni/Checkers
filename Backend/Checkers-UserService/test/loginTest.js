@@ -23,4 +23,8 @@ describe('Login Test', async () => {
     const loggedUserFailPsw = await api.loginUser({ mail: 'userok@testusers.com', password: '' });
     loggedUserFailPsw.should.have.status(400);
   });
+  it("should can't manage empty request", async () => {
+    const logFail = await api.loginUser({});
+    logFail.should.have.status(400);
+  });
 });

@@ -74,28 +74,28 @@ const jwtSecret = loadJwtSecret();
  */
 exports.signup = async function (req, res) {
   const { username } = req.body;
-  const email = req.body.mail;
+  const { mail } = req.body;
   const { password } = req.body;
   const { firstName } = req.body;
   const { lastName } = req.body;
-  log(`${email} is trying to sign up`);
-  if (!emailValidator.validate(email)) {
-    log(`${email} not valid`);
+  log(`${mail} is trying to sign up`);
+  if (!emailValidator.validate(mail)) {
+    log(`${mail} not valid`);
     res.status(400).send({ message: 'Email not valid.' }).end();
   } else if (!username || username.length < 3 || username.length > 15) {
     log(`${username} not valid`);
     res.status(400).send({ message: 'Username not valid.' }).end();
   } else if (!pswValidator.validate(password)) {
-    log(`Password for user ${email} not valid`);
+    log(`Password for user ${mail} not valid`);
     res.status(400).send(pswValidator.validate(password, { details: true })).end();
   } else {
-    log(`Checking if ${email} already exists`);
-    const user = await User.findOne({ mail: email }).lean();
+    log(`Checking if ${mail} already exists`);
+    const user = await User.findOne({ mail }).lean();
     const salt = randomString(128);
     const hashPsw = saltFunction(password, salt);
     let newUser = null;
     if (user === null) {
-      log(`Signign up a new user with mail ${email}`);
+      log(`Signign up a new user with mail ${mail}`);
       newUser = new User({
         username,
         stars: 0,
@@ -105,7 +105,7 @@ exports.signup = async function (req, res) {
         losses: 0,
         ties: 0,
         avatar: '',
-        mail: email,
+        mail,
         password: hashPsw,
         salt,
         nationality: '',
@@ -118,7 +118,7 @@ exports.signup = async function (req, res) {
         res.status(200).send({ message: 'Sign up completed successfully.' });
       } */
     } else {
-      log(`Sadly someone else is already registered with ${email}`);
+      log(`Sadly someone else is already registered with ${mail}`);
       res.status(400).send({ message: 'An existing account has already been associated with this email.' });
     }
   }
@@ -130,19 +130,22 @@ exports.signup = async function (req, res) {
  * @param {*} res
  */
 exports.login = async function (req, res) {
-  const email = req.body.mail;
+  const { mail } = req.body;
   const { password } = req.body;
-  log(`${email}is trying to login`);
-  if (email.trim() === '' || password.trim() === '') {
+  log(`${mail} is trying to login`);
+  if (mail === undefined || password === undefined) {
+    log("Can't manage a login request without mail and/or password");
+    res.status(400).send({ message: "Can't manage a login request without mail and/or password" });
+  } else if (mail.trim() === '' || password.trim() === '') {
     res.status(400).send({ message: "Login parameters can't have empty values" });
   } else {
-    const registeredUser = await User.findOne({ mail: email }, 'username first_name last_name mail salt password stars nationality wins losses avatar');
+    const registeredUser = await User.findOne({ mail }, 'username first_name last_name mail salt password stars nationality wins losses avatar');
     if (registeredUser) {
       const allegedPassword = saltFunction(password, registeredUser.salt);
       if (allegedPassword === registeredUser.password) {
-        log(`${email} just logged in successfully`);
+        log(`${mail} just logged in successfully`);
         // Will those two lines work?
-        const token = jwt.sign({ user: { email: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
+        const token = jwt.sign({ user: { mail: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
         res.status(200).json({
           token,
           message: `Authentication successfull, welcome back ${registeredUser.username}!`,
@@ -150,7 +153,7 @@ exports.login = async function (req, res) {
             username: registeredUser.username,
             first_name: registeredUser.first_name,
             last_name: registeredUser.last_name,
-            mail: email,
+            mail,
             stars: registeredUser.stars,
             wins: registeredUser.wins,
             losses: registeredUser.losses,
@@ -158,11 +161,11 @@ exports.login = async function (req, res) {
           },
         });
       } else {
-        log(`${email} just failed authentication`);
+        log(`${mail} just failed authentication`);
         res.status(400).send({ message: 'Authentication failed, wrong email and/or password' });
       }
     } else {
-      log(`${email} is not registered so he cannot authenticate`);
+      log(`${mail} is not registered so he cannot authenticate`);
       res.status(400).send({ message: 'Authentication failed, wrong email and/or password' });
     }
   }
@@ -176,11 +179,11 @@ exports.refresh_token = async function (req, res) {
   const { token } = req.query;
   const registeredUser = await User.findOne({ mail }, 'username first_name last_name mail stars nationality wins losses avatar');
   if (registeredUser) {
-    const tokenMail = JSON.parse(Buffer.from(token.split('.')[1], 'base64')).user.email;
+    const tokenMail = JSON.parse(Buffer.from(token.split('.')[1], 'base64')).user.mail;
     if (mail === tokenMail) {
       log('Check token');
       // Check this await
-      const checkToken = jwt.sign({ user: { email: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
+      const checkToken = jwt.sign({ user: { mail: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
       res.status(200).json({
         checkToken,
         user: {
@@ -212,9 +215,11 @@ exports.refresh_token = async function (req, res) {
         res.status(500).send({ message: 'Error while refreshing token' });
       } */
     } else {
+      log('Wrong mail');
       res.status(400).send({ message: 'Wrong mail' });
     }
   } else {
+    log('No such user');
     res.status(400).send({ message: 'No such user' });
   }
 };
@@ -232,9 +237,9 @@ exports.verify_token = async function (req, res) {
       const bToken = bearer[1];
       req.token = bToken;
       const token = jwt.verify(req.token, jwtSecret);
-      log(`veryfing token for ${token.user.email}`);
+      log(`veryfing token for ${token.user.mail}`);
       if (token) {
-        log(`token ok for user ${token.user.email}`);
+        log(`token ok for user ${token.user.mail}`);
         res.status(200).json({ token, user: token.user });
       } /* else {
         log(`token error for user ${token.user.email}`);
@@ -337,7 +342,7 @@ const users = await User.find({}, 'username avatar stars wins losses ties').sort
 exports.updateProfile = async function (req, res) {
   let newValues = req.body.params;
   if (newValues === undefined) {
-    res.status(400).send({ message: "Need some new values to update data" });
+    res.status(400).send({ message: 'Need some new values to update data' });
   } else {
     const { mail } = req.body;
     if (newValues.mail === mail) {
