@@ -49,7 +49,7 @@ jobs:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_USERNAME }}
           key: ${{ secrets.DO_SSHKEY }}
-          passphrase: ${{ secrets.DO_PASSPHRASE }
+          passphrase: ${{ secrets.DO_PASSPHRASE }}
         with:
           source: "docker-compose.yml"
           target: "."
