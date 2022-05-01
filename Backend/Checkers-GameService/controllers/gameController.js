@@ -274,4 +274,3 @@ exports.movePiece = async function movePiece(req, res) {
     res.status(500).send({ message: 'Internal server error while leaving game' });
   }
 };
-//TODO REMOVE
