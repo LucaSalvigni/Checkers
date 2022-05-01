@@ -93,10 +93,10 @@ function parseFEN(game) {
   const whitePiecesWithMoves = new Map();
   const blackPiecesWithMoves = new Map();
 
-  for (let i = 0; i < blackPieces.length; i++) {
+  for (let i = 0; i < blackPieces.length; i += 1) {
     const piece = blackPieces[i];
     if (piece !== '' && piece !== null) {
-      if (piece.charAt(0) === 'K' ) {
+      if (piece.charAt(0) === 'K') {
         const moves = game.getLegalMoves(piece.substring(1));
         blackPiecesWithMoves.set(piece, moves);
       } else {
@@ -105,10 +105,10 @@ function parseFEN(game) {
       }
     }
   }
-  for (let i = 0; i < whitePieces.length; i++) {
+  for (let i = 0; i < whitePieces.length; i += 1) {
     const piece = whitePieces[i];
     if (piece !== '' && piece !== null) {
-      if (piece.charAt(0) === 'K' ) {
+      if (piece.charAt(0) === 'K') {
         const moves = game.getLegalMoves(piece.substring(1));
         whitePiecesWithMoves.set(piece, moves);
       } else {
@@ -198,7 +198,7 @@ exports.leaveGame = async function leaveGame(req, res) {
  * Gets called whenever a user's turn time expires.
  */
 exports.turnChange = async function turnChange(req, res) {
-  const gameId = req.body.gameId;
+  const { gameId } = req.body;
   const gameObj = await Game.findById(gameId);
   if (gameObj) {
     const game = new Draughts(gameObj.fen);
