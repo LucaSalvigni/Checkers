@@ -67,4 +67,4 @@ jobs:
             # Remove old containers
             docker rm $(echo $IMAGE_NAME)
             # Run new containers from new images
-            docker compose up
+            docker compose up -d
