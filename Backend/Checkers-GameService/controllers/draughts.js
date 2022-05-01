@@ -53,8 +53,8 @@ module.exports = class Draughts {
   }
 
   clear() {
-    this.position = DEFAULT_POSITION_INTERNAL;
-    this.turn = WHITE;
+    this.position = this.DEFAULT_POSITION_INTERNAL;
+    this.turn = this.WHITE;
     this.moveNumber = 1;
     this.history = [];
     this.header = {};
@@ -100,7 +100,7 @@ module.exports = class Draughts {
     for (var i = 1; i <= externalPosition.length; i++) {
       externalPosition = this.setCharAt(externalPosition, i, 0);
     }
-    externalPosition = this.setCharAt(externalPosition, 0, turn);
+    externalPosition = this.setCharAt(externalPosition, 0, this.turn);
     // TODO refactor
     for (let k = 1; k <= 2; k++) {
       // TODO called twice
@@ -227,7 +227,7 @@ module.exports = class Draughts {
         numSquare = (isKing === true ? numSquare.substr(1) : numSquare);
         const range = numSquare.split('-');
         if (range.length === 2) {
-          if (isInteger(range[0]) === false) {
+          if (this.isInteger(range[0]) === false) {
             return {
               valid: false, error: errors[5], fen, range: range[0],
             };
@@ -235,14 +235,14 @@ module.exports = class Draughts {
           if (!(range[0] >= 1 && range[0] <= 100)) {
             return { valid: false, error: errors[6], fen };
           }
-          if (isInteger(range[1]) === false) {
+          if (this.isInteger(range[1]) === false) {
             return { valid: false, error: errors[5], fen };
           }
           if (!(range[1] >= 1 && range[1] <= 100)) {
             return { valid: false, error: errors[6], fen };
           }
         } else {
-          if (isInteger(numSquare) === false) {
+          if (this.isInteger(numSquare) === false) {
             return { valid: false, error: errors[5], fen };
           }
           if (!(numSquare >= 1 && numSquare <= 100)) {
@@ -864,14 +864,11 @@ module.exports = class Draughts {
       console.log('UNDEDFINED MOVE');
       return false;
     }
-    console.log(JSON.stringify(move));
     move.to = parseInt(move.to, 10);
     move.from = parseInt(move.from, 10);
     const moves = this.generate_moves();
-    console.log(`all moves ${JSON.stringify(moves)}`);
     for (let i = 0; i < moves.length; i++) {
       if ((move.to === moves[i].to) && (move.from === moves[i].from)) {
-        console.log("I'M INSIDEEE");
         this.makeMove(moves[i]);
         return moves[i];
       }

@@ -6,6 +6,8 @@ const gameController = require('../controllers/gameController');
 router
   .post('/game/lobbies/create_game', gameController.create_game)
   .put('/game/tieGame', gameController.tieGame)
-  .delete('/game/leaveGame', gameController.leaveGame);
+  .delete('/game/leaveGame', gameController.leaveGame)
+  .put('/game/movePiece', gameController.movePiece)
+  .put('/game/turnChange', gameController.turnChange);
 
 module.exports = router;

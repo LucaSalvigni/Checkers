@@ -81,7 +81,7 @@ async function gameEnd(gameId, tie, winner) {
 */
 function parseFEN(game) {
   const data = [];
-  const fields = game.fen.split(':');
+  const fields = game.fen().split(':');
   data.push(fields[0]);
 
   const whitePieces = fields[1].split(',');
@@ -93,10 +93,10 @@ function parseFEN(game) {
   const whitePiecesWithMoves = new Map();
   const blackPiecesWithMoves = new Map();
 
-  for (let i = 0; i < blackPieces.length; i + 1) {
+  for (let i = 0; i < blackPieces.length; i++) {
     const piece = blackPieces[i];
     if (piece !== '' && piece !== null) {
-      if (piece.charAt(0).equals('K')) {
+      if (piece.charAt(0) === 'K' ) {
         const moves = game.getLegalMoves(piece.substring(1));
         blackPiecesWithMoves.set(piece, moves);
       } else {
@@ -105,10 +105,10 @@ function parseFEN(game) {
       }
     }
   }
-  for (let i = 0; i < whitePieces.length; i + 1) {
+  for (let i = 0; i < whitePieces.length; i++) {
     const piece = whitePieces[i];
     if (piece !== '' && piece !== null) {
-      if (piece.charAt(0).equals('K')) {
+      if (piece.charAt(0) === 'K' ) {
         const moves = game.getLegalMoves(piece.substring(1));
         whitePiecesWithMoves.set(piece, moves);
       } else {
@@ -142,7 +142,6 @@ exports.create_game = async function createGame(req, res) {
     res.status(200).json({
       game: newGame,
     });
-
   } catch (err) {
     log(err);
     res.status(500).send({ message: 'Something went wrong while creating a game' });
@@ -179,7 +178,7 @@ exports.leaveGame = async function leaveGame(req, res) {
         return;
       }
 
-      //TODO ?
+      // TODO ?
       const data = [];
       data.push(`You successfully left the game!\n ${winStars} stars have been removed from your profile!`);
       data.push(`The opponent has left the game!\n ${lossStars} stars have been added to your profile`);
@@ -199,7 +198,7 @@ exports.leaveGame = async function leaveGame(req, res) {
  * Gets called whenever a user's turn time expires.
  */
 exports.turnChange = async function turnChange(req, res) {
-  const gameId = req.body.game_id;
+  const gameId = req.body.gameId;
   const gameObj = await Game.findById(gameId);
   if (gameObj) {
     const game = new Draughts(gameObj.fen);
@@ -274,4 +273,4 @@ exports.movePiece = async function movePiece(req, res) {
     res.status(500).send({ message: 'Internal server error while leaving game' });
   }
 };
-//TODO REMOVE
+// TODO REMOVE
