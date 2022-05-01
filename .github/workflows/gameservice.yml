@@ -27,10 +27,6 @@ jobs:
         run: |
           cd Backend/Checkers-GameService
           npm ci
-      - name: Debugging info
-        run: |
-          cd Backend/Checkers-GameService
-          npm run test       
       - name: Test and build
         run: |
           cd Backend/Checkers-GameService
