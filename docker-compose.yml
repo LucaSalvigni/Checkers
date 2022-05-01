@@ -1,6 +1,6 @@
 services:
   userservice:
-    container_name: registry.digitalocean.com/checkers-cr/checkers:userservice
+    image: registry.digitalocean.com/checkers-cr/checkers:userservice
     build: 
       context: ./Backend
       args:
@@ -13,7 +13,7 @@ services:
     ports:
       - 3031:3031
   gameservice:
-    container_name: registry.digitalocean.com/checkers-cr/checkers:gameservice
+    image: registry.digitalocean.com/checkers-cr/checkers:gameservice
     build: 
       context: ./Backend
       args:
