@@ -41,7 +41,6 @@ build/Release
 node_modules/
 jspm_packages/
 userService-build/
-jwt_secret
 
 # TypeScript v1 declaration files
 typings/
@@ -73,6 +72,7 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
+jwt_secret
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache

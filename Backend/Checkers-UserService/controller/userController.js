@@ -67,8 +67,6 @@ function loadJwtSecret() {
   return newSecret;
 }
 
-const jwtSecret = loadJwtSecret();
-
 /**
  * Tries to sign up a new user
  */
@@ -145,7 +143,7 @@ exports.login = async function (req, res) {
       if (allegedPassword === registeredUser.password) {
         log(`${mail} just logged in successfully`);
         // Will those two lines work?
-        const token = jwt.sign({ user: { mail: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
+        const token = jwt.sign({ user: { mail: registeredUser.mail, username: registeredUser.username } }, loadJwtSecret(), { expiresIn: '1 day' });
         res.status(200).json({
           token,
           message: `Authentication successfull, welcome back ${registeredUser.username}!`,
@@ -183,7 +181,7 @@ exports.refresh_token = async function (req, res) {
     if (mail === tokenMail) {
       log('Check token');
       // Check this await
-      const checkToken = jwt.sign({ user: { mail: registeredUser.mail, username: registeredUser.username } }, jwtSecret, { expiresIn: '1 day' });
+      const checkToken = jwt.sign({ user: { mail: registeredUser.mail, username: registeredUser.username } }, loadJwtSecret(), { expiresIn: '1 day' });
       res.status(200).json({
         checkToken,
         user: {
@@ -236,7 +234,7 @@ exports.verify_token = async function (req, res) {
       const bearer = authorization.split(' ');
       const bToken = bearer[1];
       req.token = bToken;
-      const token = jwt.verify(req.token, jwtSecret);
+      const token = jwt.verify(req.token, loadJwtSecret());
       log(`veryfing token for ${token.user.mail}`);
       if (token) {
         log(`token ok for user ${token.user.mail}`);
