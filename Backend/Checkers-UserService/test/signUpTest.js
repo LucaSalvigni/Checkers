@@ -1,3 +1,4 @@
+const fs = require('fs');
 const api = require('./utils/api');
 const User = require('../models/userModel');
 
@@ -7,6 +8,13 @@ describe('Sign Up Test', async () => {
     if (checkUser.length > 0) {
       await User.deleteMany({ mail: 'userok@testusers.com' });
     }
+    fs.unlink('./jwt_secret', (error) => {
+      if (error) {
+        console.log(error);
+        return;
+      }
+      console.log('Miao');
+    });
   });
 
   it('should register a new user', async () => {

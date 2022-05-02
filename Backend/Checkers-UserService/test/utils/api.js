@@ -44,7 +44,7 @@ const api = {
   async verifyTokenUser(token) {
     return chai.request(userService)
       .get('/authenticate')
-      .send({ headers: { authorization: `Bearer ${token}` } });
+      .set({ authorization: `Bearer ${token}` });
   },
 
   async getLeaderboard() {

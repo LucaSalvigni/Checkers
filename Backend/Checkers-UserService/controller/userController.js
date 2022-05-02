@@ -102,7 +102,7 @@ exports.signup = async function (req, res) {
         wins: 0,
         losses: 0,
         ties: 0,
-        avatar: '',
+        avatar: 'https://picsum.photos/id/1005/400/250',
         mail,
         password: hashPsw,
         salt,
@@ -228,22 +228,22 @@ exports.refresh_token = async function (req, res) {
  * @param {*} res
  */
 exports.verify_token = async function (req, res) {
-  const { authorization } = req.body.headers;
+  const { authorization } = req.headers;
   try {
-    if (typeof authorization !== 'undefined') {
-      const bearer = authorization.split(' ');
-      const bToken = bearer[1];
-      req.token = bToken;
-      const token = jwt.verify(req.token, loadJwtSecret());
-      log(`veryfing token for ${token.user.mail}`);
-      if (token) {
-        log(`token ok for user ${token.user.mail}`);
-        res.status(200).json({ token, user: token.user });
-      } /* else {
+    // if (typeof authorization !== 'undefined') {
+    const bearer = authorization.split(' ');
+    const bToken = bearer[1];
+    req.token = bToken;
+    const token = jwt.verify(req.token, loadJwtSecret());
+    log(`veryfing token for ${token.user.mail}`);
+    // if (token) {
+    log(`token ok for user ${token.user.mail}`);
+    res.status(200).json({ token, user: token.user });
+    /* } else {
         log(`token error for user ${token.user.email}`);
         res.status(400).send({ message: 'Token verification error, please log-in again.' });
-      } */
-    }
+      }
+    } */
   } catch (err) {
     log('Someone is trying to do some nasty illegal things');
     res.status(400).send({ message: 'User not authenticated, please log-in again.' });
@@ -258,7 +258,7 @@ exports.getProfile = async function (req, res) {
     const data = await User.findOne({ mail }, 'username avatar first_name last_name stars mail').lean();
     res.json({
       username: data.username,
-      avatar: data.avatar === '' ? 'https://picsum.photos/id/1005/400/250' : data.avatar,
+      avatar: data.avatar,
       first_name: data.first_name,
       last_name: data.last_name,
       stars: data.stars,
@@ -306,20 +306,21 @@ exports.getHistory = async function (req, res) {
   } */
 };
 
-// WILL THIS WORK?
 exports.getLeaderboard = async function (__, res) {
   const users = await User.find({}, 'username avatar stars wins losses ties').sort({ stars: 'desc' });
-  if (users.length !== 0) {
+  log('Retrieving and sending leaderboard');
+  res.status(200).json(users);
+  /* if (users.length !== 0) {
     users.map((user) => {
       user.avatar = user.avatar === '' ? 'https://picsum.photos/id/1005/400/250' : user.avatar;
       return users;
     });
     log('Retrieving and sending leaderboard');
     res.status(200).json(users);
-  } else {
+  /*} else {
     res.status(200).send({ message: 'There is no one in the leaderboard.' });
   }
-  /* try {
+   try {
 const users = await User.find({}, 'username avatar stars wins losses ties').sort({ stars: 'desc' });
     if (users != null) {
       users.map((user) => {

@@ -18,7 +18,11 @@ describe('Verify token Test', async () => {
     verifiedToken.should.have.status(200);
   });
   it('should undefined token', async () => {
-    const notVerifiedToken = await api.verifyTokenUser(undefined);
+    const notVerifiedToken = await api.verifyTokenUser();
     notVerifiedToken.should.have.status(400);
   });
+  /* it('should give wrong token', async () => {
+    const notVerifiedToken = await api.verifyTokenUser("ciao");
+    notVerifiedToken.should.have.status(400)
+  }) */
 });
