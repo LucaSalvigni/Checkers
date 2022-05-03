@@ -11,38 +11,14 @@ env:
   IMAGE_NAME: "checkers"
 
 jobs:
-  getVersion:
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.gitversion.outputs.SemVer }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.7
-        with:
-          versionSpec: '5.x'
-      - name: Determine Version
-        id:   gitversion
-        uses: gittools/actions/gitversion/execute@v0.9.7
-
   build_and_push:
     runs-on: ubuntu-latest
-    needs: getVersion
     steps:
       - name: Checkout the repo 
         uses: actions/checkout@v2
 
       - name: Build container images
-        run: |
-          docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}-gameservice ./Backend \
-          --build-arg SERVICENAME=GameService --build-arg SERVICEDIR=Checkers-GameService --build-arg ARG_PORT=3032 \
-          --build-arg NODE_ENV=production
-          docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}-userservice ./Backend \
-          --build-arg SERVICENAME=UserService --build-arg SERVICEDIR=Checkers-UserService --build-arg ARG_PORT=3031 \
-          --build-arg NODE_ENV=production 
+        run: docker-compose build
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -57,14 +33,24 @@ jobs:
 
       - name: Push image to DigitalOcean Container Registry
         run: |
-          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}-gameservice
-          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}-userservice
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
         
   deploy:
     runs-on: ubuntu-latest
-    needs: [build_and_push, getVersion]
+    needs: build_and_push
     
     steps:
+      - uses: actions/checkout@v2
+      - name: Copy file via scp
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USERNAME }}
+          key: ${{ secrets.DO_SSHKEY }}
+          passphrase: ${{ secrets.DO_PASSPHRASE }}
+          source: "docker-compose.yml"
+          target: "."
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.3
         with:
@@ -77,19 +63,10 @@ jobs:
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             # Stop running containers
-            docker stop $(echo $IMAGE_NAME)
+            docker stop userservice gameservice
             # Remove old containers
-            docker rm $(echo $IMAGE_NAME)
+            docker rm userservice gameservice
             # Run new containers from new images
-            docker run -d \
-            -p 3032:3032 \
-            -e DB_PSW=${{ secrets.DB_PSW }} \
-            --restart always \
-            --name $(echo $IMAGE_NAME)-gameservice \
-            $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}-gameservice
-            docker run -d \
-            -p 3031:3031 \
-            -e DB_PSW=${{ secrets.DB_PSW }} \
-            --restart always \
-            --name $(echo $IMAGE_NAME)-userservice \
-            $(echo $REGISTRY)/$(echo $IMAGE_NAME):${{ needs.getVersion.outputs.version }}-userservice
+            docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
+            docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
+            docker compose up -d
