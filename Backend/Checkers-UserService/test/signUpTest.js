@@ -13,7 +13,6 @@ describe('Sign Up Test', async () => {
         console.log(error);
         return;
       }
-      console.log('Miao');
     });
   });
 
