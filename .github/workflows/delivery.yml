@@ -67,6 +67,6 @@ jobs:
             # Remove old containers
             docker rm userservice gameservice
             # Run new containers from new images
-            docker pull gameservice
-            docker pull userservice
+            docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
+            docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
             docker compose up -d
