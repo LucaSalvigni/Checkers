@@ -1,7 +1,7 @@
 services:
   userservice:
-    image: registry.digitalocean.com/checkers-cr/checkers:userservice
     container_name: userservice
+    image: registry.digitalocean.com/checkers-cr/checkers:userservice
     build: 
       context: ./Backend
       args:
