@@ -8,8 +8,10 @@ const { expect } = require('chai');
 const gameService = require('../index');
 const gameModel = require('../models/gameModel');
 const Draughts = require('../controllers/draughts');
+const mongoose = require('mongoose');
 
 let testGame;
+const randomID = new mongoose.Types.ObjectId();
 const player = '6263c5d6e4e2e9916c574c8a';
 const opponent = '6266a229ea5c6213e5a60cc6';
 
@@ -18,7 +20,7 @@ chai.should();
 
 async function createGame(game) {
   return chai.request(gameService.app)
-    .post('/game/lobbies/create_game')
+    .post('/game/lobbies/createGame')
     .send({ hostId: game.hostId, opponent: game.opponentId });
 }
 
@@ -26,6 +28,12 @@ async function leaveGame(gameToQuit) {
   return chai.request(gameService.app)
     .delete('/game/leaveGame')
     .send({ gameId: gameToQuit.gameId, playerId: gameToQuit.playerId });
+}
+
+async function tieGame(gameToTie) {
+  return chai.request(gameService.app)
+    .put('/game/tieGame')
+    .send({ gameId: gameToTie });
 }
 
 async function movePiece(gameMove) {
@@ -70,6 +78,15 @@ describe('Game', async () => {
   });
 
   describe('Game Creation', async () => {
+    it('should fail to create a new game', async () => {
+      let newGame = {
+        hostId: "oogabooga",
+        opponentId: "oogabooga2",
+      };
+      newGame = await createGame(newGame);
+      newGame.should.have.status(500);
+    });
+
     it('should create a new game', async () => {
       let newGame = {
         hostId: player,
@@ -118,10 +135,31 @@ describe('Game', async () => {
       afterMove.should.have.status(200);
     });
 
+    it('should not change turn', async () => {
+      const turnChanged = await changeTurn(randomID);
+      turnChanged.should.have.status(400);
+    });
+    
     // Should be player1 turn now, chaning turn to make player2's turn again
     it('should change turn', async () => {
       const turnChanged = await changeTurn(testGame._id);
       turnChanged.should.have.status(200);
+    });
+
+    it('should not find the game', async () => {
+      const gameMove = {
+        gameId: randomID
+      };
+      const afterMove = await movePiece(gameMove);
+      afterMove.should.have.status(400);
+    });
+
+    it('should throw error', async () => {
+      const gameMove = {
+        gameId: "oogabooga",
+      };
+      const afterMove = await movePiece(gameMove);
+      afterMove.should.have.status(500);
     });
 
     // By changing turns, it's again player2' turn
@@ -136,13 +174,50 @@ describe('Game', async () => {
     });
   });
 
+  describe('Tie game route', async () => {
+    beforeEach( async () => {
+      console.log('Resetting board...');
+      await resetGame(testGame._id);
+    });
+
+    it('should throw error', async () => {
+      const afterMove = await tieGame("oogabooga");
+      afterMove.should.have.status(500);
+    });
+
+    it('should fail to tie the game', async () => {
+      const afterMove = await tieGame(randomID);
+      afterMove.should.have.status(400);
+    });
+
+    it('should tie the game', async () => {
+      const afterMove = await tieGame(testGame._id);
+      afterMove.should.have.status(200);
+    });
+  });
+
   describe('Game ending', async () => {
-    beforeEach(async () => {
+    beforeEach( async () => {
       console.log('Resetting board...');
       await resetGame(testGame._id);
     });
 
     // White has only one piece, when it gets eaten the game should end
+    it('should end the game with player1 Winner', async () => {
+      const almostGameOverFEN = 'W:W31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50:B30.';
+      await updateGameFEN(testGame._id, almostGameOverFEN);
+
+      const gameMove = {
+        gameId: testGame._id,
+        from: 35,
+        to: 24,
+      };
+      const afterMove = await movePiece(gameMove);
+      afterMove.should.have.status(200);
+      expect(afterMove.body.ended).to.be.true;
+      expect(afterMove.body.winner).to.equal('6263c5d6e4e2e9916c574c8a');
+    });
+
     it('should end the game with player2 Winner', async () => {
       const almostGameOverFEN = 'B:W21:B1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20.';
       await updateGameFEN(testGame._id, almostGameOverFEN);
@@ -175,7 +250,7 @@ describe('Game', async () => {
   });
 
   describe('Players Leaving', async () => {
-    before(async () => {
+    beforeEach(async () => {
       console.log('Resetting board...');
       await resetGame(testGame._id);
     });
@@ -188,10 +263,38 @@ describe('Game', async () => {
       const playerLeft = await leaveGame(gameToQuit);
       playerLeft.should.have.status(400);
     });
+
+    it('should fail to find the game', async () => {
+      const gameToQuit = {
+        gameId: randomID,
+        playerId: player,
+      };
+      const playerLeft = await leaveGame(gameToQuit);
+      playerLeft.should.have.status(400);
+    });
+
+    it('should throw error', async () => {
+      const gameToQuit = {
+        gameId: "oogabooga",
+        playerId: player,
+      };
+      const playerLeft = await leaveGame(gameToQuit);
+      playerLeft.should.have.status(500);
+    });
+
     it('should make host leave current game', async () => {
       const gameToQuit = {
         gameId: testGame._id,
         playerId: player,
+      };
+      const playerLeft = await leaveGame(gameToQuit);
+      playerLeft.should.have.status(200);
+    });
+
+    it('should make player2 leave current game', async () => {
+      const gameToQuit = {
+        gameId: testGame._id,
+        playerId: opponent,
       };
       const playerLeft = await leaveGame(gameToQuit);
       playerLeft.should.have.status(200);

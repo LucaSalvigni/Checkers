@@ -105,7 +105,7 @@ function parseFEN(game) {
 }
 
 // Exports
-exports.create_game = async function createGame(req, res) {
+exports.createGame = async function createGame(req, res) {
   try {
     const { hostId } = req.body;
     const { opponent } = req.body;
