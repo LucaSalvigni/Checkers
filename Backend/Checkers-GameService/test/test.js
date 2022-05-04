@@ -1,11 +1,13 @@
+/* eslint-disable no-unused-expressions */
+
 // Require the dev-dependencies
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 // Require server and model
+const { expect } = require('chai');
 const gameService = require('../index');
 const gameModel = require('../models/gameModel');
 const Draughts = require('../controllers/draughts');
-const { expect } = require('chai');
 
 let testGame;
 const player = '6263c5d6e4e2e9916c574c8a';
@@ -153,10 +155,10 @@ describe('Game', async () => {
       const afterMove = await movePiece(gameMove);
       afterMove.should.have.status(200);
       expect(afterMove.body.ended).to.be.true;
-      expect(afterMove.body.winner).to.equal("6266a229ea5c6213e5a60cc6");
+      expect(afterMove.body.winner).to.equal('6266a229ea5c6213e5a60cc6');
     });
 
-   it('should end in a tie', async () => {
+    it('should end in a tie', async () => {
       const almostGameOverFEN = 'W:W21,22,23,24,25,26,27,28,30,34:B11,12,13,14,15,16,17,18,19,20.';
       await updateGameFEN(testGame._id, almostGameOverFEN);
 
@@ -165,11 +167,11 @@ describe('Game', async () => {
         from: 34,
         to: 29,
       };
-      const afterMove = await movePiece(gameMove);   
+      const afterMove = await movePiece(gameMove);
       afterMove.should.have.status(200);
       expect(afterMove.body.ended).to.be.true;
-      expect(afterMove.body.winner).to.equal("");
-    }); 
+      expect(afterMove.body.winner).to.equal('');
+    });
   });
 
   describe('Players Leaving', async () => {
