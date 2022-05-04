@@ -22,7 +22,7 @@ const gameSchema = new mongoose.Schema({
   finished: {
     type: Boolean,
     required: true,
-  }
+  },
 });
 
 module.exports = mongoose.model('games', gameSchema);

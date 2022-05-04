@@ -5,6 +5,7 @@ const chaiHttp = require('chai-http');
 const gameService = require('../index');
 const gameModel = require('../models/gameModel');
 const Draughts = require('../controllers/draughts');
+const { expect } = require('chai');
 
 let testGame;
 const player = '6263c5d6e4e2e9916c574c8a';
@@ -51,7 +52,7 @@ async function resetGame(gameId) {
 
 async function updateGameFEN(gameId, fen) {
   await gameModel.findByIdAndUpdate(gameId, {
-    fen: fen,
+    fen,
   });
 }
 
@@ -78,8 +79,8 @@ describe('Game', async () => {
     });
   });
 
-  describe('Piece Movement', async () => {  
-    before (async () => {
+  describe('Piece Movement', async () => {
+    before(async () => {
       await resetGame(testGame._id);
     });
 
@@ -131,14 +132,18 @@ describe('Game', async () => {
       const afterMove = await movePiece(gameMove);
       afterMove.should.have.status(200);
     });
-
   });
 
   describe('Game ending', async () => {
+    beforeEach(async () => {
+      console.log('Resetting board...');
+      await resetGame(testGame._id);
+    });
+
     // White has only one piece, when it gets eaten the game should end
     it('should end the game with player2 Winner', async () => {
-      const almostGameOverFEN = "B:W21:B1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20.";
-      await updateGameFEN(testGame._id, almostGameOverFEN)
+      const almostGameOverFEN = 'B:W21:B1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20.';
+      await updateGameFEN(testGame._id, almostGameOverFEN);
 
       const gameMove = {
         gameId: testGame._id,
@@ -147,12 +152,29 @@ describe('Game', async () => {
       };
       const afterMove = await movePiece(gameMove);
       afterMove.should.have.status(200);
+      expect(afterMove.body.ended).to.be.true;
+      expect(afterMove.body.winner).to.equal("6266a229ea5c6213e5a60cc6");
     });
+
+   it('should end in a tie', async () => {
+      const almostGameOverFEN = 'W:W21,22,23,24,25,26,27,28,30,34:B11,12,13,14,15,16,17,18,19,20.';
+      await updateGameFEN(testGame._id, almostGameOverFEN);
+
+      const gameMove = {
+        gameId: testGame._id,
+        from: 34,
+        to: 29,
+      };
+      const afterMove = await movePiece(gameMove);   
+      afterMove.should.have.status(200);
+      expect(afterMove.body.ended).to.be.true;
+      expect(afterMove.body.winner).to.equal("");
+    }); 
   });
 
   describe('Players Leaving', async () => {
-    before (async () => {
-      console.log("Resetting board...");
+    before(async () => {
+      console.log('Resetting board...');
       await resetGame(testGame._id);
     });
 

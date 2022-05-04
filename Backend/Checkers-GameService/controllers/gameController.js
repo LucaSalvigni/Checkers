@@ -17,12 +17,12 @@ function log(msg) {
   */
 function checkWinner(game) {
   if (game.fen().split(':')[1].length <= 1) {
-    return 'B'
+    return 'B';
   }
   if (game.fen().split(':')[2].length <= 1) {
-    return 'W'
+    return 'W';
   }
-  return 'T'
+  return 'T';
 }
 
 /**
@@ -137,9 +137,9 @@ exports.tieGame = async function tieGame(req, res) {
   try {
     const game = await Game.findById(gameId);
     if (game) {
-      gameEnd(game, "T").then(
+      gameEnd(game, 'T').then(
         res.status(200).send({ message: 'Game has been settled with a tie, each player will not earn nor lose stars' }),
-      )
+      );
     } else {
       log(`There is no such thing as game ${gameId}`);
       res.status(400).send({ message: 'There is no such game' });
@@ -232,7 +232,7 @@ exports.movePiece = async function movePiece(req, res) {
         if (dummyGame.gameOver()) {
           log(`Game ${gameId} is over!`);
           const gameResult = checkWinner(dummyGame);
-          
+
           // Check if it's a tie
           if (gameResult !== 'T') {
             log(`${gameResult === 'B' ? gameFromDB.black : gameFromDB.white} won game ${gameId}`);
