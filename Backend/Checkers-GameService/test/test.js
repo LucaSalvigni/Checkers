@@ -4,6 +4,7 @@ const chaiHttp = require('chai-http');
 // Require server and model
 const gameService = require('../index');
 const gameModel = require('../models/gameModel');
+const Draughts = require('../controllers/draughts');
 
 let testGame;
 const player = '6263c5d6e4e2e9916c574c8a';
@@ -36,6 +37,24 @@ async function changeTurn(gameId) {
     .send({ gameId });
 }
 
+// Util functions
+
+async function resetGame(gameId) {
+  const newGame = new Draughts();
+
+  await gameModel.findByIdAndUpdate(gameId, {
+    finished: false,
+    fen: newGame.fen(),
+    turn: newGame.turn,
+  });
+}
+
+async function updateGameFEN(gameId, fen) {
+  await gameModel.findByIdAndUpdate(gameId, {
+    fen: fen,
+  });
+}
+
 // Game testing
 
 describe('Game', async () => {
@@ -47,7 +66,7 @@ describe('Game', async () => {
     }
   });
 
-  describe('POST Game', async () => {
+  describe('Game Creation', async () => {
     it('should create a new game', async () => {
       let newGame = {
         hostId: player,
@@ -59,15 +78,19 @@ describe('Game', async () => {
     });
   });
 
-  describe('PUT Game', async () => {
+  describe('Piece Movement', async () => {  
+    before (async () => {
+      await resetGame(testGame._id);
+    });
+
     it('should move a piece from player2 into a game', async () => {
       const gameMove = {
         gameId: testGame._id,
         from: 31,
         to: 26,
       };
-      const newPiece = await movePiece(gameMove);
-      newPiece.should.have.status(200);
+      const afterMove = await movePiece(gameMove);
+      afterMove.should.have.status(200);
     });
 
     // Player1 just moved a piece, trying to move a piece from the same player as before
@@ -77,8 +100,8 @@ describe('Game', async () => {
         from: 33,
         to: 29,
       };
-      const newPiece = await movePiece(wrongMove);
-      newPiece.should.have.status(400);
+      const afterMove = await movePiece(wrongMove);
+      afterMove.should.have.status(400);
     });
 
     // Moving a piece from player2
@@ -88,8 +111,8 @@ describe('Game', async () => {
         from: 20,
         to: 25,
       };
-      const newPiece = await movePiece(gameMove);
-      newPiece.should.have.status(200);
+      const afterMove = await movePiece(gameMove);
+      afterMove.should.have.status(200);
     });
 
     // Should be player1 turn now, chaning turn to make player2's turn again
@@ -105,12 +128,34 @@ describe('Game', async () => {
         from: 19,
         to: 24,
       };
-      const newPiece = await movePiece(gameMove);
-      newPiece.should.have.status(200);
+      const afterMove = await movePiece(gameMove);
+      afterMove.should.have.status(200);
+    });
+
+  });
+
+  describe('Game ending', async () => {
+    // White has only one piece, when it gets eaten the game should end
+    it('should end the game with player2 Winner', async () => {
+      const almostGameOverFEN = "B:W21:B1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20.";
+      await updateGameFEN(testGame._id, almostGameOverFEN)
+
+      const gameMove = {
+        gameId: testGame._id,
+        from: 16,
+        to: 27,
+      };
+      const afterMove = await movePiece(gameMove);
+      afterMove.should.have.status(200);
     });
   });
 
-  describe('DELETE Game', async () => {
+  describe('Players Leaving', async () => {
+    before (async () => {
+      console.log("Resetting board...");
+      await resetGame(testGame._id);
+    });
+
     it('should fail to terminate a game', async () => {
       const gameToQuit = {
         gameId: testGame._id,

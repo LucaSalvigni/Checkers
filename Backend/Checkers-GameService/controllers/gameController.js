@@ -13,28 +13,16 @@ function log(msg) {
 
 /**
   * @param {*} game draughs instance
-  * @returns whether such game is over because someone won.
+  * @returns B if Black won, W if White won otherwise T for Tie
   */
-function winCheck(game) {
+function checkWinner(game) {
   if (game.fen().split(':')[1].length <= 1) {
-    return {
-      status: true,
-      winner: game.black,
-      loser: game.white,
-    };
+    return 'B'
   }
   if (game.fen().split(':')[2].length <= 1) {
-    return {
-      status: true,
-      winner: game.white,
-      loser: game.black,
-    };
+    return 'W'
   }
-  return {
-    status: false,
-    winner: game.white,
-    loser: game.black,
-  };
+  return 'T'
 }
 
 /**
@@ -44,29 +32,23 @@ function winCheck(game) {
  * @param {*} winner player who won (same as loser if "tie" param is set to TRUE)
  * @returns true if game was terminated correctly and successfully saved into DB, false otherwise.
  */
-async function gameEnd(gameId, tie, winner) {
-  log(`game ${gameId} just ended`);
+async function gameEnd(game, winner) {
   try {
-    const game = await Game.findById(gameId);
-    if (game) {
-      if (!tie) {
-        log(`game ${gameId} didn't end in tie`);
-        await Game.findByIdAndUpdate(gameId, {
-          finished: true,
-          winner,
-        });
-      } else {
-        log(`game ${gameId} ended in a tie`);
-        await Game.findByIdAndUpdate(gameId, {
-          finished: true,
-        });
-      }
-      return true;
+    if (winner !== 'T') {
+      log(`game ${game._id} didn't end in tie`);
+      await Game.findByIdAndUpdate(game._id, {
+        finished: true,
+        winner: winner === 'B' ? game.black : game.white,
+      });
+    } else {
+      log(`game ${game._id} ended in a tie`);
+      await Game.findByIdAndUpdate(game._id, {
+        finished: true,
+      });
     }
-    log(`Game ${gameId} not found`);
-    return false;
+    return true;
   } catch (err) {
-    log(`Something went wrong while closing game ${gameId}`);
+    log(`Something went wrong while closing game ${game._id}`);
     log(err);
     return false;
   }
@@ -128,19 +110,20 @@ exports.create_game = async function createGame(req, res) {
     const { hostId } = req.body;
     const { opponent } = req.body;
 
-    let newGame = new Game({
+    const newGame = new Draughts();
+    let savedGame = new Game({
       white: hostId,
       black: opponent,
       finished: false,
-      fen: new Draughts().fen(),
-      turn: hostId,
+      fen: newGame.fen(),
+      turn: newGame.turn,
     });
 
-    newGame = await newGame.save();
-    log(`Just created game ${newGame._id}`);
+    savedGame = await savedGame.save();
+    log(`Just created game ${savedGame._id}`);
 
     res.status(200).json({
-      game: newGame,
+      game: savedGame,
     });
   } catch (err) {
     log(err);
@@ -148,12 +131,24 @@ exports.create_game = async function createGame(req, res) {
   }
 };
 
-exports.tieGame = function tieGame(req, res) {
-  gameEnd(req.body.gameId, true, _, _).then(
-    res.status(200).send({ message: 'Game has been settled with a tie, each player will not earn nor lose stars' }),
-  ).catch(
-    res.status(500).send({ message: 'Something went wrong while closing the game.' }),
-  );
+exports.tieGame = async function tieGame(req, res) {
+  const { gameId } = req.body;
+
+  try {
+    const game = await Game.findById(gameId);
+    if (game) {
+      gameEnd(game, "T").then(
+        res.status(200).send({ message: 'Game has been settled with a tie, each player will not earn nor lose stars' }),
+      )
+    } else {
+      log(`There is no such thing as game ${gameId}`);
+      res.status(400).send({ message: 'There is no such game' });
+    }
+  } catch (err) {
+    log(`Something went wrong while drawing ${gameId}`);
+    log(err);
+    res.status(500).send({ message: 'Internal server error while leaving game' });
+  }
 };
 
 /**
@@ -168,10 +163,10 @@ exports.leaveGame = async function leaveGame(req, res) {
       log(`${quitter} is leaving game ${gameId}`);
       if (game.white.equals(quitter)) {
         log(`${quitter} is the host of game ${gameId}`);
-        await gameEnd(gameId, false, game.black, game.white);
+        await gameEnd(game, game.black);
       } else if (game.black.equals(quitter)) {
         log(`${quitter} is not the host of game ${gameId}`);
-        await gameEnd(gameId, false, game.white, game.black);
+        await gameEnd(game, game.white);
       } else {
         log(`WAT, apparently ${quitter} has nothing to do with this game`);
         res.status(400).send({ message: `${quitter} is not in any game` });
@@ -221,30 +216,38 @@ exports.movePiece = async function movePiece(req, res) {
   const { gameId } = req.body;
   const { from } = req.body;
   const { to } = req.body;
+
   try {
-    const gameObj = await Game.findById(gameId);
-    if (gameObj) {
-      const game = new Draughts(gameObj.fen);
-      if (game.move({ from, to }) !== false) {
-        const data = parseFEN(game);
+    // Check if game exists
+    const gameFromDB = await Game.findById(gameId);
+    if (gameFromDB) {
+      const dummyGame = new Draughts(gameFromDB.fen);
+
+      // Check if the move is legal
+      if (dummyGame.move({ from, to }) !== false) {
+        const data = parseFEN(dummyGame);
         log(`Moving a piece in ${gameId} from ${from} to ${to}`);
-        if (game.gameOver()) {
+
+        // Check if game ended
+        if (dummyGame.gameOver()) {
           log(`Game ${gameId} is over!`);
-          const gameResult = winCheck(game);
-          if (gameResult.status) {
-            log(`Someone won game ${gameId}`);
-            await gameEnd(gameId, false, gameResult.winner);
+          const gameResult = checkWinner(dummyGame);
+          
+          // Check if it's a tie
+          if (gameResult !== 'T') {
+            log(`${gameResult === 'B' ? gameFromDB.black : gameFromDB.white} won game ${gameId}`);
+            await gameEnd(gameFromDB, gameResult);
             res.json({
-              winner: gameResult.winner,
-              loser: gameResult.loser,
+              ended: true,
+              winner: gameResult === 'B' ? gameFromDB.black : gameFromDB.white,
               board: data,
             });
           } else {
             log(`Game ${gameId} just resulted in a tie, how lucky are you to be able to witness such a rare event?"`);
-            await gameEnd(gameId, true, gameResult.winner);
+            await gameEnd(gameFromDB, gameResult);
             res.json({
+              ended: true,
               winner: '',
-              tie: true,
               board: data,
             });
           }
@@ -252,13 +255,13 @@ exports.movePiece = async function movePiece(req, res) {
           log(`Moving a piece from game ${gameId}`);
 
           res.json({
-            winner: '',
+            ended: false,
             board: data,
           });
         }
         // After making a move, update saved fen on MongoDB
         await Game.findByIdAndUpdate(gameId, {
-          fen: game.fen(),
+          fen: dummyGame.fen(),
         });
       } else {
         log(`Something wrong while trying to move a piece for game ${gameId}`);

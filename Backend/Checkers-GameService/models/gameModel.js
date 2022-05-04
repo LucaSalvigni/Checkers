@@ -15,7 +15,6 @@ const gameSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  history: [String],
   winner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'users',
@@ -23,8 +22,7 @@ const gameSchema = new mongoose.Schema({
   finished: {
     type: Boolean,
     required: true,
-  },
-  turn: String,
+  }
 });
 
 module.exports = mongoose.model('games', gameSchema);
