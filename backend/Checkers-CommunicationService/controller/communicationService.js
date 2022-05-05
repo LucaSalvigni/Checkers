@@ -24,7 +24,7 @@ exports.socket = async function (server) {
   });
 
   // Setup HTTPS agent to communicate with other services.
-  network.setup_https_agent(cert, key);
+  network.setupHTTPSAgent(cert, key);
 
   io.on('connection', async (client) => {
     log('a user connected');
