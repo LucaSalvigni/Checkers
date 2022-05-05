@@ -1,23 +1,23 @@
-const express = require("express")
-const dotenv = require("dotenv")
-const http = require("http")
-const communicationService = require("./controller/communicationService")
-const cors = require("cors")
+const express = require('express');
+const dotenv = require('dotenv');
+const http = require('http');
+const cors = require('cors');
+const communicationService = require('./controller/communicationService');
 
 // Load .env
-dotenv.config()
+dotenv.config();
 
 // Initialize express const
-const app = express()
+const app = express();
 
-// Initialize cors               
-app.use(cors())
+// Initialize cors
+app.use(cors());
 
 // SocketIO
-const server = http.createServer(app)
-communicationService.socket(server)
+const server = http.createServer(app);
+communicationService.socket(server);
 
-const PORT = process.env.PORT
-server.listen(PORT, function () {
-	console.log('CommunicationService started on port ' + PORT)
-})
+const { PORT } = process.env;
+server.listen(PORT, () => {
+  console.log(`CommunicationService started on port ${PORT}`);
+});
