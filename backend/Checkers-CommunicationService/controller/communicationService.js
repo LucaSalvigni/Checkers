@@ -1,12 +1,13 @@
 const BiMap = require('bidirectional-map');
 const socket = require('socket.io');
 const network = require('./network_module')
+const path = require('path');
+const fs = require('fs');
 
 const onlineUsers = new BiMap(); // {  client_id <-> user_id  }
 const lobbies = new BiMap(); // { lobby_id -> Lobby }
-
-const cert = fs.readFileSync(path.join(__dirname, path.sep+".."+path.sep+"cert"+path.sep+"user_cert.pem"))
-const key = fs.readFileSync(path.join(__dirname, path.sep+".."+path.sep+"cert"+path.sep+"user_key.pem"))
+const cert = fs.readFileSync(path.join(__dirname, path.sep+".."+path.sep+"cert"+path.sep+"comm_cert.pem"))
+const key = fs.readFileSync(path.join(__dirname, path.sep+".."+path.sep+"cert"+path.sep+"comm_key.pem"))
 
 exports.socket = async function (server) {
   const io = socket(server, {
@@ -16,7 +17,7 @@ exports.socket = async function (server) {
   });
 
   //Setup HTTPS agent to communicate with other services.
-  network.setup_agent(cert,key)
+  network.setup_https_agent(cert,key)
 
   io.on('connection', async (client) => {
 
