@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const network = require('./network_module');
 const Lobby = require('../models/lobby');
+require('dotenv').config();
 
 const cert = fs.readFileSync(path.join(__dirname, `${path.sep}..${path.sep}cert${path.sep}comm_cert.pem`));
 const key = fs.readFileSync(path.join(__dirname, `${path.sep}..${path.sep}cert${path.sep}comm_key.pem`));

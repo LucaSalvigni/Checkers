@@ -60,7 +60,7 @@ async function askService(method, url, params) {
       response: response.data,
     };
   } catch (err) {
-    console.log(err);
+    //console.log(err);
     if (requestError(err)) {
       return {
         status: false,
