@@ -3,11 +3,10 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
-//Dependencies for an HTTPS server
-const https = require('https')
-const fs = require('fs')
-const path = require('path')
-const Certificates = require('./models/certificationModel')
+// Dependencies for an HTTPS server
+const https = require('https');
+const fs = require('fs');
+const Certificates = require('./models/caModel/certificationModel');
 
 // Load .env
 dotenv.config();
@@ -36,19 +35,28 @@ app.use(express.json());
 // Routes
 app.use('/', require('./routes/routes'));
 
-;(async () => {
-  const PORT = process.env.PORT
-  const certificate = await Certificates.findOne({name:"CA"},'value')
+let key = null;
+let cert = null;
+if (fs.existsSync('./cert/user_key.pem')) {
+  key = fs.readFileSync('./cert/user_key.pem');
+}
+if (fs.existsSync('./cert/user_cert.pem')) {
+  cert = fs.readFileSync('./cert/user_cert.pem');
+}
+
+(async () => {
+  const { PORT } = process.env;
+  const certificate = await Certificates.findOne({ name: 'CA' }, 'value');
   const opts = {
-      key: fs.readFileSync(path.join(__dirname, path.sep+"cert"+path.sep+"user_key.pem")),
-      cert: fs.readFileSync(path.join(__dirname, path.sep+"cert"+path.sep+"user_cert.pem")),
-      requestCert: true,
-      rejectUnauthorized: false, // so we can do own error handling
-      ca: certificate.value
+    key,
+    cert,
+    requestCert: true,
+    rejectUnauthorized: false, // so we can do own error handling
+    ca: certificate.value,
   };
-  
-  https.createServer(opts,app).listen(PORT, function () {
-      console.log('UserService started on port ' + PORT)
-  })
-})()
+
+  https.createServer(opts, app).listen(PORT, () => {
+    console.log(`UserService started on port ${PORT}`);
+  });
+})();
 module.exports = app;
