@@ -7,7 +7,7 @@ const cors = require('cors');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
-const Certificates = require('./models/certificationModel');
+const Certificates = require('./models/certificationModel.js');
 
 // Load .env
 dotenv.config();
