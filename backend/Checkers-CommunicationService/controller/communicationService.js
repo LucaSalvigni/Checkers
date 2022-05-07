@@ -173,14 +173,20 @@ exports.socket = async function (server) {
     },
   });
 
-  // Deletes a lobby
+  /**
+   *
+   * @param {*} lobbyId
+   * deletes a lobby
+   */
   function deleteLobby(lobbyId) {
     lobbies.delete(lobbyId);
+    clearTimeout(turnTimeouts.get(lobbyId));
+    turnTimeouts.delete(lobbyId);
     // make all sockets in this lobby leave the SocketRoom
     io.sockets.adapter.rooms.get(lobbyId).clear();
   }
 
-  //Setup a turn timeout for a given lobby
+  // Setup a turn timeout for a given lobby
   async function setupGameTurnTimeout(lobbyId) {
     turnTimeouts.set(lobbyId, setTimeout(async () => {
       await changeTurn(lobbyId);
@@ -204,6 +210,96 @@ exports.socket = async function (server) {
     await setupGameTurnTimeout(lobbyId);
     io.to(lobbyId).emit('turn_change', { next_player: nextPlayer });
   }
+  /**
+   *
+   * @param {*} winner mail of the player who just won a game
+   * @param {*} points1 points to update
+   * @param {*} loser mail of the player who just lost a game
+   * @param {*} points2 points to update
+   * @returns Updated version of the two player's profile
+   */
+  async function updatePoints(winner, points1, loser, points2, tied = false) {
+    const updatedOne = await network.askService('put', `${userService}/profile/updatePoints`, {
+      mail: winner,
+      stars: points1,
+      won: true,
+      tied,
+    });
+    const updatedTwo = await network.askService('put', `${userService}/profile/updatePoints`, {
+      mail: loser,
+      stars: points2,
+      won: false,
+      tied,
+    });
+    if (updatedOne.status && updatedTwo.status) {
+      return [updatedOne.response, updatedTwo.response];
+    }
+    return [];
+  }
+  /**
+   * Handle disconnections, 3 cases:
+   *  - player is not in a lobby
+   *  - player is in an empty lobby
+   *  - player is in a game
+   * @param {*} player mail who just disconnected
+   */
+  async function handleDisconnection(player) {
+    const clientId = onlineUsers.getKey(player);
+    // Player isn't in a lobby so just disconnect it
+    if (!isInLobby(player)) {
+      log(`${player}just disconnected but wasn't in lobby`);
+      onlineUsers.delete(clientId);
+    } else {
+      // player is in a lobby, check if it's empty or he is in a game
+      const playerLobby = Array.from(lobbies.values())
+        .filter((lobby) => lobby.hasPlayer(player))[0];
+      const lobbyId = lobbies.getKey(playerLobby);
+      log(`${player} from lobby ${lobbyId} is  trying to disconnect`);
+      // Lobby is free
+      if (playerLobby.isFree()) {
+        log(`${onlineUsers.get(clientId)} just disconnected and his lobby has been deleted`);
+        lobbies.delete(lobbyId);
+        onlineUsers.delete(clientId);
+      } else {
+        // Lobby is full and a game is on, need to check if he's the host or not
+        let winner = '';
+        let loser = '';
+        if (playerLobby.getPlayers(0) === player) {
+          // Player disconnecting is the host
+          log(`${player} is disconnecting and is the host of lobby ${lobbyId}, deleting game`);
+          winner = playerLobby.getPlayers(1);
+          loser = player;
+        } else {
+          // Player disconnecting is the guest
+          log(`${player} is in lobby ${lobbyId} but isn't host, deleting game`);
+          winner = player;
+          loser = playerLobby.getPlayers(1);
+        }
+        const gameEnd = await network.askService(
+          'post',
+          `${gameService}/game/leaveGame`,
+          { game_id: lobbyId, winner, forfeiter: loser },
+        );
+        if (gameEnd.status) {
+          io.to(lobbyId).emit('player_left', gameEnd.response);
+          /* eslint-disable-next-line max-len */
+          const updatedUsers = await updatePoints(winner, process.env.WIN_STARS, loser, process.env.LOSS_STARS);
+          if (updatedUsers) {
+            io.to(onlineUsers.getKey(winner)).emit('user_update', updatedUsers[0]);
+            io.to(onlineUsers.getKey(loser)).emit('user_update', updatedUsers[1]);
+          } else {
+            io.to(lobbyId).emit('server_error', { message: 'Something went wrong while updating points' });
+          }
+          deleteLobby(lobbyId);
+          onlineUsers.delete(clientId);
+          // Clear lobby room
+          io.in(lobbyId).socketsLeave(lobbyId);
+        } else if (gameEnd.response_status === 500) {
+          io.to(lobbyId).emit('server_error', { message: gameEnd.response_data });
+        }
+      }
+    }
+  }
   // Setup HTTPS agent to communicate with other services.
   network.setupHTTPSAgent(cert, key);
 
@@ -213,7 +309,9 @@ exports.socket = async function (server) {
     onlineUsers.set(client.id, getId());
 
     client.on('disconnect', async () => {
-      // TODO
+      // Remove player from active players
+      const player = onlineUsers.get(client.id);
+      await handleDisconnection(player);
     });
 
     client.on('login', async (mail, password) => {
@@ -356,5 +454,9 @@ exports.socket = async function (server) {
         client.emit('token_error', { message: user[1] });
       }
     });
+
+
   });
 };
+
+
