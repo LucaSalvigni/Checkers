@@ -30,7 +30,6 @@ jobs:
       - name: Debugging info
         run: |
           cd Backend/Checkers-UserService
-          npm run test --opts .\test\signUpTest.js
           npm run test
       - name: Test and build
         run: |

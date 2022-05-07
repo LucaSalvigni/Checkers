@@ -1,15 +1,7 @@
 const { expect } = require('chai');
 const api = require('./utils/api');
-const User = require('../models/userModel');
 
 describe('Login Test', async () => {
-  before(async () => {
-    const checkUser = await User.find({ mail: 'userok@testusers.com' });
-    if (checkUser.length === 0) {
-      const user = await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await api.registerUser(user);
-    }
-  });
   it('should login', async () => {
     const loggedUser = await api.loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
     expect(loggedUser.status === 200);

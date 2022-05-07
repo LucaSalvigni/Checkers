@@ -1,6 +1,5 @@
 const { expect } = require('chai');
 const api = require('./utils/api');
-const User = require('../models/userModel');
 
 const newValues = {
   first_name: 'Riccardo',
@@ -18,13 +17,6 @@ const newWrongValues = {
 };
 
 describe('Update profile Test', async () => {
-  before(async () => {
-    const checkUser = await User.find({ mail: 'userok@testusers.com' });
-    if (checkUser.length === 0) {
-      const newUser = await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-      await api.registerUser(newUser);
-    }
-  });
   it('should update profile', async () => {
     const updatedUser = await api.updateUserProfile('userok@testusers.com', newValues);
     expect(updatedUser.status === 200);
