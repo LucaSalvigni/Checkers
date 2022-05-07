@@ -6,7 +6,6 @@ const cors = require('cors');
 // Dependencies for an HTTPS server
 const https = require('https');
 const fs = require('fs');
-const path = require('path');
 const Certificates = require('./models/caModel/certificationModel');
 
 // Load .env
@@ -36,12 +35,21 @@ app.use(express.json());
 // Routes
 app.use('/', require('./routes/routes'));
 
+let key = null;
+let cert = null;
+if (fs.existsSync('./cert/user_key.pem')) {
+  key = fs.readFileSync('./cert/user_key.pem');
+}
+if (fs.existsSync('./cert/user_cert.pem')) {
+  cert = fs.readFileSync('./cert/user_cert.pem');
+}
+
 (async () => {
   const { PORT } = process.env;
   const certificate = await Certificates.findOne({ name: 'CA' }, 'value');
   const opts = {
-    key: fs.readFileSync(path.join(__dirname, `${path.sep}cert${path.sep}user_key.pem`)),
-    cert: fs.readFileSync(path.join(__dirname, `${path.sep}cert${path.sep}user_cert.pem`)),
+    key,
+    cert,
     requestCert: true,
     rejectUnauthorized: false, // so we can do own error handling
     ca: certificate.value,
