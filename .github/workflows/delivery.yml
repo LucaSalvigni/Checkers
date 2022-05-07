@@ -6,7 +6,7 @@ on:
     branches:
       - wip-deploy
   workflow_run:
-    workflows: [ "frontend", "gameservice", "userservice" ]
+    workflows: [ "frontend" ]
     types:
       - completed
   workflow_dispatch:
