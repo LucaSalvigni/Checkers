@@ -8,9 +8,14 @@ require('../../index');
 // Require the dev-dependencies
 /* chai.use(chaiHttp);
 chai.should(); */
-
-const key = fs.readFileSync('./cert/user_key.pem');
-const cert = fs.readFileSync('./cert/user_cert.pem');
+let key = null;
+let cert = null;
+if (fs.existsSync('./cert/user_key.pem')) {
+  key = fs.readFileSync('./cert/user_key.pem');
+}
+if (fs.existsSync('./cert/user_cert.pem')) {
+  cert = fs.readFileSync('./cert/user_cert.pem');
+}
 const httpsAgent = new https.Agent({
   cert,
   key,
