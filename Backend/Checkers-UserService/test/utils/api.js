@@ -1,10 +1,21 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const userService = require('../../index');
+// const chai = require('chai');
+// const chaiHttp = require('chai-http');
+const fs = require('fs');
+const { default: axios } = require('axios');
+const https = require('https');
+require('../../index');
 
 // Require the dev-dependencies
-chai.use(chaiHttp);
-chai.should();
+/* chai.use(chaiHttp);
+chai.should(); */
+
+const key = fs.readFileSync('./cert/user_key.pem');
+const cert = fs.readFileSync('./cert/user_cert.pem');
+const httpsAgent = new https.Agent({
+  cert,
+  key,
+  rejectUnauthorized: false,
+});
 
 const api = {
   async createUser(mail, username, password) {
@@ -18,50 +29,154 @@ const api = {
   },
 
   async registerUser(user) {
-    return chai.request(userService)
+    let response = null;
+    try {
+      response = await axios.post('https://localhost:3031/signup', user, { httpsAgent });
+      return {
+        status: response.status,
+        response: response.data,
+      };
+    } catch (err) {
+      return {
+        status: err.response.status,
+        response: err.response.data,
+      };
+    }
+    /* return chai.request(userService)
       .post('/signup')
-      .send(user);
+      .send(user); */
   },
 
   async loginUser(user) {
-    return chai.request(userService)
+    let response = null;
+    try {
+      response = await axios.post('https://localhost:3031/login', { mail: user.mail, password: user.password }, { httpsAgent });
+      return {
+        status: response.status,
+        response: response.data,
+      };
+    } catch (err) {
+      return {
+        status: err.response.status,
+        response: err.response.data,
+      };
+    }
+    /* return chai.request(userService)
       .post('/login')
-      .send({ mail: user.mail, password: user.password });
+      .send({ mail: user.mail, password: user.password }); */
   },
 
   async updateUserProfile(mail, user) {
-    return chai.request(userService)
+    let response = null;
+    try {
+      response = await axios.put('https://localhost:3031/profile/updateProfile', { mail, params: user }, { httpsAgent });
+      return {
+        status: response.status,
+        response: response.data,
+      };
+    } catch (err) {
+      return {
+        status: err.response.status,
+        response: err.response.data,
+      };
+    }
+    /* return chai.request(userService)
       .put('/profile/updateProfile')
-      .send({ mail, params: user });
+      .send({ mail, params: user }); */
   },
 
   async refreshTokenUser(mail, token) {
-    return chai.request(userService)
+    let response = null;
+    try {
+      response = await axios.get('https://localhost:3031/refresh_token', { mail, token, httpsAgent }, { httpsAgent });
+      return {
+        status: response.status,
+        response: response.data,
+      };
+    } catch (err) {
+      return {
+        status: err.response.status,
+        response: err.response.data,
+      };
+    }
+    /* return chai.request(userService)
       .get('/refresh_token')
-      .query({ mail, token });
+      .query({ mail, token }); */
   },
 
   async verifyTokenUser(token) {
-    return chai.request(userService)
+    let response = null;
+    try {
+      response = await axios.get('https://localhost:3031/authenticate', { authorization: `Bearer ${token}`, httpsAgent }, { httpsAgent });
+      return {
+        status: response.status,
+        response: response.data,
+      };
+    } catch (err) {
+      return {
+        status: err.response.status,
+        response: err.response.data,
+      };
+    }
+    /* return chai.request(userService)
       .get('/authenticate')
-      .set({ authorization: `Bearer ${token}` });
+      .set({ authorization: `Bearer ${token}` }); */
   },
 
   async getLeaderboard() {
-    return chai.request(userService)
-      .get('/getLeaderboard');
+    let response = null;
+    try {
+      response = await axios.get('https://localhost:3031/getLeaderboard', { httpsAgent }, { httpsAgent });
+      return {
+        status: response.status,
+        response: response.data,
+      };
+    } catch (err) {
+      return {
+        status: err.response.status,
+        response: err.response.data,
+      };
+    }
+    /* return chai.request(userService)
+      .get('/getLeaderboard'); */
   },
 
   async getProfile(mail) {
-    return chai.request(userService)
+    let response = null;
+    try {
+      response = await axios.get('https://localhost:3031/profile/getProfile', { mail, httpsAgent }, { httpsAgent });
+      return {
+        status: response.status,
+        response: response.data,
+      };
+    } catch (err) {
+      return {
+        status: err.response.status,
+        response: err.response.data,
+      };
+    }
+    /* return chai.request(userService)
       .get('/profile/getProfile')
-      .query({ mail });
+      .query({ mail }); */
   },
 
   async getHistory(mail) {
-    return chai.request(userService)
+    let response = null;
+    try {
+      response = await axios.get('https://localhost:3031/profile/getHistory', { mail, httpsAgent }, { httpsAgent });
+      return {
+        status: response.status,
+        response: response.data,
+      };
+    } catch (err) {
+      return {
+        status: err.response.status,
+        response: err.response.data,
+      };
+    }
+    /* return chai.request(userService)
       .get('/profile/getHistory')
-      .query({ mail });
+      .query({ mail }); */
   },
 };
 module.exports = api;

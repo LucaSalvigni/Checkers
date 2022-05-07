@@ -1,3 +1,4 @@
+const { expect } = require('chai');
 const api = require('./utils/api');
 const User = require('../models/userModel');
 
@@ -11,15 +12,15 @@ describe('Verify token Test', async () => {
       await api.registerUser(user);
     }
     const loggedUser = await api.loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
-    token = loggedUser.body.token;
+    token = loggedUser.response.token;
   });
   it('should correct token', async () => {
     const verifiedToken = await api.verifyTokenUser(token);
-    verifiedToken.should.have.status(200);
+    expect(verifiedToken.status === 200);
   });
   it('should undefined token', async () => {
     const notVerifiedToken = await api.verifyTokenUser();
-    notVerifiedToken.should.have.status(400);
+    expect(notVerifiedToken.status === 400);
   });
   /* it('should give wrong token', async () => {
     const notVerifiedToken = await api.verifyTokenUser("ciao");

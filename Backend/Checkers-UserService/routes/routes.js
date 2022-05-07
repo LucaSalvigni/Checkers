@@ -5,17 +5,16 @@ const userController = require('../controller/userController');
 
 router
 // Certificate verification
-  .all("*", function(req,res,next){
+  .all('*', (req, res, next) => {
     const cert = req.socket.getPeerCertificate();
     if (req.client.authorized) {
-      next()
+      next();
     } else if (cert.subject) {
       res.status(403)
         .send(`Sorry ${cert.subject.CN}, can't accept certificates from ${cert.issuer.CN}.`);
-
     } else {
       res.status(401)
-        .send(`Sorry, need to provide a valid certificate.`);
+        .send('Sorry, need to provide a valid certificate.');
     }
   })
 // Profile routes
