@@ -455,8 +455,62 @@ exports.socket = async function (server) {
       }
     });
 
+    /**
+    * Client requested his profile
+    */
+    client.on('get_profile', async (token) => {
+      const user = await isAuthenticated(token, client.id);
+      if (user[0]) {
+        const userMail = onlineUsers.get(client.id);
+        const userProfile = await network.askService('get', `${userService}/profile/getProfile`, {
+          mail: userMail,
+        });
+        if (userProfile.status) {
+          client.emit('user_profile', userProfile.response);
+        } else {
+          client.emit('client_error', { message: userProfile.response_data });
+          log(`Error while getting profile for ${userMail}`);
+        }
+      } else {
+        client.emit('token_error', { message: user[1] });
+      }
+    });
+    /**
+    * Client requested leaderboard
+    */
+    client.on('get_leaderboard', async (token) => {
+      const user = await isAuthenticated(token, client.id);
+      if (user[0]) {
+        const userMail = onlineUsers.get(client.id);
+        log(`${userMail} just asked for a leaderboard`);
+        const leaderboard = await network.askService('get', `${userService}/getLeaderboard`, '');
+        if (leaderboard.status) {
+          client.emit('leaderboard', leaderboard.response);
+        } else {
+          client.emit('client_error', { message: leaderboard.response_data });
+        }
+      } else {
+        client.emit('token_error', { message: user[1] });
+      }
+    });
 
+    /**
+    * Client updated some infos on his profile
+    */
+    client.on('update_profile', async (params, token) => {
+      const user = await isAuthenticated(token, client.id);
+      if (user[0]) {
+        const userMail = onlineUsers.get(client.id);
+        const updatedUser = await network.askService('put', `${userService}/profile/updateProfile`, { mail: userMail, params });
+        if (updatedUser.status) {
+          log(`${userMail}'s profile has just been successfully updated`);
+          client.emit('updated_user', updatedUser.response);
+        } else {
+          client.emit('client_error', { message: updatedUser.response_data });
+        }
+      } else {
+        client.emit('token_error', { message: user[1] });
+      }
+    });
   });
 };
-
-
