@@ -5,14 +5,25 @@ on:
   push:
     branches:
       - wip-deploy
+  workflow_dispatch:
 
 env:
   REGISTRY: "registry.digitalocean.com/checkers-cr"
   IMAGE_NAME: "checkers"
 
 jobs:
+  frontend:
+    uses: ./.github/workflows/frontend.yml
+  gameservice:
+    uses: ./.github/workflows/gameservice.yml
+    secrets: inherit
+  userservice:
+    uses: ./.github/workflows/userservice.yml
+    secrets: inherit
+
   build_and_push:
     runs-on: ubuntu-latest
+    needs: [ frontend, gameservice, userservice ]
     steps:
       - name: Checkout the repo 
         uses: actions/checkout@v2
@@ -38,8 +49,7 @@ jobs:
         
   deploy:
     runs-on: ubuntu-latest
-    needs: build_and_push
-    
+    needs: build_and_push   
     steps:
       - uses: actions/checkout@v2
       - name: Copy file via scp
@@ -51,6 +61,7 @@ jobs:
           passphrase: ${{ secrets.DO_PASSPHRASE }}
           source: "docker-compose.yml"
           target: "."
+          
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.3
         with:

@@ -4,12 +4,12 @@ on:
   push:
     paths:
       - 'Backend/Checkers-GameService/**'
-  #pull_request:
   workflow_dispatch:
+  workflow_call:
 
 env:
   PORT: 3032
-  DB_PSW: ${{secrets.DB_PSW}}
+  DB_PSW: ${{ secrets.DB_PSW }}
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{matrix.os}}
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/setup-node@v3
         with:
