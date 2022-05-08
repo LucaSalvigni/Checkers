@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
-require("tls").DEFAULT_ECDH_CURVE = "auto";
 
 // Dependencies for an HTTPS server
 const https = require('https');
@@ -36,6 +35,9 @@ app.use(express.json());
 // Routes
 app.use('/', require('./routes/routes'));
 
+fs.readdirSync(__dirname).forEach(file => {
+  console.log(file);
+});
 let key = null;
 let cert = null;
 if (fs.existsSync('./cert/user_key.pem')) {
