@@ -6,7 +6,6 @@ const cors = require('cors');
 // Dependencies for an HTTPS server
 const https = require('https');
 const fs = require('fs');
-const routes = require('./routes/routes');
 const Certificates = require('./models/caModel/certificationModel');
 
 // Load .env
@@ -34,7 +33,7 @@ connection.once('open', () => { console.log('Connected successfully to MongoDB')
 app.use(express.json());
 
 // Routes
-app.use(routes);
+app.use('/', require('./routes/routes'));
 
 let key = null;
 let cert = null;
