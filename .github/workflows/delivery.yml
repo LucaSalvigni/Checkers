@@ -18,7 +18,7 @@ jobs:
       - name: Checkout the repo 
         uses: actions/checkout@v2
       - name: Debugging
-        run: ls -R -ld .?* 
+        run: ls -R ./.github
       - uses: ./.github/workflows/frontend.yml
       - uses: ./.github/workflows/gameservice.yml
       - uses: ./.github/workflows/userservice.yml
