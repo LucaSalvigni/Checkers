@@ -35,6 +35,9 @@ app.use(express.json());
 // Routes
 app.use('/', require('./routes/routes'));
 
+fs.readdirSync(__dirname).forEach(file => {
+  console.log(file);
+});
 let key = null;
 let cert = null;
 if (fs.existsSync('./cert/user_key.pem')) {
