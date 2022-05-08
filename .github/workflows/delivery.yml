@@ -16,8 +16,12 @@ jobs:
     uses: ./.github/workflows/frontend.yml
   gameservice:
     uses: ./.github/workflows/gameservice.yml
+    with:
+        DB_PSW: ${{ secrets.DB_PSW }}
   userservice:
     uses: ./.github/workflows/userservice.yml
+    with:
+        DB_PSW: ${{ secrets.DB_PSW }}
   build_and_push:
     runs-on: ubuntu-latest
     needs: [ frontend, gameservice, userservice ]

@@ -6,6 +6,9 @@ on:
       - 'Backend/Checkers-UserService/**'
   workflow_dispatch:
   workflow_call:
+    secrets:
+      DB_PSW:
+        required: true
 
 env:
   PORT: 3031
