@@ -36,7 +36,7 @@ const api = {
   async registerUser(user) {
     let response = null;
     try {
-      response = await axios.post('https://[::]:3031/signup', user, { httpsAgent });
+      response = await axios.post('https://:3031/signup', user, { httpsAgent });
       return {
         status: response.status,
         response: response.data,
@@ -55,7 +55,7 @@ const api = {
   async loginUser(user) {
     let response = null;
     try {
-      response = await axios.post('https://[::]:3031/login', { mail: user.mail, password: user.password }, { httpsAgent });
+      response = await axios.post('https://:3031/login', { mail: user.mail, password: user.password }, { httpsAgent });
       return {
         status: response.status,
         response: response.data,
@@ -74,7 +74,7 @@ const api = {
   async updateUserProfile(mail, user) {
     let response = null;
     try {
-      response = await axios.put('https://[::]:3031/profile/updateProfile', { mail, params: user }, { httpsAgent });
+      response = await axios.put('https://:3031/profile/updateProfile', { mail, params: user }, { httpsAgent });
       return {
         status: response.status,
         response: response.data,
@@ -93,7 +93,7 @@ const api = {
   async refreshTokenUser(mail, token) {
     let response = null;
     try {
-      response = await axios.get('https://[::]:3031/refresh_token', { mail, token, httpsAgent }, { httpsAgent });
+      response = await axios.get('https://:3031/refresh_token', { mail, token, httpsAgent }, { httpsAgent });
       return {
         status: response.status,
         response: response.data,
@@ -112,7 +112,7 @@ const api = {
   async verifyTokenUser(token) {
     let response = null;
     try {
-      response = await axios.get('https://[::]:3031/authenticate', { authorization: `Bearer ${token}`, httpsAgent }, { httpsAgent });
+      response = await axios.get('https://:3031/authenticate', { authorization: `Bearer ${token}`, httpsAgent }, { httpsAgent });
       return {
         status: response.status,
         response: response.data,
@@ -131,7 +131,7 @@ const api = {
   async getLeaderboard() {
     let response = null;
     try {
-      response = await axios.get('https://[::]:3031/getLeaderboard', { httpsAgent }, { httpsAgent });
+      response = await axios.get('https://:3031/getLeaderboard', { httpsAgent }, { httpsAgent });
       return {
         status: response.status,
         response: response.data,
@@ -149,7 +149,7 @@ const api = {
   async getProfile(mail) {
     let response = null;
     try {
-      response = await axios.get('https://[::]:3031/profile/getProfile', { mail, httpsAgent }, { httpsAgent });
+      response = await axios.get('https://:3031/profile/getProfile', { mail, httpsAgent }, { httpsAgent });
       return {
         status: response.status,
         response: response.data,
@@ -168,7 +168,7 @@ const api = {
   async getHistory(mail) {
     let response = null;
     try {
-      response = await axios.get('https://[::]:3031/profile/getHistory', { mail, httpsAgent }, { httpsAgent });
+      response = await axios.get('https://:3031/profile/getHistory', { mail, httpsAgent }, { httpsAgent });
       return {
         status: response.status,
         response: response.data,

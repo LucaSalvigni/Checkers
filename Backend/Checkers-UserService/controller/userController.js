@@ -72,6 +72,7 @@ function loadJwtSecret() {
  */
 exports.signup = async function (req, res) {
   console.log('Sign Up');
+  console.log(req.headers);
   const { username } = req.body;
   const { mail } = req.body;
   const { password } = req.body;
