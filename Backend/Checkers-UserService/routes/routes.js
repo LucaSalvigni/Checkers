@@ -3,12 +3,12 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controller/userController');
 
-console.log('Checking route')
+console.log('Checking route');
 
 router
 // Certificate verification
   .all('*', (req, res, next) => {
-    console.log('Checking certificate')
+    console.log('Checking certificate');
     const cert = req.socket.getPeerCertificate();
     if (req.client.authorized) {
       next();
