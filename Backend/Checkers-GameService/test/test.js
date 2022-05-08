@@ -227,7 +227,7 @@ describe('Game', async () => {
         to: 29,
       };
       const afterMove = await movePiece(gameMove);
-      expect(afterMove.status).to.equal(200)
+      expect(afterMove.status).to.equal(200);
       expect(afterMove.response.ended).to.be.true;
       expect(afterMove.response.winner).to.equal('');
     });
@@ -250,7 +250,7 @@ describe('Game', async () => {
 
     it('should fail to find the game', async () => {
       const gameToQuit = {
-        gameId: randomID,
+        gameId: randomID.toString(),
         playerId: player,
       };
       const playerLeft = await leaveGame(gameToQuit);

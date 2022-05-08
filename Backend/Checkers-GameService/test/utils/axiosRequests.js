@@ -29,9 +29,9 @@ exports.axiosPostRequest = async function axiosPostRequest(route, params) {
       response: response.data,
     };
   } catch (err) {
-    if(err.response === undefined) {
-        console.log(err.code);
-        return err.code;
+    if (err.response === undefined) {
+      console.log(err.code);
+      return err.code;
     }
     return {
       status: err.response.status,
@@ -48,9 +48,9 @@ exports.axiosPutRequest = async function axiosPutRequest(route, params) {
       response: response.data,
     };
   } catch (err) {
-    if(err.response === undefined) {
-        console.log(err.code);
-        return err.code;
+    if (err.response === undefined) {
+      console.log(err.code);
+      return err.code;
     }
     return {
       status: err.response.status,
@@ -61,15 +61,15 @@ exports.axiosPutRequest = async function axiosPutRequest(route, params) {
 exports.axiosDeleteRequest = async function axiosDeleteRequest(route, params) {
   let response = null;
   try {
-    response = await axios.delete(`https://:${PORT}${route}`, params, { httpsAgent });
+    response = await axios.delete(`https://:${PORT}${route}`, { params, httpsAgent }, { httpsAgent });
     return {
       status: response.status,
       response: response.data,
     };
   } catch (err) {
-    if(err.response === undefined) {
-        console.log(err);
-        return err.code;
+    if (err.response === undefined) {
+      console.log(err.code);
+      return err.code;
     }
     return {
       status: err.response.status,

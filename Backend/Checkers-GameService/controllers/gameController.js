@@ -155,8 +155,8 @@ exports.tieGame = async function tieGame(req, res) {
  * Handles user leaving a game
  */
 exports.leaveGame = async function leaveGame(req, res) {
-  const { gameId } = req.body;
-  const quitter = req.body.playerId;
+  const { gameId } = req.query;
+  const quitter = req.query.playerId;
   try {
     const game = await Game.findById(gameId);
     if (game) {
