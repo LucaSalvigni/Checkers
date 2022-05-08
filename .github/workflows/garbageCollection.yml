@@ -1,0 +1,18 @@
+# Run Garbage Collection on DigitalOcean
+
+name: garbagecollection
+
+on:
+  schedule:
+   - cron:  '15 0 * * *'
+  workflow_dispatch:
+  push:
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - name: DigitalOcean Registry Prune Old Tags
+        uses: PierreAndreis/do-registry-prune-tags@1.0.1
+        with:
+         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
