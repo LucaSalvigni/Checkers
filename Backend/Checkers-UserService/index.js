@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
-require("tls").DEFAULT_ECDH_CURVE = "auto";
 
 // Dependencies for an HTTPS server
 const https = require('https');
