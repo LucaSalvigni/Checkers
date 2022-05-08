@@ -41,11 +41,9 @@ fs.readdirSync(__dirname).forEach(file => {
 let key = null;
 let cert = null;
 if (fs.existsSync('./cert/user_key.pem')) {
-  console.log('Ciao')
   key = fs.readFileSync('./cert/user_key.pem');
 }
 if (fs.existsSync('./cert/user_cert.pem')) {
-  console.log('Ciao')
   cert = fs.readFileSync('./cert/user_cert.pem');
 }
 
