@@ -38,7 +38,6 @@ app.use(express.json());
 app.use('/', require('./routes/routes'));
 
 ;(async () => {
-  const PORT = process.env.PORT
   const certificate = await Certificates.findOne({name:"CA"},'value')
   const opts = {
       key: fs.readFileSync(path.join(__dirname, path.sep+"cert"+path.sep+"game_key.pem")),
