@@ -5,6 +5,7 @@ on:
     paths:
       - 'Backend/Checkers-GameService/**'
   workflow_dispatch:
+  workflow_call:
 
 env:
   PORT: 3032
