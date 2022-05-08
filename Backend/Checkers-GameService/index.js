@@ -3,11 +3,8 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
-//Dependencies for an HTTPS server
-const https = require('https')
-const fs = require('fs')
-const path = require('path')
-const Certificates = require('./models/certificationModel')
+// Dependencies for an HTTPS server
+const https = require('https');
 
 // Load .env
 dotenv.config();
@@ -16,6 +13,9 @@ dotenv.config();
 // Load Env variables
 const { DB_PSW } = process.env;
 const { PORT } = process.env;
+const { GAME_KEY } = process.env;
+const { GAME_CERT } = process.env;
+const { CERTIFICATE } = process.env;
 
 // Initialize express const
 const app = express();
@@ -37,17 +37,16 @@ app.use(express.json());
 // Routes
 app.use('/', require('./routes/routes'));
 
-;(async () => {
-  const certificate = await Certificates.findOne({name:"CA"},'value')
-  const opts = {
-      key: fs.readFileSync(path.join(__dirname, path.sep+"cert"+path.sep+"game_key.pem")),
-      cert: fs.readFileSync(path.join(__dirname, path.sep+"cert"+path.sep+"game_cert.pem")),
-      requestCert: true,
-      rejectUnauthorized: false, // so we can do own error handling
-      ca: certificate.value
-  };
-  
-  https.createServer(opts,app).listen(PORT, function () {
-      console.log('GameService started on port ' + PORT)
-  })
-})()
+const opts = {
+  key: GAME_KEY,
+  cert: GAME_CERT,
+  requestCert: true,
+  rejectUnauthorized: false, // so we can do own error handling
+  ca: CERTIFICATE,
+};
+
+https.createServer(opts, app).listen(PORT, () => {
+  console.log(`GameService started on port ${PORT}`);
+});
+
+module.exports = app;

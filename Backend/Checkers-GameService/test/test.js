@@ -1,51 +1,35 @@
 /* eslint-disable no-unused-expressions */
 
-// Require the dev-dependencies
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-// Require server and model
+// Require dependencies
+const mongoose = require('mongoose');
 const { expect } = require('chai');
-const gameService = require('../index');
+const { axiosPostRequest, axiosPutRequest, axiosDeleteRequest } = require('./utils/axiosRequests');
 const gameModel = require('../models/gameModel');
 const Draughts = require('../controllers/draughts');
-const mongoose = require('mongoose');
 
 let testGame;
 const randomID = new mongoose.Types.ObjectId();
 const player = '6263c5d6e4e2e9916c574c8a';
 const opponent = '6266a229ea5c6213e5a60cc6';
 
-chai.use(chaiHttp);
-chai.should();
-
 async function createGame(game) {
-  return chai.request(gameService.app)
-    .post('/game/lobbies/createGame')
-    .send({ hostId: game.hostId, opponent: game.opponentId });
+  return axiosPostRequest('/game/lobbies/createGame', { hostId: game.hostId, opponent: game.opponentId });
 }
 
 async function leaveGame(gameToQuit) {
-  return chai.request(gameService.app)
-    .delete('/game/leaveGame')
-    .send({ gameId: gameToQuit.gameId, playerId: gameToQuit.playerId });
+  return axiosDeleteRequest('/game/leaveGame', { gameId: gameToQuit.gameId, playerId: gameToQuit.playerId });
 }
 
 async function tieGame(gameToTie) {
-  return chai.request(gameService.app)
-    .put('/game/tieGame')
-    .send({ gameId: gameToTie });
+  return axiosPutRequest('/game/tieGame', { gameId: gameToTie });
 }
 
 async function movePiece(gameMove) {
-  return chai.request(gameService.app)
-    .put('/game/movePiece')
-    .send({ gameId: gameMove.gameId, from: gameMove.from, to: gameMove.to });
+  return axiosPutRequest('/game/movePiece', { gameId: gameMove.gameId, from: gameMove.from, to: gameMove.to });
 }
 
 async function changeTurn(gameId) {
-  return chai.request(gameService.app)
-    .put('/game/turnChange')
-    .send({ gameId });
+  return axiosPutRequest('/game/turnChange', { gameId });
 }
 
 // Util functions
@@ -80,11 +64,11 @@ describe('Game', async () => {
   describe('Game Creation', async () => {
     it('should fail to create a new game', async () => {
       let newGame = {
-        hostId: "oogabooga",
-        opponentId: "oogabooga2",
+        hostId: 'oogabooga',
+        opponentId: 'oogabooga2',
       };
       newGame = await createGame(newGame);
-      newGame.should.have.status(500);
+      expect(newGame.status).to.equal(500);
     });
 
     it('should create a new game', async () => {
@@ -93,8 +77,8 @@ describe('Game', async () => {
         opponentId: opponent,
       };
       newGame = await createGame(newGame);
-      newGame.should.have.status(200);
-      testGame = newGame.body.game;
+      expect(newGame.status).to.equal(200);
+      testGame = newGame.response.game;
     });
   });
 
@@ -110,7 +94,7 @@ describe('Game', async () => {
         to: 26,
       };
       const afterMove = await movePiece(gameMove);
-      afterMove.should.have.status(200);
+      expect(afterMove.status).to.equal(200);
     });
 
     // Player1 just moved a piece, trying to move a piece from the same player as before
@@ -121,7 +105,7 @@ describe('Game', async () => {
         to: 29,
       };
       const afterMove = await movePiece(wrongMove);
-      afterMove.should.have.status(400);
+      expect(afterMove.status).to.equal(400);
     });
 
     // Moving a piece from player2
@@ -132,34 +116,34 @@ describe('Game', async () => {
         to: 25,
       };
       const afterMove = await movePiece(gameMove);
-      afterMove.should.have.status(200);
+      expect(afterMove.status).to.equal(200);
     });
 
     it('should not change turn', async () => {
       const turnChanged = await changeTurn(randomID);
-      turnChanged.should.have.status(400);
+      expect(turnChanged.status).to.equal(400);
     });
-    
+
     // Should be player1 turn now, chaning turn to make player2's turn again
     it('should change turn', async () => {
       const turnChanged = await changeTurn(testGame._id);
-      turnChanged.should.have.status(200);
+      expect(turnChanged.status).to.equal(200);
     });
 
     it('should not find the game', async () => {
       const gameMove = {
-        gameId: randomID
+        gameId: randomID,
       };
       const afterMove = await movePiece(gameMove);
-      afterMove.should.have.status(400);
+      expect(afterMove.status).to.equal(400);
     });
 
     it('should throw error', async () => {
       const gameMove = {
-        gameId: "oogabooga",
+        gameId: 'oogabooga',
       };
       const afterMove = await movePiece(gameMove);
-      afterMove.should.have.status(500);
+      expect(afterMove.status).to.equal(500);
     });
 
     // By changing turns, it's again player2' turn
@@ -170,34 +154,34 @@ describe('Game', async () => {
         to: 24,
       };
       const afterMove = await movePiece(gameMove);
-      afterMove.should.have.status(200);
+      expect(afterMove.status).to.equal(200);
     });
   });
 
   describe('Tie game route', async () => {
-    beforeEach( async () => {
+    beforeEach(async () => {
       console.log('Resetting board...');
       await resetGame(testGame._id);
     });
 
     it('should throw error', async () => {
-      const afterMove = await tieGame("oogabooga");
-      afterMove.should.have.status(500);
+      const afterMove = await tieGame('oogabooga');
+      expect(afterMove.status).to.equal(500);
     });
 
     it('should fail to tie the game', async () => {
       const afterMove = await tieGame(randomID);
-      afterMove.should.have.status(400);
+      expect(afterMove.status).to.equal(400);
     });
 
     it('should tie the game', async () => {
       const afterMove = await tieGame(testGame._id);
-      afterMove.should.have.status(200);
+      expect(afterMove.status).to.equal(200);
     });
   });
 
   describe('Game ending', async () => {
-    beforeEach( async () => {
+    beforeEach(async () => {
       console.log('Resetting board...');
       await resetGame(testGame._id);
     });
@@ -213,9 +197,9 @@ describe('Game', async () => {
         to: 24,
       };
       const afterMove = await movePiece(gameMove);
-      afterMove.should.have.status(200);
-      expect(afterMove.body.ended).to.be.true;
-      expect(afterMove.body.winner).to.equal('6263c5d6e4e2e9916c574c8a');
+      expect(afterMove.status).to.equal(200);
+      expect(afterMove.response.ended).to.be.true;
+      expect(afterMove.response.winner).to.equal('6263c5d6e4e2e9916c574c8a');
     });
 
     it('should end the game with player2 Winner', async () => {
@@ -228,9 +212,9 @@ describe('Game', async () => {
         to: 27,
       };
       const afterMove = await movePiece(gameMove);
-      afterMove.should.have.status(200);
-      expect(afterMove.body.ended).to.be.true;
-      expect(afterMove.body.winner).to.equal('6266a229ea5c6213e5a60cc6');
+      expect(afterMove.status).to.equal(200);
+      expect(afterMove.response.ended).to.be.true;
+      expect(afterMove.response.winner).to.equal('6266a229ea5c6213e5a60cc6');
     });
 
     it('should end in a tie', async () => {
@@ -243,9 +227,9 @@ describe('Game', async () => {
         to: 29,
       };
       const afterMove = await movePiece(gameMove);
-      afterMove.should.have.status(200);
-      expect(afterMove.body.ended).to.be.true;
-      expect(afterMove.body.winner).to.equal('');
+      expect(afterMove.status).to.equal(200)
+      expect(afterMove.response.ended).to.be.true;
+      expect(afterMove.response.winner).to.equal('');
     });
   });
 
@@ -261,7 +245,7 @@ describe('Game', async () => {
         playerId: 'FakeLikePythonDevs',
       };
       const playerLeft = await leaveGame(gameToQuit);
-      playerLeft.should.have.status(400);
+      expect(playerLeft.status).to.equal(400);
     });
 
     it('should fail to find the game', async () => {
@@ -270,16 +254,16 @@ describe('Game', async () => {
         playerId: player,
       };
       const playerLeft = await leaveGame(gameToQuit);
-      playerLeft.should.have.status(400);
+      expect(playerLeft.status).to.equal(400);
     });
 
     it('should throw error', async () => {
       const gameToQuit = {
-        gameId: "oogabooga",
+        gameId: 'oogabooga',
         playerId: player,
       };
       const playerLeft = await leaveGame(gameToQuit);
-      playerLeft.should.have.status(500);
+      expect(playerLeft.status).to.equal(500);
     });
 
     it('should make host leave current game', async () => {
@@ -288,7 +272,7 @@ describe('Game', async () => {
         playerId: player,
       };
       const playerLeft = await leaveGame(gameToQuit);
-      playerLeft.should.have.status(200);
+      expect(playerLeft.status).to.equal(200);
     });
 
     it('should make player2 leave current game', async () => {
@@ -297,7 +281,7 @@ describe('Game', async () => {
         playerId: opponent,
       };
       const playerLeft = await leaveGame(gameToQuit);
-      playerLeft.should.have.status(200);
+      expect(playerLeft.status).to.equal(200);
     });
   });
 });
