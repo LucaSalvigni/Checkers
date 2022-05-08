@@ -54,9 +54,10 @@ if (fs.existsSync('./cert/user_cert.pem')) {
     rejectUnauthorized: false, // so we can do own error handling
     ca: certificate.value,
   };
-
-  https.createServer(opts, app).listen(PORT, () => {
+  const server = https.createServer(opts, app);
+  server.listen(PORT, () => {
     console.log(`UserService started on port ${PORT}`);
   });
+  console.log(server.address());
 })();
 module.exports = app;
