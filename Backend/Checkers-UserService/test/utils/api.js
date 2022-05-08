@@ -3,7 +3,7 @@
 const fs = require('fs');
 const { default: axios } = require('axios');
 const https = require('https');
-require('../../index');
+require('../../index').use;
 
 // Require the dev-dependencies
 /* chai.use(chaiHttp);
@@ -42,6 +42,7 @@ const api = {
         response: response.data,
       };
     } catch (err) {
+      console.log(err)
       return {
         status: err.response.status,
         response: err.response.data,
