@@ -3,7 +3,7 @@
 const fs = require('fs');
 const { default: axios } = require('axios');
 const https = require('https');
-require('../../index').use;
+require('../../index');
 
 // Require the dev-dependencies
 /* chai.use(chaiHttp);
@@ -11,9 +11,11 @@ chai.should(); */
 let key = null;
 let cert = null;
 if (fs.existsSync('./cert/user_key.pem')) {
+  console.log("Ciao")
   key = fs.readFileSync('./cert/user_key.pem');
 }
 if (fs.existsSync('./cert/user_cert.pem')) {
+  console.log("Ciao")
   cert = fs.readFileSync('./cert/user_cert.pem');
 }
 console.log(key)
@@ -44,7 +46,6 @@ const api = {
         response: response.data,
       };
     } catch (err) {
-      console.log(err);
       return {
         status: err.response.status,
         response: err.response.data,
