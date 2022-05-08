@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controller/userController');
 
+console.log('Checking route')
+
 router
 // Certificate verification
   .all('*', (req, res, next) => {
