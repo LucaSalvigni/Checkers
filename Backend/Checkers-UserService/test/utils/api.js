@@ -3,7 +3,7 @@
 const fs = require('fs');
 const { default: axios } = require('axios');
 const https = require('https');
-require('../../index');
+const userService = require('../../index');
 
 // Require the dev-dependencies
 /* chai.use(chaiHttp);
@@ -36,7 +36,7 @@ const api = {
   async registerUser(user) {
     let response = null;
     try {
-      response = await axios.post('https://:3031/signup', user, { httpsAgent });
+      response = await axios.post('https://0.0.0.0:3031/signup', user, { httpsAgent });
       return {
         status: response.status,
         response: response.data,
