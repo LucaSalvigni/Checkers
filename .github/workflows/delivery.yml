@@ -15,6 +15,8 @@ jobs:
   testServices:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout the repo 
+        uses: actions/checkout@v2
       - uses: ./.github/workflows/frontend.yml
       - uses: ./.github/workflows/gameservice.yml
       - uses: ./.github/workflows/userservice.yml
