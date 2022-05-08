@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - 'Backend/Checkers-UserService/**'
-  #pull_request:
   workflow_dispatch:
+  workflow_call:
 
 env:
   PORT: 3031

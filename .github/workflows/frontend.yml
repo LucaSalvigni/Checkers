@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - 'Frontend/Checkers-Frontend/**'
-  #pull_request:
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   build:
