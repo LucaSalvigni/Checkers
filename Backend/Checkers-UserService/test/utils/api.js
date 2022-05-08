@@ -16,6 +16,8 @@ if (fs.existsSync('./cert/user_key.pem')) {
 if (fs.existsSync('./cert/user_cert.pem')) {
   cert = fs.readFileSync('./cert/user_cert.pem');
 }
+console.log(key)
+console.log(cert)
 const httpsAgent = new https.Agent({
   cert,
   key,
@@ -36,7 +38,7 @@ const api = {
   async registerUser(user) {
     let response = null;
     try {
-      response = await axios.post('https://localhost:3031/signup', user, { httpsAgent });
+      response = await axios.post('https://:3031/signup', user, { httpsAgent });
       return {
         status: response.status,
         response: response.data,
