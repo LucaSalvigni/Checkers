@@ -7,7 +7,11 @@ const { PORT } = process.env;
 const { GAME_KEY } = process.env;
 const { GAME_CERT } = process.env;
 
-axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay, retryCondition: e => e.response.status === 401 });
+axiosRetry(axios, {
+  retries: 3,
+  retryDelay: axiosRetry.exponentialDelay,
+  retryCondition: (e) => e.response.status === 401,
+});
 
 const httpsAgent = new https.Agent({
   GAME_CERT,
