@@ -42,18 +42,15 @@ app.use('/', require('./routes/routes'));
 // const cert = fs.readFileSync('./cert/user_cert.pem');
 // const cert = process.env.USER_CERT
 
-(async () => {
-  console.log(certificate);
-  const opts = {
-    key,
-    cert,
-    requestCert: true,
-    rejectUnauthorized: false, // so we can do own error handling
-    ca: certificate,
-  };
+const opts = {
+  key,
+  cert,
+  requestCert: true,
+  rejectUnauthorized: false, // so we can do own error handling
+  ca: certificate,
+};
 
-  https.createServer(opts, app).listen(PORT, () => {
-    console.log(`UserService started on port ${PORT}`);
-  });
-})();
+https.createServer(opts, app).listen(PORT, () => {
+  console.log(`UserService started on port ${PORT}`);
+});
 module.exports = app;
