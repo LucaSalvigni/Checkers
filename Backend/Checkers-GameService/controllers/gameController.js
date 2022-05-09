@@ -173,7 +173,7 @@ exports.leaveGame = async function leaveGame(req, res) {
         return;
       }
 
-      // TODO ?
+      // TODO ??
       const data = [];
       data.push(`You successfully left the game!\n ${winStars} stars have been removed from your profile!`);
       data.push(`The opponent has left the game!\n ${lossStars} stars have been added to your profile`);
