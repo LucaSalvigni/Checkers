@@ -1,6 +1,7 @@
 // const chai = require('chai');
 // const chaiHttp = require('chai-http');
 const { default: axios } = require('axios');
+const axiosRetry = require('axios-retry');
 const https = require('https');
 require('../../index');
 
@@ -9,6 +10,8 @@ require('../../index');
 chai.should(); */
 const key = process.env.USER_KEY;
 const cert = process.env.USER_CERT;
+
+axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay, retryCondition: e => e.response.status === 401 });
 
 const httpsAgent = new https.Agent({
   cert,
