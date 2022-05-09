@@ -11,7 +11,11 @@ chai.should(); */
 const key = process.env.USER_KEY;
 const cert = process.env.USER_CERT;
 
-axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay, retryCondition: e => e.response.status === 401 });
+axiosRetry(axios, {
+  retries: 3,
+  retryDelay: axiosRetry.exponentialDelay,
+  retryCondition: (e) => e.response.status === 401,
+});
 
 const httpsAgent = new https.Agent({
   cert,
