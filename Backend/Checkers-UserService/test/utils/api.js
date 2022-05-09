@@ -1,6 +1,5 @@
 // const chai = require('chai');
 // const chaiHttp = require('chai-http');
-const fs = require('fs');
 const { default: axios } = require('axios');
 const https = require('https');
 require('../../index');
@@ -8,8 +7,8 @@ require('../../index');
 // Require the dev-dependencies
 /* chai.use(chaiHttp);
 chai.should(); */
-const key = fs.readFileSync('./cert/user_key.pem');
-const cert = fs.readFileSync('./cert/user_cert.pem');
+const key = process.env.USER_KEY;
+const cert = process.env.USER_CERT;
 
 const httpsAgent = new https.Agent({
   cert,

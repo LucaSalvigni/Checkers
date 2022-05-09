@@ -10,6 +10,8 @@ on:
 env:
   PORT: 3031
   DB_PSW: ${{ secrets.DB_PSW }}
+  USER_KEY: ${{ secrets.USER_KEY}}
+  USER_CERT: ${{ secrets.USER_CERT}}
 
 jobs:
   build:
