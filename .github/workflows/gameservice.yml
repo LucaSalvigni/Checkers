@@ -32,7 +32,7 @@ jobs:
           npm ci
       - name: Debugging info
         run: |
-          cd Backend/Checkers-UserService
+          cd Backend/Checkers-GameService
           npm run test
       - name: Test and build
         run: |
