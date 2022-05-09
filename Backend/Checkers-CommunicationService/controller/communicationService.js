@@ -1,13 +1,8 @@
 const BiMap = require('bidirectional-map');
 const socket = require('socket.io');
-const path = require('path');
-const fs = require('fs');
 const network = require('./network_module');
 const Lobby = require('../models/lobby');
 require('dotenv').config();
-
-const cert = fs.readFileSync(path.join(__dirname, `${path.sep}..${path.sep}cert${path.sep}comm_cert.pem`));
-const key = fs.readFileSync(path.join(__dirname, `${path.sep}..${path.sep}cert${path.sep}comm_key.pem`));
 
 const onlineUsers = new BiMap(); // {  client_id <-> user_id  }
 const lobbies = new BiMap(); // { lobby_id -> Lobby }
@@ -15,6 +10,8 @@ const turnTimeouts = new Map(); // {lobby_id -> timoutTimer}
 
 const gameService = process.env.GAME_SERVICE;
 const userService = process.env.USER_SERVICE;
+const cert = process.env.COMM_CERT;
+const key = process.env.COMM_KEY;
 
 // Utils
 function log(msg) {

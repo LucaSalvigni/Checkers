@@ -13,6 +13,7 @@ dotenv.config();
 const psw = process.env.DB_PSW;
 const key = process.env.USER_KEY;
 const cert = process.env.USER_CERT;
+const { PORT } = process.env;
 
 // Initialize express const
 const app = express();
@@ -36,13 +37,12 @@ app.use(express.json());
 // Routes
 app.use('/', require('./routes/routes'));
 
-//const key = fs.readFileSync('./cert/user_key.pem');
-//const key = process.env.USER_KEY
-//const cert = fs.readFileSync('./cert/user_cert.pem');
-//const cert = process.env.USER_CERT
+// const key = fs.readFileSync('./cert/user_key.pem');
+// const key = process.env.USER_KEY
+// const cert = fs.readFileSync('./cert/user_cert.pem');
+// const cert = process.env.USER_CERT
 
 (async () => {
-  const { PORT } = process.env;
   const certificate = await Certificates.findOne({ name: 'CA' }, 'value');
   const opts = {
     key,
