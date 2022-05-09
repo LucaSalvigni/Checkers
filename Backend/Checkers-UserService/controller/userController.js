@@ -71,8 +71,6 @@ function loadJwtSecret() {
  * Tries to sign up a new user
  */
 exports.signup = async function (req, res) {
-  console.log('Sign Up');
-  console.log(req.headers);
   const { username } = req.body;
   const { mail } = req.body;
   const { password } = req.body;
@@ -130,7 +128,6 @@ exports.signup = async function (req, res) {
  * @param {*} res
  */
 exports.login = async function (req, res) {
-  console.log('Login');
   const { mail } = req.body;
   const { password } = req.body;
   log(`${mail} is trying to login`);
@@ -176,7 +173,6 @@ exports.login = async function (req, res) {
  * Tries to get a new token for a user
  */
 exports.refresh_token = async function (req, res) {
-  console.log('Refresh');
   const { mail } = req.query;
   const { token } = req.query;
   const registeredUser = await User.findOne({ mail }, 'username first_name last_name mail stars nationality wins losses avatar');
@@ -343,7 +339,6 @@ const users = await User.find({}, 'username avatar stars wins losses ties').sort
 };
 
 exports.updateProfile = async function (req, res) {
-  console.log('Update');
   let newValues = req.body.params;
   if (newValues === undefined) {
     res.status(400).send({ message: 'Need some new values to update data' });

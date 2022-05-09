@@ -35,17 +35,8 @@ app.use(express.json());
 // Routes
 app.use('/', require('./routes/routes'));
 
-fs.readdirSync(__dirname).forEach(file => {
-  console.log(file);
-});
-let key = null;
-let cert = null;
-if (fs.existsSync('./cert/user_key.pem')) {
-  key = fs.readFileSync('./cert/user_key.pem');
-}
-if (fs.existsSync('./cert/user_cert.pem')) {
-  cert = fs.readFileSync('./cert/user_cert.pem');
-}
+const key = fs.readFileSync('./cert/user_key.pem');
+const cert = fs.readFileSync('./cert/user_cert.pem');
 
 (async () => {
   const { PORT } = process.env;
@@ -57,10 +48,9 @@ if (fs.existsSync('./cert/user_cert.pem')) {
     rejectUnauthorized: false, // so we can do own error handling
     ca: certificate.value,
   };
-  const server = https.createServer(opts, app);
-  server.listen(PORT, () => {
+
+  https.createServer(opts, app).listen(PORT, () => {
     console.log(`UserService started on port ${PORT}`);
   });
-  console.log(server.address());
 })();
 module.exports = app;

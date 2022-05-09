@@ -19,18 +19,18 @@ const newWrongValues = {
 describe('Update profile Test', async () => {
   it('should update profile', async () => {
     const updatedUser = await api.updateUserProfile('userok@testusers.com', newValues);
-    expect(updatedUser.status === 200);
+    expect(updatedUser.status).to.equal(200);
   });
   it('should not update profile mail', async () => {
     const updatedUser = await api.updateUserProfile('userok@testusers.com', newWrongValues);
-    expect(updatedUser.status === 400);
+    expect(updatedUser.status).to.equal(400);
   });
   it('should not update unexisting profile', async () => {
     const updatedUser = await api.updateUserProfile('new_mail@gmail.com', newWrongValues);
-    expect(updatedUser.status === 400);
+    expect(updatedUser.status).to.equal(400);
   });
   it('should not update without values', async () => {
     const updatedUser = await api.updateUserProfile('new_mail@gmail.com');
-    expect(updatedUser.status === 400);
+    expect(updatedUser.status).to.equal(400);
   });
 });

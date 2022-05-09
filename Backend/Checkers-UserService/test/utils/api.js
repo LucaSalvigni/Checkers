@@ -8,14 +8,8 @@ require('../../index');
 // Require the dev-dependencies
 /* chai.use(chaiHttp);
 chai.should(); */
-let key = null;
-let cert = null;
-if (fs.existsSync('./cert/user_key.pem')) {
-  key = fs.readFileSync('./cert/user_key.pem');
-}
-if (fs.existsSync('./cert/user_cert.pem')) {
-  cert = fs.readFileSync('./cert/user_cert.pem');
-}
+const key = fs.readFileSync('./cert/user_key.pem');
+const cert = fs.readFileSync('./cert/user_cert.pem');
 
 const httpsAgent = new https.Agent({
   cert,
@@ -94,7 +88,7 @@ const api = {
   async refreshTokenUser(mail, token) {
     let response = null;
     try {
-      response = await axios.get('https://:3031/refresh_token', { mail, token, httpsAgent }, { httpsAgent });
+      response = await axios.get('https://:3031/refresh_token', { params: { mail, token }, httpsAgent }, { httpsAgent });
       return {
         status: response.status,
         response: response.data,
@@ -113,7 +107,7 @@ const api = {
   async verifyTokenUser(token) {
     let response = null;
     try {
-      response = await axios.get('https://:3031/authenticate', { authorization: `Bearer ${token}`, httpsAgent }, { httpsAgent });
+      response = await axios.get('https://:3031/authenticate', { headers: { authorization: `Bearer ${token}` }, httpsAgent }, { httpsAgent });
       return {
         status: response.status,
         response: response.data,
@@ -150,7 +144,7 @@ const api = {
   async getProfile(mail) {
     let response = null;
     try {
-      response = await axios.get('https://:3031/profile/getProfile', { mail, httpsAgent }, { httpsAgent });
+      response = await axios.get('https://:3031/profile/getProfile', { params: { mail }, httpsAgent }, { httpsAgent });
       return {
         status: response.status,
         response: response.data,
@@ -169,7 +163,7 @@ const api = {
   async getHistory(mail) {
     let response = null;
     try {
-      response = await axios.get('https://:3031/profile/getHistory', { mail, httpsAgent }, { httpsAgent });
+      response = await axios.get('https://:3031/profile/getHistory', { params: { mail }, httpsAgent }, { httpsAgent });
       return {
         status: response.status,
         response: response.data,

@@ -10,11 +10,11 @@ describe('Verify token Test', async () => {
   });
   it('should correct token', async () => {
     const verifiedToken = await api.verifyTokenUser(token);
-    expect(verifiedToken.status === 200);
+    expect(verifiedToken.status).to.equal(200);
   });
   it('should undefined token', async () => {
     const notVerifiedToken = await api.verifyTokenUser();
-    expect(notVerifiedToken.status === 400);
+    expect(notVerifiedToken.status).to.equal(400);
   });
   /* it('should give wrong token', async () => {
     const notVerifiedToken = await api.verifyTokenUser("ciao");

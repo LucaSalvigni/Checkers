@@ -6,7 +6,6 @@ console.log('Checking route');
 router
 // Certificate verification
   .all('*', (req, res, next) => {
-    console.log('Checking certificate');
     const cert = req.socket.getPeerCertificate();
     if (req.client.authorized) {
       next();

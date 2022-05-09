@@ -10,16 +10,16 @@ describe('Refresh token Test', async () => {
   });
   it('should refresh token', async () => {
     const refreshUserToken = await api.refreshTokenUser('userok@testusers.com', token);
-    expect(refreshUserToken.status === 200);
+    expect(refreshUserToken.status).to.equal(200);
   });
 
   it('should fail refresh token with not registred mail', async () => {
     const refreshUserToken = await api.refreshTokenUser('lu@lu.com', token);
-    expect(refreshUserToken.status === 400);
+    expect(refreshUserToken.status).to.equal(400);
   });
 
   it('should fail refresh token with wrong mail', async () => {
     const refreshUserToken = await api.refreshTokenUser('ciao@ciao.com', token);
-    expect(refreshUserToken.status === 400);
+    expect(refreshUserToken.status).to.equal(400);
   });
 });
