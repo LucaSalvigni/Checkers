@@ -5,7 +5,6 @@ const cors = require('cors');
 
 // Dependencies for an HTTPS server
 const https = require('https');
-const Certificates = require('./models/caModel/certificationModel');
 
 // Load .env
 dotenv.config();
@@ -14,6 +13,7 @@ const psw = process.env.DB_PSW;
 const key = process.env.USER_KEY;
 const cert = process.env.USER_CERT;
 const PORT = process.env.USER_PORT;
+const certificate = process.env.CERTIFICATE;
 
 // Initialize express const
 const app = express();
@@ -43,13 +43,13 @@ app.use('/', require('./routes/routes'));
 // const cert = process.env.USER_CERT
 
 (async () => {
-  const certificate = await Certificates.findOne({ name: 'CA' }, 'value');
+  console.log(certificate);
   const opts = {
     key,
     cert,
     requestCert: true,
     rejectUnauthorized: false, // so we can do own error handling
-    ca: certificate.value,
+    ca: certificate,
   };
 
   https.createServer(opts, app).listen(PORT, () => {
