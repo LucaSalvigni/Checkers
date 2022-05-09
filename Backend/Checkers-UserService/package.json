@@ -21,7 +21,7 @@
     "http": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
-    "mongoose": "^6.3.2",
+    "mongoose": "^6.3.3",
     "password-validator": "^5.2.1"
   },
   "devDependencies": {
