@@ -13,7 +13,7 @@ dotenv.config();
 const psw = process.env.DB_PSW;
 const key = process.env.USER_KEY;
 const cert = process.env.USER_CERT;
-const { PORT } = process.env;
+const PORT = process.env.USER_PORT;
 
 // Initialize express const
 const app = express();
