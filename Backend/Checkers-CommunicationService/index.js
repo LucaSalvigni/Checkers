@@ -17,7 +17,7 @@ app.use(cors());
 const server = http.createServer(app);
 communicationService.socket(server);
 
-const { PORT } = process.env;
+const PORT = process.env.COMMUNICATION_PORT;
 server.listen(PORT, () => {
   console.log(`CommunicationService started on port ${PORT}`);
 });

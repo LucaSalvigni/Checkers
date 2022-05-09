@@ -317,6 +317,7 @@ exports.socket = async function (server) {
       if (onlineUsers.hasValue(mail)) {
         client.emit('login_error', { message: 'Someone is already logged in with such email' });
       } else {
+        console.log('Lets communicate to userService');
         const user = await network.askService('post', `${userService}/login`, {
           mail,
           password,
