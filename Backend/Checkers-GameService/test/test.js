@@ -62,7 +62,7 @@ describe('Game', async () => {
   });
 
   describe('Game Creation', async () => {
-    it('should fail to create a new game', async () => {
+    it('should throw error', async () => {
       let newGame = {
         hostId: 'oogabooga',
         opponentId: 'oogabooga2',

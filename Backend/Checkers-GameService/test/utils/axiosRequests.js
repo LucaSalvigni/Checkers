@@ -1,22 +1,17 @@
 const { default: axios } = require('axios');
+const axiosRetry = require('axios-retry');
 const https = require('https');
-const fs = require('fs');
 require('../../index');
 
 const { PORT } = process.env;
-let key = null;
-let cert = null;
+const { GAME_KEY } = process.env;
+const { GAME_CERT } = process.env;
 
-if (fs.existsSync('./cert/game_key.pem')) {
-  key = fs.readFileSync('./cert/game_key.pem');
-}
-if (fs.existsSync('./cert/game_cert.pem')) {
-  cert = fs.readFileSync('./cert/game_cert.pem');
-}
+axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay, retryCondition: e => e.response.status === 401 });
 
 const httpsAgent = new https.Agent({
-  cert,
-  key,
+  GAME_CERT,
+  GAME_KEY,
   rejectUnauthorized: false,
 });
 
