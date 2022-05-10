@@ -8,7 +8,7 @@ on:
   workflow_call:
 
 env:
-  PORT: 3030
+  COMM_PORT: 3030
   USER_PORT: 3031
   DB_PSW: ${{ secrets.DB_PSW }}
   USER_SERVICE: https://:3031
