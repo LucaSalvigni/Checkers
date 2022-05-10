@@ -8,7 +8,7 @@ require('../../../Checkers-UserService/index')
 // Require the dev-dependencies
 // chai.use(chaiHttp);
 // chai.should();
-// Debug
+// Debugging
 
 let clientSocket = new Client('http://:3030');
 
