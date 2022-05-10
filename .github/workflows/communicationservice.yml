@@ -33,6 +33,7 @@ jobs:
       - name: Up UserService for get user info
         run: |
           cd Backend/Checkers-UserService
+          npm ci
           node .\index.js
       - name: Debugging info
         run: |
