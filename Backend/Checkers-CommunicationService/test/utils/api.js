@@ -7,7 +7,7 @@ require('../../index');
 // Require the dev-dependencies
 // chai.use(chaiHttp);
 // chai.should();
-// Debugging
+// Debug
 
 let clientSocket = new Client('http://:3030');
 
