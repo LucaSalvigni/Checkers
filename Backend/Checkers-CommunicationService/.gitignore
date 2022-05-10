@@ -72,6 +72,7 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
+jwt_secret
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache

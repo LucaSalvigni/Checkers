@@ -41,7 +41,11 @@ async function askService(method, url, params) {
   try {
     switch (method) {
       case 'get':
-        response = await axios.get(url, { params, httpsAgent }, { httpsAgent });
+        if(params.headers !== null) {
+          response = await axios.get(url, { headers: { authorization: params.headers.Authorization }, httpsAgent }, { httpsAgent });
+        } else {
+          response = await axios.get(url, { params, httpsAgent }, { httpsAgent });
+        }
         break;
       case 'post':
         response = await axios.post(url, params, { httpsAgent });

@@ -30,6 +30,9 @@ const api = {
   },
 
   async registerUser(user) {
+    user.then((res) => {
+      clientSocket.emit('signup', res.mail, res.password, res.username, res.firstName, res.lastName)
+    })
     /* return chai.request(userService)
       .post('/signup')
       .send(user); */
@@ -42,7 +45,8 @@ const api = {
       .send({ mail: user.mail, password: user.password }); */
   },
 
-  async updateUserProfile(mail, user) {
+  async updateUserProfile(params, token) {
+    clientSocket.emit('update_profile', params, token)
     /* return chai.request(userService)
       .put('/profile/updateProfile')
       .send({ mail, params: user }); */
