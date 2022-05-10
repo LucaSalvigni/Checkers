@@ -1,0 +1,44 @@
+name: communicationservice
+
+on:
+  push:
+    paths:
+      - 'Backend/Checkers-CommunicationService/**'
+  workflow_dispatch:
+  workflow_call:
+
+env:
+  PORT: 3030
+  USER_SERVICE: https://:3031
+  GAME_SERVICE: https://:3032
+  COMM_KEY: ${{ secrets.COMM_KEY }}
+  COMM_CERT: ${{ secrets.COMM_CERT }}
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          cd Backend/Checkers-CommunicationService
+          npm ci
+      - name: Up UserService for get user info
+        run: |
+          cd Backend/Checkers-UserService
+          node .\index.js
+      - name: Debugging info
+        run: |
+          cd Backend/Checkers-CommunicationService
+          npm run test
+      #- name: Test and build
+        #run: |
+          #cd Backend/Checkers-CommunicationService
+          #npm run gulp
