@@ -37,9 +37,6 @@ jobs:
           npm ci
       - name: Up UserService for get user info
         run: |
-          cd Backend/Checkers-UserService
-          npm ci
-          npm run deploy
           cd Backend/Checkers-CommunicationService
           npm run test
       #- name: Test and build
