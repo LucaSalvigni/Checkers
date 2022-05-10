@@ -31,10 +31,6 @@ jobs:
         with:
           node-version: '16'
       - uses: actions/checkout@v2
-      - name: Install CommunicationService dependencies
-        run: |
-          cd Backend/Checkers-CommunicationService
-          npm ci
       - name: Install UserService dependencies
         run: |
           cd Backend/Checkers-UserService
@@ -42,6 +38,7 @@ jobs:
       - name: Debug Info
         run: |
           cd Backend/Checkers-CommunicationService
+          npm ci
           npm run test
       #- name: Test and build
         #run: |
