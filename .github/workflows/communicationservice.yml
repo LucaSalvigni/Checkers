@@ -31,11 +31,15 @@ jobs:
         with:
           node-version: '16'
       - uses: actions/checkout@v2
-      - name: Install dependencies
+      - name: Install CommunicationService dependencies
         run: |
           cd Backend/Checkers-CommunicationService
           npm ci
-      - name: Up UserService for get user info
+      - name: Install UserService dependencies
+        run: |
+          cd Backend/Checkers-UserService
+          npm ci
+      - name: Debug Info
         run: |
           cd Backend/Checkers-CommunicationService
           npm run test
