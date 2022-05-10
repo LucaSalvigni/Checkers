@@ -1,6 +1,7 @@
 // const chai = require('chai');
 const Client = require('socket.io-client');
 require('../../index');
+require('../../../Checkers-UserService/index')
 // const chaiHttp = require('chai-http');
 // require('../../../Checkers-GameService/index')
 

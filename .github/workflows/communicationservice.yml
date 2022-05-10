@@ -15,29 +15,12 @@ env:
   GAME_SERVICE: https://:3032
   COMM_KEY: ${{ secrets.COMM_KEY }}
   COMM_CERT: ${{ secrets.COMM_CERT }}
+  USER_KEY: ${{ secrets.USER_KEY }}
+  USER_CERT: ${{ secrets.USER_CERT }}
+  CERTIFICATE: ${{ secrets.CERTIFICATE }}
 
 jobs:
-  upUserService:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-      - uses: actions/checkout@v2
-      - name: Up UserService for get user info
-        run: |
-          cd Backend/Checkers-UserService
-          npm ci
-          npm run deploy
-      #- name: Test and build
-        #run: |
-          #cd Backend/Checkers-CommunicationService
-          #npm run gulp
-  DebugCommunicationService:
+  build:
     strategy:
       fail-fast: false
       matrix:
@@ -52,7 +35,14 @@ jobs:
         run: |
           cd Backend/Checkers-CommunicationService
           npm ci
-      - name: Test and build
+      - name: Up UserService for get user info
         run: |
+          cd Backend/Checkers-UserService
+          npm ci
+          npm run deploy
           cd Backend/Checkers-CommunicationService
           npm run test
+      #- name: Test and build
+        #run: |
+          #cd Backend/Checkers-CommunicationService
+          #npm run gulp
