@@ -1,7 +1,7 @@
 // const chai = require('chai');
 const Client = require('socket.io-client');
 require('../../index');
-require('../../../Checkers-UserService/index')
+require('../../../Checkers-UserService/index');
 // const chaiHttp = require('chai-http');
 // require('../../../Checkers-GameService/index')
 
@@ -10,8 +10,7 @@ require('../../../Checkers-UserService/index')
 // chai.should();
 // Debug
 
-let clientSocket = new Client('http://:3030');
-
+const clientSocket = new Client('http://:3030');
 
 const api = {
 
@@ -31,8 +30,8 @@ const api = {
 
   async registerUser(user) {
     user.then((res) => {
-      clientSocket.emit('signup', res.mail, res.password, res.username, res.firstName, res.lastName)
-    })
+      clientSocket.emit('signup', res.mail, res.password, res.username, res.firstName, res.lastName);
+    });
     /* return chai.request(userService)
       .post('/signup')
       .send(user); */
@@ -46,36 +45,27 @@ const api = {
   },
 
   async updateUserProfile(params, token) {
-    clientSocket.emit('update_profile', params, token)
+    clientSocket.emit('update_profile', params, token);
     /* return chai.request(userService)
       .put('/profile/updateProfile')
       .send({ mail, params: user }); */
   },
 
-  async refreshTokenUser(mail, token) {
-    /* return chai.request(userService)
-      .get('/refresh_token')
-      .query({ mail, token }); */
-  },
-
-  async verifyTokenUser(token) {
-    /* return chai.request(userService)
-      .get('/authenticate')
-      .set({ authorization: `Bearer ${token}` }); */
-  },
-
-  async getLeaderboard() {
+  async getLeaderboard(token) {
+    clientSocket.emit('get_leaderboard', token);
     /* return chai.request(userService)
       .get('/getLeaderboard'); */
   },
 
-  async getProfile(mail) {
+  async getProfile(token) {
+    clientSocket.emit('get_profile', token);
     /* return chai.request(userService)
       .get('/profile/getProfile')
       .query({ mail }); */
   },
 
-  async getHistory(mail) {
+  async getHistory(token) {
+    clientSocket.emit('get_history', token);
     /* return chai.request(userService)
       .get('/profile/getHistory')
       .query({ mail }); */

@@ -44,7 +44,7 @@ async function isAuthenticated(token, clientId) {
       },
     );
     if (authenticated.status) {
-      onlineUsers.set(clientId, authenticated.response.user.email);
+      onlineUsers.set(clientId, authenticated.response.user.mail);
       return [true, authenticated.response];
     }
     return [false, ''];
@@ -507,7 +507,8 @@ exports.socket = async function (server) {
           client.emit('client_error', { message: updatedUser.response_data });
         }
       } else {
-        client.emit('token_error', { message: user[1] });
+        // client.emit('token_error', { message: user[1] });
+        client.emit('token_error', { message: 'You are not authenticated, please login again' });
       }
     });
   });

@@ -41,9 +41,11 @@ async function askService(method, url, params) {
   try {
     switch (method) {
       case 'get':
-        if(params.headers !== null) {
+        if (url.includes('authenticate')) {
+          // eslint-disable-next-line max-len
           response = await axios.get(url, { headers: { authorization: params.headers.Authorization }, httpsAgent }, { httpsAgent });
         } else {
+          console.log('Ciao');
           response = await axios.get(url, { params, httpsAgent }, { httpsAgent });
         }
         break;
@@ -51,7 +53,7 @@ async function askService(method, url, params) {
         response = await axios.post(url, params, { httpsAgent });
         break;
       case 'put':
-        response = await axios.put(url, params, { httpsAgent });
+        response = await axios.put(url, params.params, { httpsAgent });
         break;
       case 'delete':
         response = await axios.delete(url, { data: params }, { httpsAgent });
