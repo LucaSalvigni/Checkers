@@ -10,14 +10,14 @@ const { exec } = require('child_process');
 const webpackConfig = require('./webpack.config');
 
 const paths = {
-  prod_build: '../socketService-build',
+  prod_build: './socketService-build',
   server_file_name: 'socket.bundle.js',
   zipped_file_name: 'socket-nodejs.zip',
 };
 
 function clean() {
   log('removing the old files in the directory');
-  return del('../socketService-build/**', { force: true });
+  return del('./socketService-build/**', { force: true });
 }
 
 function qualityAssurance(cb) {

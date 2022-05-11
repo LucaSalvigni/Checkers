@@ -470,7 +470,7 @@ exports.socket = async function (server) {
           log(`Error while getting profile for ${userMail}`);
         }
       } else {
-        client.emit('token_error', { message: user[1] });
+        client.emit('token_error', { message: 'Please login before request profile' });
       }
     });
     /**
@@ -488,7 +488,7 @@ exports.socket = async function (server) {
           client.emit('client_error', { message: leaderboard.response_data });
         }
       } else {
-        client.emit('token_error', { message: user[1] });
+        client.emit('token_error', { message: 'Please login before request leaderboard' });
       }
     });
 
@@ -508,7 +508,7 @@ exports.socket = async function (server) {
         }
       } else {
         // client.emit('token_error', { message: user[1] });
-        client.emit('token_error', { message: 'You are not authenticated, please login again' });
+        client.emit('token_error', { message: 'You are not authenticated, please login before update' });
       }
     });
   });

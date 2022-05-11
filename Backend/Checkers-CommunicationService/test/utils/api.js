@@ -1,21 +1,27 @@
-// const chai = require('chai');
 const Client = require('socket.io-client');
 require('../../index');
 require('../../../Checkers-UserService/index');
-// const chaiHttp = require('chai-http');
-// require('../../../Checkers-GameService/index')
-
-// Require the dev-dependencies
-// chai.use(chaiHttp);
-// chai.should();
-// Debug
 
 const clientSocket = new Client('http://:3030');
+const clientSocket2 = new Client('http://:3030');
+let tokenValue = '';
 
 const api = {
 
   getClient() {
     return clientSocket;
+  },
+
+  getClient2() {
+    return clientSocket2;
+  },
+
+  getToken() {
+    return tokenValue;
+  },
+
+  setToken(value) {
+    tokenValue = value;
   },
 
   async createUser(mail, username, password) {
@@ -28,47 +34,30 @@ const api = {
     };
   },
 
-  async registerUser(user) {
+  async registerUser(client, user) {
     user.then((res) => {
-      clientSocket.emit('signup', res.mail, res.password, res.username, res.firstName, res.lastName);
+      client.emit('signup', res.mail, res.password, res.username, res.firstName, res.lastName);
     });
-    /* return chai.request(userService)
-      .post('/signup')
-      .send(user); */
   },
 
-  async loginUser(user) {
-    clientSocket.emit('login', user.mail, user.password);
-    /* return chai.request(userService)
-      .post('/login')
-      .send({ mail: user.mail, password: user.password }); */
+  async loginUser(client, user) {
+    client.emit('login', user.mail, user.password);
   },
 
-  async updateUserProfile(params, token) {
-    clientSocket.emit('update_profile', params, token);
-    /* return chai.request(userService)
-      .put('/profile/updateProfile')
-      .send({ mail, params: user }); */
+  async getProfile(client, token) {
+    client.emit('get_profile', token);
   },
 
-  async getLeaderboard(token) {
-    clientSocket.emit('get_leaderboard', token);
-    /* return chai.request(userService)
-      .get('/getLeaderboard'); */
+  async getLeaderboard(client, token) {
+    client.emit('get_leaderboard', token);
   },
 
-  async getProfile(token) {
-    clientSocket.emit('get_profile', token);
-    /* return chai.request(userService)
-      .get('/profile/getProfile')
-      .query({ mail }); */
+  async updateUserProfile(client, params, token) {
+    client.emit('update_profile', params, token);
   },
 
-  async getHistory(token) {
-    clientSocket.emit('get_history', token);
-    /* return chai.request(userService)
-      .get('/profile/getHistory')
-      .query({ mail }); */
+  async getHistory(client, token) {
+    client.emit('get_history', token);
   },
 };
 module.exports = api;
