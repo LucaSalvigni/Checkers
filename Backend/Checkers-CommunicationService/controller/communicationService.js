@@ -638,5 +638,42 @@ exports.socket = async function (server) {
         client.emit('token_error', { message: 'You are not authenticated, please login before update' });
       }
     });
+
+    /**
+   *  * * * * * *
+   * CHAT HANDLING
+   *  * * * * * *
+  * */
+
+    /**
+   * A client is sending a global msg
+   */
+    client.on('global_msg', async (msg, token) => {
+      const user = await isAuthenticated(token, client.id);
+      if (user[0]) {
+        const userMail = onlineUsers.get(client.id);
+        log(`${userMail} just sent a global-msg`);
+        io.emit('global_msg', { sender: userMail, message: msg });
+      } else {
+        client.emit('token_error', { message: user[1] });
+      }
+    });
+
+    /**
+   * A client is sending a msg in his game chat
+   */
+    client.on('game_msg', async (lobbyId, msg, token) => {
+      const user = await isAuthenticated(token, client.id);
+      if (user[0]) {
+        const user_mail = onlineUsers.get(client.id);
+        log(`${user_mail} just sent a game-msg for game ${lobbyId}`);
+        if (lobbies.has(lobbyId)
+      && lobbies.get(lobbyId).getPlayers().includes(onlineUsers.get(client.id))) {
+          io.to(lobbyId).emit('game_msg', { sender: onlineUsers.get(client.id), message: msg });
+        }
+      } else {
+        client.emit('token_error', { message: user[1] });
+      }
+    });
   });
 };
