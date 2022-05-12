@@ -665,8 +665,8 @@ exports.socket = async function (server) {
     client.on('game_msg', async (lobbyId, msg, token) => {
       const user = await isAuthenticated(token, client.id);
       if (user[0]) {
-        const user_mail = onlineUsers.get(client.id);
-        log(`${user_mail} just sent a game-msg for game ${lobbyId}`);
+        const userMail = onlineUsers.get(client.id);
+        log(`${userMail} just sent a game-msg for game ${lobbyId}`);
         if (lobbies.has(lobbyId)
       && lobbies.get(lobbyId).getPlayers().includes(onlineUsers.get(client.id))) {
           io.to(lobbyId).emit('game_msg', { sender: onlineUsers.get(client.id), message: msg });
