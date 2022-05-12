@@ -2,6 +2,7 @@ const BiMap = require('bidirectional-map');
 const socket = require('socket.io');
 const network = require('./network_module');
 const Lobby = require('../models/lobby');
+
 require('dotenv').config();
 
 const onlineUsers = new BiMap(); // {  client_id <-> user_id  }
@@ -250,7 +251,9 @@ exports.socket = async function (server) {
       // player is in a lobby, check if it's empty or he is in a game
       const playerLobby = Array.from(lobbies.values())
         .filter((lobby) => lobby.hasPlayer(player))[0];
+
       const lobbyId = lobbies.getKey(playerLobby);
+
       log(`${player} from lobby ${lobbyId} is  trying to disconnect`);
       // Lobby is free
       if (playerLobby.isFree()) {
@@ -449,6 +452,130 @@ exports.socket = async function (server) {
         }
       } else {
         log(`error4 in join lobby for lobby${lobbyId}`);
+        client.emit('token_error', { message: user[1] });
+      }
+    });
+    /**
+   *  Inside of a game, a client moves a piece into the board
+   */
+    client.on('move_piece', async (lobbyId, from, to, token) => {
+      const user = await isAuthenticated(token, client.id);
+      if (user[0]) {
+        const player = onlineUsers.get(client.id);
+        if (lobbies.has(lobbyId)) {
+          const lobby = lobbies.get(lobbyId);
+          if (lobby.hasPlayer(player) && lobby.turn === player) {
+            let moveResult = await network.askService('put', `${gameService}/game/movePiece`, { game_id: lobbyId, from, to });
+            // If no one won
+            if (moveResult.status) {
+              moveResult = moveResult.response;
+              if (moveResult.winner === undefined || moveResult.winner === '') {
+                // If the game tied
+                if ('tie' in moveResult && moveResult.tie === true) {
+                  // eslint-disable-next-line max-len
+                  const updatedUsers = await updatePoints(moveResult.winner, process.env.TIE_STARS, moveResult.loser, process.env.TIE_STARS, true);
+                  io.to(lobbyId).emit('update_board', moveResult.board);
+                  io.to(onlineUsers.getKey(updatedUsers[0].mail)).emit('game_ended', {
+                    user: onlineUsers[0],
+                    message: `The game ended in a tie, both players received ${process.env.TIE_STARS} stars`,
+                  });
+                  io.to(onlineUsers.getKey(updatedUsers[1].mail)).emit('game_ended', {
+                    user: onlineUsers[1],
+                    message: `The game ended in a tie, both players received ${process.env.TIE_STARS} stars`,
+                  });
+                  log(`Wow game ${lobbyId} tied, you just witnessed such a rare event!`);
+                  deleteLobby(lobbyId);
+                } else {
+                  // No one won and the game isn't tied, the show must go on
+                  io.to(lobbyId).emit('update_board', moveResult.board);
+                  try {
+                    await changeTurn(lobbyId);
+                  } catch (err) {
+                    log(`error in game ${lobbyId}\n${err}`);
+                    io.to(lobbyId).emit('server_error', { message: 'Something went wrong while processing your game' });
+                  }
+                }
+              } else {
+                // we have a winner!
+                // eslint-disable-next-line max-len
+                const updatedUsers = await updatePoints(moveResult.winner, process.env.WIN_STARS, moveResult.loser, process.env.LOSS_STARS);
+                if (updatedUsers.length !== 0) {
+                  io.to(lobbyId).emit('update_board', moveResult.board);
+                  const winner = onlineUsers.getKey(moveResult.winner);
+                  const loser = onlineUsers.getKey(moveResult.loser);
+                  // Inform winner
+                  io.to(winner).emit('game_ended', {
+                    // eslint-disable-next-line max-len
+                    user: (moveResult.winner === updatedUsers[0].mail ? updatedUsers[0] : updatedUsers[1]),
+                    message: `Congratulations, you just have won this match, enjoy the ${process.env.WIN_STARS} stars one of our elves just put under your christmas tree!`,
+                  });
+                  // Inform loser
+                  io.to(loser).emit('game_ended', {
+                    // eslint-disable-next-line max-len
+                    user: (moveResult.loser === updatedUsers[0].mail ? updatedUsers[0] : updatedUsers[1]),
+                    message: `I'm afraid I'll have to tell you you lost this game, ${process.env.LOSS_STARS} stars have been removed from your profile but if you ask me that was just opponent's luck, don't give up yet`,
+                  });
+                  log(`Successfully sent end_game for  game ${lobbyId}`);
+                  deleteLobby(lobbyId);
+                } else {
+                  log('Something wrong while updating points ');
+                  client.emit('server_error', { message: 'Something wrong while updating points.' });
+                }
+              }
+            } else if (moveResult.response_status === 400) {
+              client.emit('client_error', moveResult.response_data);
+            } else {
+              client.emit('server_error', { message: 'Something went wrong while making your move, please try again' });
+            }
+          } else {
+            client.emit('client_error', { message: "It's not your turn or you're not in this lobby, you tell me" });
+          }
+        } else {
+          client.emit('client_error', { message: "Hey pal I don't know who you are nor the lobby you're referring to" });
+        }
+      } else {
+        client.emit('token_error', { message: user[1] });
+      }
+    });
+    /**
+    * A client leaves an already started game.
+    */
+    client.on('leave_game', async (lobbyId, token) => {
+      const user = await isAuthenticated(token, client.id);
+      let result = null;
+      if (user[0]) {
+        const player = onlineUsers.get(client.id);
+        if (lobbies.has(lobbyId) && lobbies.get(lobbyId).hasPlayer(player)) {
+          log(`${player} is trying to delete lobby ${lobbyId} in which I just confirmed is in`);
+          const lobby = lobbies.get(lobbyId);
+          const winner = lobby.getPlayers().filter((p) => p !== player).shift();
+          result = await network.askService('delete', `${gameService}/game/leaveGame`, { data: { game_id: lobbyId, player_id: player } });
+          if (result.status) {
+            result = result.response.data;
+            // eslint-disable-next-line max-len
+            const updatedUsers = await updatePoints(winner, process.env.WIN_STARS, player, process.env.LOSS_STARS);
+            if (updatedUsers.length > 0) {
+              client.emit('left_game', {
+                message: result[0],
+                user: updatedUsers[0],
+              });
+              deleteLobby(lobbyId);
+              io.to(onlineUsers.getKey(winner)).emit('opponent_left', {
+                message: result[1],
+                user: updatedUsers[1],
+              });
+              log(`${player} just left game ${lobbyId}, I just assigned the win to ${winner}`);
+            }
+          } else if (result.response_status === 400) {
+            client.emit('client_error', result.response_data);
+          } else {
+            client.emit('server_error', { message: 'Something went wrong while leaving game, please try again' });
+          }
+        } else {
+          log(`${player} permit error`);
+          client.emit('client_error', { message: "I don't know which lobby you're referring to and even if I knew you're not in it" });
+        }
+      } else {
         client.emit('token_error', { message: user[1] });
       }
     });
