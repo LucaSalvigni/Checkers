@@ -8,10 +8,18 @@ describe('Communication Service SignUp Tests', async () => {
     if (checkUser.length > 0) {
       await User.deleteMany({ mail: 'userok@testusers.com' });
     }
+    const checkUser2 = await User.find({ mail: 'test2@test2.com' });
+    if (checkUser2.length > 0) {
+      await User.deleteMany({ mail: 'test2@test2.com' });
+    }
   });
   it('signUp should work', (done) => {
     api.registerUser(api.getClient(), api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
     api.getClient().on('signup_success', (arg) => {
+      assert.equal(arg.message, 'Sign up completed successfully.');
+    });
+    api.registerUser(api.getClient2(), api.createUser('test2@test2.com', 'Tordent97', 'TestonE97?'));
+    api.getClient2().on('signup_success', (arg) => {
       assert.equal(arg.message, 'Sign up completed successfully.');
       done();
     });
