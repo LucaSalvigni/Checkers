@@ -6,8 +6,8 @@ const Lobby = require('../models/lobby');
 require('dotenv').config();
 
 const onlineUsers = new BiMap(); // {  client_id <-> user_id  }
-const lobbies = new BiMap(); // { lobby_id -> Lobby }
-const turnTimeouts = new Map(); // {lobby_id -> timoutTimer}
+const lobbies = new BiMap(); // { lobbyId -> Lobby }
+const turnTimeouts = new Map(); // {lobbyId -> timoutTimer}
 
 const gameService = process.env.GAME_SERVICE;
 const userService = process.env.USER_SERVICE;
@@ -63,7 +63,7 @@ async function isAuthenticated(token, clientId) {
 
 // TODO: CHECK THIS
 function isInLobby(playerMail) {
-  return lobbies.filter(([, lobby]) => lobby.hasPlayer(playerMail)).size > 0;
+  return Array.from(lobbies.values()).filter((lobby) => lobby.hasPlayer(playerMail)).length;
 }
 
 /**
@@ -86,7 +86,7 @@ function buildLobby(roomName, client, maxStars) {
  * @returns user username
  */
 async function getUsername(mail) {
-  const profile = await network.askService('get', `${userService}/profile/getProfile`, { mail });
+  const profile = network.askService('get', `${userService}/profile/getProfile`, { mail });
   if (profile.status) {
     return profile.response.username;
   }
@@ -101,10 +101,27 @@ async function getUsername(mail) {
 // TODO: CHECK THIS
 async function getLobbies(userStars) {
   const data = [];
-  lobbies
-    .filter(([, lobby]) => lobby.isFree() && lobby.getStars() >= userStars)
-    .forEach(async ([lobbyId, lobby]) => {
+  const tmp = lobbies.entries();
+  for (const [lobbyId, lobby] of tmp) {
+    if (lobby.isFree() && (lobby.getStars() >= userStars)) {
       const username = await getUsername(lobby.getPlayers(0));
+      if (username === null) {
+        log('something wrong with username');
+      } else {
+        data.push({
+          lobbyId,
+          name: lobby.getName(),
+          max_stars: lobby.getStars(),
+          host: username,
+        });
+      }
+    }
+  }
+  /* Array.from(lobbies.entries())
+    .filter(([__, lobby]) => lobby.isFree() && (lobby.getStars() >= userStars))
+    .forEach(async (lobbyId, lobby) => {
+      const username = await getUsername(lobby.getPlayers(0));
+      sleep(500);
       if (username === '') {
         log('Something wrong with retrieving a lobby host username');
       } else {
@@ -115,7 +132,7 @@ async function getLobbies(userStars) {
           host: username,
         });
       }
-    });
+    }); */
   return data;
 }
 /**
@@ -196,7 +213,7 @@ exports.socket = async function (server) {
 
   /**
    * Change turn for a given lobby
-   * @param {*} lobby_id  ID of lobby which turn needs to be changed
+   * @param {*} lobbyId  ID of lobby which turn needs to be changed
    */
   async function changeTurn(lobbyId) {
     log(`Changing turns for game ${lobbyId}`);
@@ -364,7 +381,7 @@ exports.socket = async function (server) {
           const newLobbyId = buildLobby(lobbyName, client, maxStars);
           const allLobbies = await getLobbies(0);
           client.emit('lobbies', {
-            lobby_id: newLobbyId,
+            lobbyId: newLobbyId,
             allLobbies,
           });
         } else {

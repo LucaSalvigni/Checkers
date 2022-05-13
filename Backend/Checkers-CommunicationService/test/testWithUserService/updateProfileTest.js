@@ -34,7 +34,6 @@ describe('Communication Service Update Tests', async () => {
   it('update should fail for wrong token', (done) => {
     api.updateUserProfile(api.getClient2(), { mail: 'userok@testusers.com', params: newValues }, '');
     api.getClient2().on('token_error', (arg) => {
-      console.log(arg);
       assert.equal(arg.message, 'You are not authenticated, please login before update');
       done();
     });
