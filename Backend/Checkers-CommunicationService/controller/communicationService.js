@@ -8,6 +8,7 @@ require('dotenv').config();
 const onlineUsers = new BiMap(); // {  client_id <-> user_id  }
 const lobbies = new BiMap(); // { lobbyId -> Lobby }
 const turnTimeouts = new Map(); // {lobbyId -> timoutTimer}
+const invitationTimeouts = new Map(); // {host_id -> {opponent_id -> timeout}}
 
 const gameService = process.env.GAME_SERVICE;
 const userService = process.env.USER_SERVICE;
@@ -224,6 +225,7 @@ exports.socket = async function (server) {
     await setupGameTurnTimeout(lobbyId);
     io.to(lobbyId).emit('turn_change', { next_player: nextPlayer });
   }
+
   /**
    *
    * @param {*} winner mail of the player who just won a game
@@ -332,7 +334,7 @@ exports.socket = async function (server) {
 
     client.on('login', async (mail, password) => {
       log('a user is tryng to log in');
-      // Update user id in online_users
+      // Update user id in onlineUsers
       if (onlineUsers.hasValue(mail)) {
         client.emit('login_error', { message: 'Someone is already logged in with such email' });
       } else {
@@ -596,6 +598,118 @@ exports.socket = async function (server) {
       }
     });
 
+    /* * * * * * * * * * * * * *
+       * INVITATIONS HANDLING  *
+       * * * * * * * * * * * * *
+    *
+
+     * A client  invites another client to play
+     */
+    client.on('invite_opponent', async (token, opponentMail) => {
+      const userMail = onlineUsers.get(client.id);
+      const user = await isAuthenticated(token, client.id);
+      const lobbyList = Array.from(lobbies.values());
+      if (user[0]
+      && onlineUsers.hasValue(opponentMail)
+      // THIS WON't WORK
+      && lobbyList.filter((lobby) => lobby.hasPlayer(opponentMail)).length === 0
+      && opponentMail !== userMail) {
+        const opponentId = onlineUsers.getKey(opponentMail);
+        io.to(opponentId).emit('lobby_invitation', userMail);
+
+        // If such player already exists in invitationTimeouts map
+        if (invitationTimeouts.has(userMail)) {
+          invitationTimeouts.get(userMail).set(opponentMail, setTimeout(() => {
+            // Inform both players that the invite has timed out
+            io.to(opponentId).emit('invitation_timeout', userMail);
+            client.emit('invitation_timeout', userMail);
+            // Clear the timeout associated to such invite
+            clearTimeout(invitationTimeouts.get(userMail).get(opponentMail));
+            invitationTimeouts.get(userMail).delete(opponentMail);
+          }, process.env.INVITE_TIMEOUT));
+        } else {
+          invitationTimeouts.set(userMail, new Map());
+          invitationTimeouts.get(userMail).set(opponentMail, setTimeout(() => {
+          // Inform both players that the invite has timed out
+            io.to(opponentId).emit('invitation_timeout', userMail);
+            client.emit('invitation_timeout', userMail);
+            // Clear the timeout associated to such invite
+            clearTimeout(invitationTimeouts.get(userMail).get(opponentMail));
+            invitationTimeouts.get(userMail).delete(opponentMail);
+          }, process.env.INVITE_TIMEOUT));
+        }
+      } else {
+        client.emit('invite_error', { message: `Can't invite player ${opponentMail}` });
+      }
+    });
+
+    /**
+     * A client accepts someone invite to play a game.
+     */
+    client.on('accept_invite', async (token, opponentMail) => {
+      const user = await isAuthenticated(token, client.id);
+      if (user[0]) {
+        const userMail = onlineUsers.get(client.id);
+        // eslint-disable-next-line max-len
+        if (!invitationTimeouts.has(opponentMail) || !invitationTimeouts.get(opponentMail).has(userMail)) {
+          client.emit('invitation_expired', { message: 'Your invitation for this lobby has expired' });
+        } else {
+          log(`${userMail} just accepted a game invite from ${opponentMail}`);
+          const opponent = io.sockets.sockets.get(onlineUsers.getKey(opponentMail));
+          const lobbyId = buildLobby(`${opponentMail}-${userMail}`, opponent, Number.MAX_VALUE);
+          if (joinLobby(lobbyId, client, userMail)) {
+            const game = await setupGame(lobbyId, opponentMail, userMail);
+            if (game.length !== 0) {
+              io.to(onlineUsers.getKey(opponentMail)).emit('invite_accepted');
+              // Waiting a few ms before sending game_started
+              setTimeout(() => {
+                io.to(lobbyId).emit('game_started', game);
+              }, 700);
+              log(`${opponentMail}(host) and ${userMail} just started a game through invitations`);
+              if (invitationTimeouts.has(userMail)) {
+                // eslint-disable-next-line max-len
+                Object.values(invitationTimeouts.get(userMail)).forEach((timeout) => clearTimeout(timeout));
+              }
+              // eslint-disable-next-line max-len
+              Object.values(invitationTimeouts.get(opponentMail)).forEach((timeout) => clearTimeout(timeout));
+              invitationTimeouts.delete(userMail);
+              invitationTimeouts.delete(opponentMail);
+              await setupGameTurnTimeout(lobbyId);
+            } else {
+              client.emit('server_error', { message: 'Something went wrong while setting up your game!' });
+            }
+          }
+        }
+      } else {
+        client.emit('token_error', { message: user[1] });
+      }
+    });
+
+    /**
+     * A client declines an invite to play
+     */
+    client.on('decline_invite', async (token, opponentMail) => {
+      const user = await isAuthenticated(token, client.id);
+      if (user[0]) {
+        const userMail = onlineUsers.get(client.id);
+        // eslint-disable-next-line max-len
+        if (!invitationTimeouts.has(opponentMail) || !invitationTimeouts.get(opponentMail).has(userMail)) {
+          client.emit('invitation_expired', { message: 'Your invitation for this lobby has expired' });
+        } else {
+          io.to(onlineUsers.getKey(opponentMail)).emit('invitation_declined', { message: `${opponentMail} has just refused your invite, we're so sry. ` });
+          // eslint-disable-next-line max-len
+          if (invitationTimeouts.has(opponentMail) && invitationTimeouts.get(opponentMail).has(userMail)) {
+            clearTimeout(invitationTimeouts.get(opponentMail).get(userMail));
+            invitationTimeouts.get(opponentMail).delete(userMail);
+          } else {
+            client.emit('invitation_expired', { message: 'Your invitation for this lobby has expired' });
+          }
+        }
+      } else {
+        client.emit('token_error', { message: user[1] });
+      }
+    });
+
     /**
     * Client requested his profile
     */
@@ -616,6 +730,7 @@ exports.socket = async function (server) {
         client.emit('token_error', { message: 'Please login before request profile' });
       }
     });
+
     /**
     * Client requested leaderboard
     */
@@ -659,9 +774,7 @@ exports.socket = async function (server) {
    *  * * * * * *
    * CHAT HANDLING
    *  * * * * * *
-  * */
 
-    /**
    * A client is sending a global msg
    */
     client.on('global_msg', async (msg, token) => {
