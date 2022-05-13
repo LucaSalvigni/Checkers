@@ -3,7 +3,7 @@
 // Require dependencies
 const mongoose = require('mongoose');
 const { expect } = require('chai');
-const { axiosPostRequest, axiosPutRequest, axiosDeleteRequest } = require('./utils/axiosRequests');
+const { axiosPostRequest, axiosPutRequest, axiosDeleteRequest, axiosGetRequest } = require('./utils/axiosRequests');
 const gameModel = require('../models/gameModel');
 const Draughts = require('../controllers/draughts');
 
@@ -30,6 +30,10 @@ async function movePiece(gameMove) {
 
 async function changeTurn(gameId) {
   return axiosPutRequest('/game/turnChange', { gameId });
+}
+
+async function getGames(user) {
+  return axiosGetRequest('/game/getGamesByUser', { user });
 }
 
 // Util functions
@@ -79,6 +83,24 @@ describe('Game', async () => {
       newGame = await createGame(newGame);
       expect(newGame.status).to.equal(200);
       testGame = newGame.response.game;
+    });
+  });
+
+  describe('GET Games', async () => {
+    it('should not find any game', async () => {
+      const games = await getGames(randomID.toString());
+      expect(games.status).to.equal(400);
+    });
+
+    it('should throw error', async () => {
+      const games = await getGames("BOOGALOOOBA");
+      expect(games.status).to.equal(500);
+    });
+
+    it('should retrieve a game', async () => {
+      const games = await getGames(player);
+      expect(games.status).to.equal(200);
+      expect(games.response.length).to.be.gte(1);
     });
   });
 

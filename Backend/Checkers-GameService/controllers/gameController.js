@@ -276,3 +276,28 @@ exports.movePiece = async function movePiece(req, res) {
     res.status(500).send({ message: 'Internal server error while leaving game' });
   }
 };
+
+exports.getGamesByUser = async function getGames(req, res) {
+  try {
+    const { user } = req.query;
+    const data = [];
+    log(`Getting games for user ${user}`);
+    const games = await Game.find({
+      $or: [
+        { white: user },
+        { black: user },
+      ],
+    });
+    if (games.length === 0) {
+      log(`lol there's no games for ${user}`);
+      res.status(400).json({ error: 'Cannot find any games for that player' });
+    } else {
+      log(`Successfully got games for ${user}`);
+      data.push(games);
+      res.status(200).json(data);
+    }
+  } catch (err) {
+    log(err);
+    res.status(500).send({ message: 'Internal server error while finding games' });
+  }
+};

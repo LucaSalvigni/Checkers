@@ -18,6 +18,7 @@ router
     }
   })
   .post('/game/lobbies/createGame', gameController.createGame)
+  .get('/game/getGamesByUser', gameController.getGamesByUser)
   .put('/game/tieGame', gameController.tieGame)
   .delete('/game/leaveGame', gameController.leaveGame)
   .put('/game/movePiece', gameController.movePiece)

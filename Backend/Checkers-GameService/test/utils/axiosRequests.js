@@ -19,6 +19,25 @@ const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
 
+exports.axiosGetRequest = async function axiosGetRequest(route, params) {
+  let response = null;
+  try {
+    response = await axios.get(`https://:${PORT}${route}`, { params, httpsAgent }, { httpsAgent });
+    return {
+      status: response.status,
+      response: response.data,
+    };
+  } catch (err) {
+    if (err.response === undefined) {
+      console.log(err.code);
+      return err.code;
+    }
+    return {
+      status: err.response.status,
+    };
+  }
+};
+
 exports.axiosPostRequest = async function axiosPostRequest(route, params) {
   let response = null;
   try {
