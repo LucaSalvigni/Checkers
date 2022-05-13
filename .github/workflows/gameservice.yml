@@ -8,7 +8,7 @@ on:
   workflow_call:
 
 env:
-  PORT: 3032
+  GameService_PORT: 3032
   DB_PSW: ${{ secrets.DB_PSW }}
   GAME_KEY: ${{ secrets.GAME_KEY }}
   GAME_CERT: ${{ secrets.GAME_CERT }}
