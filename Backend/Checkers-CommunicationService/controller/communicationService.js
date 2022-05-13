@@ -118,21 +118,22 @@ async function getLobbies(userStars) {
       }
     }
   } */
-  Array.from(lobbies.entries())
+  const validLobbies = Array.from(lobbies.entries())
     .filter(([, lobby]) => lobby.isFree() && (lobby.getStars() >= userStars))
-    .forEach(async (lobbyId, lobby) => {
-      const username = await getUsername(lobby.getPlayers(0));
-      if (username === '') {
-        log('Something wrong with retrieving a lobby host username');
-      } else {
-        data.push({
-          lobbyId,
-          name: lobby.getName(),
-          max_stars: lobby.getStars(),
-          host: username,
-        });
-      }
-    });
+  for(const i in validLobbies) {
+    let lobby = validLobbies[i]
+    const username = await getUsername(lobby[1].getPlayers(0))
+    if (username === null) {
+      log('something wrong with username');
+    } else {
+      data.push({
+        lobbyId: lobby[0],
+        name: lobby[1].getName(),
+        max_stars: lobby[1].getStars(),
+        host: username,
+      });
+    }
+  }
   return data;
 }
 /**

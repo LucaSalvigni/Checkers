@@ -6,6 +6,7 @@ require('../../../Checkers-GameService/index');
 const clientSocket = new Client('http://:3030');
 const clientSocket2 = new Client('http://:3030');
 let tokenValue = '';
+let tokenValue2 = '';
 
 const api = {
 
@@ -21,8 +22,16 @@ const api = {
     return tokenValue;
   },
 
+  getToken2() {
+    return tokenValue2
+  },
+
   setToken(value) {
     tokenValue = value;
+  },
+  
+  setToken2(value) {
+    tokenValue2 = value;
   },
 
   async createUser(mail, username, password) {
@@ -64,5 +73,9 @@ const api = {
   async buildLobby(client, lobbyName, maxStars, token) {
     client.emit('build_lobby', lobbyName, maxStars, token);
   },
+
+  async getLobbies(client, stars, token) {
+    client.emit('get_lobbies', stars, token)
+  }
 };
 module.exports = api;

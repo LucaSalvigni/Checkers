@@ -45,7 +45,6 @@ async function askService(method, url, params) {
           // eslint-disable-next-line max-len
           response = await axios.get(url, { headers: { authorization: params.headers.Authorization }, httpsAgent }, { httpsAgent });
         } else {
-          console.log('Ciao');
           response = await axios.get(url, { params, httpsAgent }, { httpsAgent });
         }
         break;
