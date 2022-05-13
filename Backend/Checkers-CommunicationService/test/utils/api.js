@@ -1,6 +1,7 @@
 const Client = require('socket.io-client');
 require('../../index');
 require('../../../Checkers-UserService/index');
+require('../../../Checkers-GameService/index');
 
 const clientSocket = new Client('http://:3030');
 const clientSocket2 = new Client('http://:3030');
@@ -58,6 +59,10 @@ const api = {
 
   async getHistory(client, token) {
     client.emit('get_history', token);
+  },
+
+  async buildLobby(client, lobbyName, maxStars, token) {
+    client.emit('build_lobby', lobbyName, maxStars, token);
   },
 };
 module.exports = api;
