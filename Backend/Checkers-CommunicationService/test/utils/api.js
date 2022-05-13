@@ -7,6 +7,7 @@ const clientSocket = new Client('http://:3030');
 const clientSocket2 = new Client('http://:3030');
 let tokenValue = '';
 let tokenValue2 = '';
+let lobbyId = '';
 
 const api = {
 
@@ -23,15 +24,23 @@ const api = {
   },
 
   getToken2() {
-    return tokenValue2
+    return tokenValue2;
+  },
+
+  getLobbyId() {
+    return lobbyId;
   },
 
   setToken(value) {
     tokenValue = value;
   },
-  
+
   setToken2(value) {
     tokenValue2 = value;
+  },
+
+  setLobbyId(id) {
+    lobbyId = id;
   },
 
   async createUser(mail, username, password) {
@@ -75,7 +84,11 @@ const api = {
   },
 
   async getLobbies(client, stars, token) {
-    client.emit('get_lobbies', stars, token)
-  }
+    client.emit('get_lobbies', stars, token);
+  },
+
+  async deleteLobby(socket, id, token) {
+    socket.emit('delete_lobby', id, token);
+  },
 };
 module.exports = api;

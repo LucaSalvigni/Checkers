@@ -17,5 +17,8 @@ module.exports = {
     'func-names': 'off',
     'no-extraneous-dependencies': 0,
     'no-use-before-define': 'off',
+    'no-restricted-syntax': 'off',
+    'guard-for-in': 'off',
+    'no-await-in-loop': 'off',
   },
 };

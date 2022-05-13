@@ -102,27 +102,11 @@ async function getUsername(mail) {
 // TODO: CHECK THIS
 async function getLobbies(userStars) {
   const data = [];
-  /* const tmp = lobbies.entries();
-  for (const [lobbyId, lobby] of tmp) {
-    if (lobby.isFree() && (lobby.getStars() >= userStars)) {
-      const username = await getUsername(lobby.getPlayers(0));
-      if (username === null) {
-        log('something wrong with username');
-      } else {
-        data.push({
-          lobbyId,
-          name: lobby.getName(),
-          max_stars: lobby.getStars(),
-          host: username,
-        });
-      }
-    }
-  } */
   const validLobbies = Array.from(lobbies.entries())
-    .filter(([, lobby]) => lobby.isFree() && (lobby.getStars() >= userStars))
-  for(const i in validLobbies) {
-    let lobby = validLobbies[i]
-    const username = await getUsername(lobby[1].getPlayers(0))
+    .filter(([, lobby]) => lobby.isFree() && (lobby.getStars() >= userStars));
+  for (const i in validLobbies) {
+    const lobby = validLobbies[i];
+    const username = await getUsername(lobby[1].getPlayers(0));
     if (username === null) {
       log('something wrong with username');
     } else {
