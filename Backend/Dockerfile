@@ -8,7 +8,7 @@ ENV PORT=$ARG_PORT
 
 RUN mkdir -p /app/$SERVICENAME
 WORKDIR /app/$SERVICENAME
-COPY /$SERVICEDIR .
+COPY /$SERVICEDIR/build .
 RUN npm install --unsafe-perm
 EXPOSE $PORT
 CMD npm run deploy

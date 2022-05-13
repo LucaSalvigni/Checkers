@@ -9,7 +9,6 @@ const https = require('https');
 // Load .env
 dotenv.config();
 
-// TODO PASS THROUGH ACTIONS
 // Load Env variables
 const { DB_PSW } = process.env;
 const { PORT } = process.env;

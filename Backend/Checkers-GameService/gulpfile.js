@@ -3,16 +3,13 @@ const {
 } = require('gulp');
 const del = require('del');
 const fs = require('fs');
-const zip = require('gulp-zip');
 const log = require('fancy-log');
 const webpackStream = require('webpack-stream');
 const { exec } = require('child_process');
 const webpackConfig = require('./webpack.config');
 
 const paths = {
-  prod_build: './gameService-build',
-  server_file_name: 'game.bundle.js',
-  zipped_file_name: 'game-nodejs.zip',
+  prod_build: './build',
 };
 
 function clean() {
@@ -64,10 +61,9 @@ function copyNodeJSCodeTask() {
     .pipe(dest(`${paths.prod_build}`));
 }
 
-function zippingTask() {
-  log('zipping the code ');
-  return src(`${paths.prod_build}/**`)
-    .pipe(zip(`${paths.zipped_file_name}`))
+function copyPackageTask() {
+  log('copying package.json');
+  return src('./package.json')
     .pipe(dest(`${paths.prod_build}`));
 }
 
@@ -78,5 +74,5 @@ exports.default = series(
   testQualityAssurance,
   createProdBuildFolder,
   copyNodeJSCodeTask,
-  zippingTask,
+  copyPackageTask,
 );
