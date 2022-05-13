@@ -11,7 +11,7 @@ dotenv.config();
 
 // Load Env variables
 const { DB_PSW } = process.env;
-const { PORT } = process.env;
+const PORT = process.env.GameService_PORT;
 const { GAME_KEY } = process.env;
 const { GAME_CERT } = process.env;
 const { CERTIFICATE } = process.env;

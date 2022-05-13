@@ -6,6 +6,6 @@ module.exports = {
   target: 'node',
   output: {
     path: path.resolve(__dirname, '.'),
-    filename: 'user.bundle.js',
+    filename: 'build.js',
   },
 };

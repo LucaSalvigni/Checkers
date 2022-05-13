@@ -3,21 +3,18 @@ const {
 } = require('gulp');
 const del = require('del');
 const fs = require('fs');
-const zip = require('gulp-zip');
 const log = require('fancy-log');
 const webpackStream = require('webpack-stream');
 const { exec } = require('child_process');
 const webpackConfig = require('./webpack.config');
 
 const paths = {
-  prod_build: './socketService-build',
-  server_file_name: 'socket.bundle.js',
-  zipped_file_name: 'socket-nodejs.zip',
+  prod_build: './build',
 };
 
 function clean() {
   log('removing the old files in the directory');
-  return del('./socketService-build/**', { force: true });
+  return del('./build/**', { force: true });
 }
 
 function qualityAssurance(cb) {
@@ -64,13 +61,11 @@ function copyNodeJSCodeTask() {
     .pipe(dest(`${paths.prod_build}`));
 }
 
-function zippingTask() {
+function copyPackage() {
   log('zipping the code ');
-  return src(`${paths.prod_build}/**`)
-    .pipe(zip(`${paths.zipped_file_name}`))
+  return src('./package.json')
     .pipe(dest(`${paths.prod_build}`));
 }
-
 exports.default = series(
   clean,
   qualityAssurance,
@@ -78,5 +73,5 @@ exports.default = series(
   testQualityAssurance,
   createProdBuildFolder,
   copyNodeJSCodeTask,
-  zippingTask,
+  copyPackage,
 );

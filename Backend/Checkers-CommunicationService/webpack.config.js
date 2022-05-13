@@ -6,6 +6,6 @@ module.exports = {
   target: 'node',
   output: {
     path: path.resolve(__dirname, '.'),
-    filename: 'socket.bundle.js',
+    filename: 'build.js',
   },
 };

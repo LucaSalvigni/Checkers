@@ -3,7 +3,7 @@ const axiosRetry = require('axios-retry');
 const https = require('https');
 require('../../index');
 
-const { PORT } = process.env;
+const PORT = process.env.GameService_PORT;
 const { GAME_KEY } = process.env;
 const { GAME_CERT } = process.env;
 
