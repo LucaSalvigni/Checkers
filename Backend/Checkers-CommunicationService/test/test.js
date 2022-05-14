@@ -5,4 +5,5 @@ require('./testWithUserService/getLeaderBoardTest');
 require('./testWithUserService/updateProfileTest');
 require('./lobbyTest/buildLobbyTest');
 require('./lobbyTest/getLobbiesTest');
+require('./lobbyTest/joinLobbyTest');
 require('./lobbyTest/deleteLobbyTest');

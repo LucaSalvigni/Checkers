@@ -87,8 +87,12 @@ const api = {
     client.emit('get_lobbies', stars, token);
   },
 
-  async deleteLobby(socket, id, token) {
-    socket.emit('delete_lobby', id, token);
+  async deleteLobby(client, id, token) {
+    client.emit('delete_lobby', id, token);
+  },
+
+  async joinLobby(client, id, token) {
+    client.emit('join_lobby', id, token);
   },
 };
 module.exports = api;

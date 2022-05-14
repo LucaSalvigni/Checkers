@@ -151,11 +151,9 @@ function joinLobby(lobbyId, client, player) {
 async function setupGame(gameId, hostMail, opponentMail) {
   const game = [];
   const hostSpecs = await network.askService('get', `${userService}/profile/getProfile`, { mail: hostMail });
-
   const opponentSpecs = await network.askService('get', `${userService}/profile/getProfile`, { mail: opponentMail });
-
   if (hostSpecs.status && opponentSpecs.status) {
-    const board = await network.askService('post', `${gameService}/game/lobbies/create_game`, { game_id: gameId, host_id: hostSpecs.response.mail, opponent: opponentSpecs.response.mail });
+    const board = await network.askService('post', `${gameService}/game/lobbies/createGame`, { hostId: hostSpecs.response.id, opponent: opponentSpecs.response.id });
     if (board.status) {
       game.push(hostSpecs.response);
       game.push(opponentSpecs.response);
@@ -425,7 +423,6 @@ exports.socket = async function (server) {
       if (user[0]) {
         const userMail = onlineUsers.get(client.id);
         if (!isInLobby(userMail)) {
-          log(`${userMail} joined a lobby`);
           if (lobbies.has(lobbyId)) {
             const host = lobbies.get(lobbyId).getPlayers()[0];
             if (joinLobby(lobbyId, client, userMail)) {
@@ -442,19 +439,19 @@ exports.socket = async function (server) {
                 io.to(lobbyId).emit('server_error', { message: 'Server error while creating a game, please try again' });
               }
             } else {
-              log(`error in join lobby for lobby${lobbyId}`);
+              log(`error in join lobby for lobby ${lobbyId}`);
               client.emit('server_error', { message: 'Server error while joining lobby, please try again' });
             }
           } else {
-            log(`error2 in join lobby for lobby${lobbyId}`);
+            log(`error2 in join lobby for lobby ${lobbyId}`);
             client.emit('server_error', { message: "Such lobby doesn't exist anymore" });
           }
         } else {
-          log(`error3 in join lobby for lobby${lobbyId}`);
+          log(`error3 in join lobby for lobby ${lobbyId}`);
           client.emit('client_error', { message: 'Player is not online or is already in a lobby' });
         }
       } else {
-        log(`error4 in join lobby for lobby${lobbyId}`);
+        log(`error4 in join lobby for lobby ${lobbyId}`);
         client.emit('token_error', { message: user[1] });
       }
     });
