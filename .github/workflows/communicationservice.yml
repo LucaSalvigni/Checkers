@@ -10,6 +10,13 @@ on:
 env:
   COMM_PORT: 3030
   UserService_PORT: 3031
+  GameService_PORT: 3032
+  TURN_TIMEOUT: 120000
+  INVITE_TIMEOUT: 240000
+  TIE_STARS: 20
+  WIN_STARS: 100
+  LOSS_STARS: -70
+  NODE_ENV: development
   USER_SERVICE: https://:3031
   GAME_SERVICE: https://:3032
   DB_PSW: ${{ secrets.DB_PSW }}
@@ -17,6 +24,8 @@ env:
   COMM_CERT: ${{ secrets.COMM_CERT }}
   USER_KEY: ${{ secrets.USER_KEY }}
   USER_CERT: ${{ secrets.USER_CERT }}
+  GAME_KEY: ${{ secrets.GAME_KEY }}
+  GAME_CERT: ${{ secrets.GAME_CERT }}
   CERTIFICATE: ${{ secrets.CERTIFICATE }}
 
 jobs:
@@ -37,7 +46,7 @@ jobs:
         run: |
           cd Backend/Checkers-CommunicationService
           npm run test
-      #- name: Test and build
-        #run: |
-          #cd Backend/Checkers-CommunicationService
-          #npm run gulp
+      - name: Test and build
+        run: |
+          cd Backend/Checkers-CommunicationService
+          npm run gulp

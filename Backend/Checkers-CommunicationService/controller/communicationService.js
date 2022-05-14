@@ -149,6 +149,7 @@ function joinLobby(lobbyId, client, player) {
  * @returns a new game istance to be sent to client
  */
 async function setupGame(gameId, hostMail, opponentMail) {
+  // Just a comment
   const game = [];
   const hostSpecs = await network.askService('get', `${userService}/profile/getProfile`, { mail: hostMail });
   const opponentSpecs = await network.askService('get', `${userService}/profile/getProfile`, { mail: opponentMail });
