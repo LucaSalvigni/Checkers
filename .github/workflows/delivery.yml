@@ -45,9 +45,11 @@ jobs:
       - name: Checkout the repo 
         uses: actions/checkout@v2
 
-      - name: Build and tag container images
+      - name: Build container images
+        run: docker-compose build
+      
+      - name: Tag container images
         run: |
-          docker-compose build
           docker tag gameservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice:${{ needs.getVersion.outputs.version }}
           docker tag userservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice:${{ needs.getVersion.outputs.version }}
       - name: Debugging step

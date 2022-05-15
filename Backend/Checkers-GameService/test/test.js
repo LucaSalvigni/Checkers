@@ -3,7 +3,9 @@
 // Require dependencies
 const mongoose = require('mongoose');
 const { expect } = require('chai');
-const { axiosPostRequest, axiosPutRequest, axiosDeleteRequest, axiosGetRequest } = require('./utils/axiosRequests');
+const {
+  axiosPostRequest, axiosPutRequest, axiosDeleteRequest, axiosGetRequest,
+} = require('./utils/axiosRequests');
 const gameModel = require('../models/gameModel');
 const Draughts = require('../controllers/draughts');
 
@@ -93,7 +95,7 @@ describe('Game', async () => {
     });
 
     it('should throw error', async () => {
-      const games = await getGames("BOOGALOOOBA");
+      const games = await getGames('BOOGALOOOBA');
       expect(games.status).to.equal(500);
     });
 

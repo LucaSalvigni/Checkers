@@ -1,17 +1,4 @@
 services:
-  userservice:
-    container_name: userservice
-    build: 
-      context: ./Backend
-      args:
-        - SERVICENAME=UserService
-        - SERVICEDIR=Checkers-UserService
-        - ARG_PORT=3031
-    environment:
-      - DB_PSW=${DB_PSW}
-    restart: always
-    ports:
-      - 3031:3031
   gameservice:
     container_name: gameservice
     build: 
@@ -25,3 +12,16 @@ services:
     restart: always
     ports:
       - 3032:3032
+  userservice:
+    container_name: userservice
+    build: 
+      context: ./Backend
+      args:
+        - SERVICENAME=UserService
+        - SERVICEDIR=Checkers-UserService
+        - ARG_PORT=3031
+    environment:
+      - DB_PSW=${DB_PSW}
+    restart: always
+    ports:
+      - 3031:3031
