@@ -9,7 +9,6 @@ on:
 
 env:
   REGISTRY: "registry.digitalocean.com/checkers-cr"
-  IMAGE_NAME: "checkers"
 
 jobs:
   frontend:
@@ -50,8 +49,9 @@ jobs:
       
       - name: Tag container images
         run: |
-          docker tag gameservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice:${{ needs.getVersion.outputs.version }}
-          docker tag userservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice:${{ needs.getVersion.outputs.version }}
+          docker tag gameservice $(echo $REGISTRY)/gameservice:${{ needs.getVersion.outputs.version }}
+          docker tag userservice $(echo $REGISTRY)/userservice:${{ needs.getVersion.outputs.version }}
+          
       - name: Debugging step
         run: docker image ls
 
