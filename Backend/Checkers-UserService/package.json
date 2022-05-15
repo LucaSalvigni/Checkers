@@ -6,7 +6,7 @@
   "scripts": {
     "coverage": "nyc npm run test",
     "gulp": "gulp",
-    "deploy": "node build.js",
+    "deploy": "node index.js",
     "lint": "eslint ./**/*.js --fix",
     "test": "mocha ./test/test.js --timeout 20000 --exit"
   },
