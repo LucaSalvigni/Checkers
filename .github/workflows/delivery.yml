@@ -45,56 +45,61 @@ jobs:
       - name: Checkout the repo 
         uses: actions/checkout@v2
 
-      - name: Build container images
-        run: docker-compose build
-
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-    
-      - name: Log in to DigitalOcean Container Registry with short-lived credentials
-        run: doctl registry login --expiry-seconds 600
-      
-      - name: Remove all old images
-        run: if [ ! -z "$(doctl registry repository list | grep "$(echo $IMAGE_NAME)")" ]; then doctl registry repository delete-manifest $(echo $IMAGE_NAME) $(doctl registry repository list-tags $(echo $IMAGE_NAME) | grep -o "sha.*") --force; else echo "No repository"; fi
-
-      - name: Push image to DigitalOcean Container Registry
+      - name: Build and tag container images
         run: |
-          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
-          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
+          docker-compose build
+          docker tag gameservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice:${{ needs.getVersion.outputs.version }}
+          docker tag userservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice:${{ needs.getVersion.outputs.version }}
+      - name: Debugging step
+        run: docker image ls
+
+  #     - name: Install doctl
+  #       uses: digitalocean/action-doctl@v2
+  #       with:
+  #         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    
+  #     - name: Log in to DigitalOcean Container Registry with short-lived credentials
+  #       run: doctl registry login --expiry-seconds 600
+      
+  #     - name: Remove all old images
+  #       run: if [ ! -z "$(doctl registry repository list | grep "$(echo $IMAGE_NAME)")" ]; then doctl registry repository delete-manifest $(echo $IMAGE_NAME) $(doctl registry repository list-tags $(echo $IMAGE_NAME) | grep -o "sha.*") --force; else echo "No repository"; fi
+
+  #     - name: Push image to DigitalOcean Container Registry
+  #       run: |
+  #         docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
+  #         docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
         
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build_and_push   
-    steps:
-      - uses: actions/checkout@v2
-      - name: Copy file via scp
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.DO_HOST }}
-          username: ${{ secrets.DO_USERNAME }}
-          key: ${{ secrets.DO_SSHKEY }}
-          passphrase: ${{ secrets.DO_PASSPHRASE }}
-          source: "docker-compose.yml"
-          target: "."
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: build_and_push   
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Copy file via scp
+  #       uses: appleboy/scp-action@master
+  #       with:
+  #         host: ${{ secrets.DO_HOST }}
+  #         username: ${{ secrets.DO_USERNAME }}
+  #         key: ${{ secrets.DO_SSHKEY }}
+  #         passphrase: ${{ secrets.DO_PASSPHRASE }}
+  #         source: "docker-compose.yml"
+  #         target: "."
           
-      - name: Deploy to Digital Ocean droplet via SSH action
-        uses: appleboy/ssh-action@v0.1.3
-        with:
-          host: ${{ secrets.DO_HOST }}
-          username: ${{ secrets.DO_USERNAME }}
-          key: ${{ secrets.DO_SSHKEY }}
-          passphrase: ${{ secrets.DO_PASSPHRASE }}
-          envs: IMAGE_NAME,REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-          script: |
-            # Login to registry
-            docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
-            # Stop running containers
-            docker stop userservice gameservice
-            # Remove old containers
-            docker rm userservice gameservice
-            # Run new containers from new images
-            docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
-            docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
-            docker compose up -d
+  #     - name: Deploy to Digital Ocean droplet via SSH action
+  #       uses: appleboy/ssh-action@v0.1.3
+  #       with:
+  #         host: ${{ secrets.DO_HOST }}
+  #         username: ${{ secrets.DO_USERNAME }}
+  #         key: ${{ secrets.DO_SSHKEY }}
+  #         passphrase: ${{ secrets.DO_PASSPHRASE }}
+  #         envs: IMAGE_NAME,REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+  #         script: |
+  #           # Login to registry
+  #           docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
+  #           # Stop running containers
+  #           docker stop userservice gameservice
+  #           # Remove old containers
+  #           docker rm userservice gameservice
+  #           # Run new containers from new images
+  #           docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
+  #           docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
+  #           docker compose up -d
