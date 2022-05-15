@@ -46,7 +46,10 @@ jobs:
 
       - name: Build container images
         run: docker-compose build
-      
+        
+      - name: Debugging step
+        run: docker image ls
+
       - name: Tag container images
         run: |
           docker tag gameservice $(echo $REGISTRY)/gameservice:${{ needs.getVersion.outputs.version }}
