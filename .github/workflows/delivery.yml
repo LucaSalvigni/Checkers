@@ -9,6 +9,7 @@ on:
 
 env:
   REGISTRY: "registry.digitalocean.com/checkers-cr"
+  IMAGE_NAME: "checkers"
 
 jobs:
   frontend:
@@ -46,11 +47,11 @@ jobs:
 
       - name: Build container images
         run: docker-compose build
-
+      
       - name: Tag container images
         run: |
-          docker tag checkers_gameservice $(echo $REGISTRY)/gameservice:${{ needs.getVersion.outputs.version }}
-          docker tag checkers_userservice $(echo $REGISTRY)/userservice:${{ needs.getVersion.outputs.version }}
+          docker tag checkers_gameservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice-${{ needs.getVersion.outputs.version }}
+          docker tag checkers_userservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice-${{ needs.getVersion.outputs.version }}
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -61,12 +62,12 @@ jobs:
         run: doctl registry login --expiry-seconds 600
       
       - name: Remove all old images
-        run: if [ ! -z "$(doctl registry repository list | grep checkers)" ]; then doctl registry repository delete-manifest checkers $(doctl registry repository list-tags checkers | grep -o "sha.*") --force; else echo "No repository"; fi
+        run: if [ ! -z "$(doctl registry repository list | grep "$(echo $IMAGE_NAME)")" ]; then doctl registry repository delete-manifest $(echo $IMAGE_NAME) $(doctl registry repository list-tags $(echo $IMAGE_NAME) | grep -o "sha.*") --force; else echo "No repository"; fi
 
       - name: Push image to DigitalOcean Container Registry
         run: |
-          docker push $(echo $REGISTRY)/gameservice:${{ needs.getVersion.outputs.version }}
-          docker push $(echo $REGISTRY)/userservice:${{ needs.getVersion.outputs.version }}
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice-${{ needs.getVersion.outputs.version }}
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice-${{ needs.getVersion.outputs.version }}
         
   deploy:
     runs-on: ubuntu-latest
@@ -99,6 +100,6 @@ jobs:
             # Remove old containers
             docker rm userservice gameservice
             # Run new containers from new images
-            docker pull $(echo $REGISTRY)/gameservice:${{ needs.getVersion.outputs.version }}
-            docker pull $(echo $REGISTRY)/userservice:${{ needs.getVersion.outputs.version }}
+            docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice-${{ needs.getVersion.outputs.version }}
+            docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice-${{ needs.getVersion.outputs.version }}
             docker compose up -d
