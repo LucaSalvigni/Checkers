@@ -52,7 +52,6 @@ async function isAuthenticated(token, clientId) {
     }
     return [false, ''];
   } catch (err) {
-    console.log(err);
     return [false, err.response.data];
   }
 }
@@ -155,7 +154,7 @@ async function setupGame(gameId, hostMail, opponentMail) {
   const hostSpecs = await network.askService('get', `${userService}/profile/getProfile`, { mail: hostMail });
   const opponentSpecs = await network.askService('get', `${userService}/profile/getProfile`, { mail: opponentMail });
   if (hostSpecs.status && opponentSpecs.status) {
-    const board = await network.askService('post', `${gameService}/game/lobbies/createGame`, { hostId: hostSpecs.response.id, opponent: opponentSpecs.response.id });
+    const board = await network.askService('post', `${gameService}/game/lobbies/createGame`, { gameId, hostId: hostSpecs.response.id, opponent: opponentSpecs.response.id });
     if (board.status) {
       game.push(hostSpecs.response);
       game.push(opponentSpecs.response);
@@ -248,7 +247,7 @@ exports.socket = async function (server) {
     const clientId = onlineUsers.getKey(player);
     // Player isn't in a lobby so just disconnect it
     if (!isInLobby(player)) {
-      log(`${player}just disconnected but wasn't in lobby`);
+      log(`${player} just disconnected but wasn't in lobby`);
       onlineUsers.delete(clientId);
     } else {
       // player is in a lobby, check if it's empty or he is in a game
@@ -257,7 +256,7 @@ exports.socket = async function (server) {
 
       const lobbyId = lobbies.getKey(playerLobby);
 
-      log(`${player} from lobby ${lobbyId} is  trying to disconnect`);
+      log(`${player} from lobby ${lobbyId} is trying to disconnect`);
       // Lobby is free
       if (playerLobby.isFree()) {
         log(`${onlineUsers.get(clientId)} just disconnected and his lobby has been deleted`);
@@ -323,7 +322,6 @@ exports.socket = async function (server) {
       if (onlineUsers.hasValue(mail)) {
         client.emit('login_error', { message: 'Someone is already logged in with such email' });
       } else {
-        console.log('Lets communicate to userService');
         const user = await network.askService('post', `${userService}/login`, {
           mail,
           password,
@@ -376,7 +374,7 @@ exports.socket = async function (server) {
         }
       } else {
         log('a user is damn not authenticated');
-        client.emit('token_error', { message: user[1] });
+        client.emit('token_error', { message: 'Please login before build a lobby' });
       }
     });
 
@@ -425,7 +423,6 @@ exports.socket = async function (server) {
       if (user[0]) {
         const userMail = onlineUsers.get(client.id);
         if (!isInLobby(userMail)) {
-          console.log(lobbyId);
           if (lobbies.has(lobbyId)) {
             const host = lobbies.get(lobbyId).getPlayers()[0];
             if (joinLobby(lobbyId, client, userMail)) {
@@ -468,7 +465,6 @@ exports.socket = async function (server) {
         if (lobbies.has(lobbyId)) {
           const lobby = lobbies.get(lobbyId);
           if (lobby.hasPlayer(player) && lobby.turn === player) {
-            console.log('Request game controller');
             let moveResult = await network.askService('put', `${gameService}/game/movePiece`, { gameId: lobbyId, from, to });
             // If no one won
             if (moveResult.status) {
@@ -553,7 +549,7 @@ exports.socket = async function (server) {
           log(`${player} is trying to delete lobby ${lobbyId} in which I just confirmed is in`);
           const lobby = lobbies.get(lobbyId);
           const winner = lobby.getPlayers().filter((p) => p !== player).shift();
-          result = await network.askService('delete', `${gameService}/game/leaveGame`, { data: { game_id: lobbyId, player_id: player } });
+          result = await network.askService('delete', `${gameService}/game/leaveGame`, { gameId: lobbyId, playerId: player });
           if (result.status) {
             result = result.response.data;
             // eslint-disable-next-line max-len

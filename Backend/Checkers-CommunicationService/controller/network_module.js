@@ -55,7 +55,7 @@ async function askService(method, url, params) {
         response = await axios.put(url, params, { httpsAgent });
         break;
       case 'delete':
-        response = await axios.delete(url, { data: params }, { httpsAgent });
+        response = await axios.delete(url, { params, httpsAgent }, { httpsAgent });
         break;
       default:
         return defaultErrorMsg;

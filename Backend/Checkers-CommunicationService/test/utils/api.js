@@ -98,5 +98,9 @@ const api = {
   async movePiece(client, id, from, to, token) {
     client.emit('move_piece', id, from, to, token);
   },
+
+  async leaveGame(client, id, token) {
+    client.emit('leave_game', id, token);
+  },
 };
 module.exports = api;
