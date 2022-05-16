@@ -82,14 +82,16 @@ function deleteDistBuildFolder() {
 }
 
 exports.test = series(
-  clean,
+  cleanPreviousBuild,
   qualityAssurance,
+  buildVueCodeTask,
   doTest,
   testQualityAssurance,
 );
 
 exports.build = series(
   createProdBuildFolder,
-  copyNodeJSCodeTask,
-  copyPackageTask,
+  copyVueCodeTask,
+  zippingTask,
+  deleteDistBuildFolder
 );
