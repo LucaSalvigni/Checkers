@@ -107,11 +107,13 @@ function parseFEN(game) {
 // Exports
 exports.createGame = async function createGame(req, res) {
   try {
+    const { gameId } = req.body;
     const { hostId } = req.body;
     const { opponent } = req.body;
 
     const newGame = new Draughts();
     let savedGame = new Game({
+      _id: gameId,
       white: hostId,
       black: opponent,
       finished: false,
@@ -213,6 +215,7 @@ exports.turnChange = async function turnChange(req, res) {
  * A user moves a piece inside the board
  */
 exports.movePiece = async function movePiece(req, res) {
+  console.log(req.body)
   const { gameId } = req.body;
   const { from } = req.body;
   const { to } = req.body;
