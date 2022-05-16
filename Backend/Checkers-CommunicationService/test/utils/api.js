@@ -94,5 +94,9 @@ const api = {
   async joinLobby(client, id, token) {
     client.emit('join_lobby', id, token);
   },
+
+  async movePiece(client, id, from, to, token) {
+    client.emit('move_piece', id, from, to, token);
+  },
 };
 module.exports = api;

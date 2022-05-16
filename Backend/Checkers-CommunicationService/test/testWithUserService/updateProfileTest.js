@@ -18,21 +18,21 @@ const newWrongValues = {
 
 describe('Communication Service Update Tests', async () => {
   it('update should work', (done) => {
-    api.updateUserProfile(api.getClient(), { mail: 'newtest@newtest.com', params: newValues }, api.getToken());
+    api.updateUserProfile(api.getClient(), newValues, api.getToken());
     api.getClient().on('updated_user', (arg) => {
       console.log(arg);
       done();
     });
   });
   it('update should fail', (done) => {
-    api.updateUserProfile(api.getClient(), { mail: 'newtest@newtest.com', params: newWrongValues }, api.getToken());
+    api.updateUserProfile(api.getClient(), newWrongValues, api.getToken());
     api.getClient().on('client_error', (arg) => {
       assert.equal(arg.message.message, "You can't change the email associated to an account.");
       done();
     });
   });
   it('update should fail for wrong token', (done) => {
-    api.updateUserProfile(api.getClient2(), { mail: 'newtest@newtest.com', params: newValues }, '');
+    api.updateUserProfile(api.getClient2(), newValues, '');
     api.getClient2().on('token_error', (arg) => {
       assert.equal(arg.message, 'You are not authenticated, please login before update');
       done();

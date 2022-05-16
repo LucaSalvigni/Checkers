@@ -6,4 +6,5 @@ require('./testWithUserService/updateProfileTest');
 require('./lobbyTest/buildLobbyTest');
 require('./lobbyTest/getLobbiesTest');
 require('./lobbyTest/joinLobbyTest');
+// require('./testWithGameService/movePieceTest')
 require('./lobbyTest/deleteLobbyTest');

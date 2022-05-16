@@ -1,5 +1,6 @@
 const BiMap = require('bidirectional-map');
 const socket = require('socket.io');
+const mongoose = require('mongoose');
 const network = require('./network_module');
 const Lobby = require('../models/lobby');
 
@@ -26,7 +27,7 @@ function log(msg) {
  * @returns a 2 char long random ID
  */
 function getId() {
-  return Math.random().toString(36).slice(2);
+  return new mongoose.Types.ObjectId();
 }
 /**
  * Checks a user's token validity.
@@ -76,9 +77,9 @@ function isInLobby(playerMail) {
  */
 function buildLobby(roomName, client, maxStars) {
   const newRoomId = getId();
-  lobbies.set(newRoomId, new Lobby(maxStars, roomName, onlineUsers.get(client.id)));
-  client.join(newRoomId);
-  return newRoomId;
+  lobbies.set(newRoomId.toString(), new Lobby(maxStars, roomName, onlineUsers.get(client.id)));
+  client.join(newRoomId.toString());
+  return newRoomId.toString();
 }
 
 /**
@@ -424,6 +425,7 @@ exports.socket = async function (server) {
       if (user[0]) {
         const userMail = onlineUsers.get(client.id);
         if (!isInLobby(userMail)) {
+          console.log(lobbyId);
           if (lobbies.has(lobbyId)) {
             const host = lobbies.get(lobbyId).getPlayers()[0];
             if (joinLobby(lobbyId, client, userMail)) {
@@ -466,7 +468,8 @@ exports.socket = async function (server) {
         if (lobbies.has(lobbyId)) {
           const lobby = lobbies.get(lobbyId);
           if (lobby.hasPlayer(player) && lobby.turn === player) {
-            let moveResult = await network.askService('put', `${gameService}/game/movePiece`, { game_id: lobbyId, from, to });
+            console.log('Request game controller');
+            let moveResult = await network.askService('put', `${gameService}/game/movePiece`, { gameId: lobbyId, from, to });
             // If no one won
             if (moveResult.status) {
               moveResult = moveResult.response;
