@@ -1,4 +1,18 @@
 services:
+  #commmunicationservice:
+    #container_name: commmunicationservice
+    #image: registry.digitalocean.com/checkers-cr/checkers:commmunicationservice
+    #build: 
+      #context: ./Backend
+      #args:
+        #- SERVICENAME=CommunicationService
+        #- SERVICEDIR=Checkers-CommunicationService
+        #- ARG_PORT=3031
+    #environment:
+      #- DB_PSW=${DB_PSW}
+    #restart: always
+    #ports:
+      #- 3030:3030
   userservice:
     container_name: userservice
     image: registry.digitalocean.com/checkers-cr/checkers:userservice
