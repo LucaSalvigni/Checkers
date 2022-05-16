@@ -371,3 +371,44 @@ exports.updateProfile = async function (req, res) {
     }
   }
 };
+
+exports.updatePoints = async function (req, res) {
+  const { mail } = req.body;
+  const { stars } = req.body;
+  const { won } = req.body;
+  const singleMatch = 1;
+  const { tied } = req.body;
+  const userStars = await User.findOne({ mail });
+  let user = null;
+  try {
+    if (tied) {
+      user = await User.findOneAndUpdate({ mail }, { $inc: { ties: singleMatch, stars } });
+    } else if (won) {
+      user = await User.findOneAndUpdate({ mail }, { $inc: { wins: singleMatch, stars } });
+    } else if (userStars.stars - Math.abs(parseInt(stars, 10)) < 0) {
+      // eslint-disable-next-line max-len
+      user = await User.findOneAndUpdate({ mail }, { $inc: { ties: singleMatch, stars: -userStars.stars } });
+    } else {
+      user = await User.findOneAndUpdate({ mail }, { $inc: { stars, losses: singleMatch } });
+    }
+    if (user != null) {
+      log(`Just updated points for ${mail}`);
+      res.status(200).json({
+        username: user.username,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        mail: user.mail,
+        wins: user.wins,
+        losses: user.losses,
+        stars: user.stars,
+      });
+    } else {
+      log(`Couldn't update points for ${mail}`);
+      res.status(400).send({ message: "We weren't able to update points for such user" });
+    }
+  } catch (err) {
+    log(`Something went wrong while updating points for ${mail}`);
+    log(err);
+    res.status(500).send({ message: 'Something went wrong while updating your points' });
+  }
+};

@@ -26,6 +26,7 @@ router
   .get('/profile/getHistory', userController.getHistory)
 
   .put('/profile/updateProfile', userController.updateProfile)
+  .put('/profile/updatePoints', userController.updatePoints)
 
   .post('/login', userController.login)
   .post('/signup', userController.signup);
