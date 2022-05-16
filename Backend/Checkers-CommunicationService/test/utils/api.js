@@ -102,5 +102,9 @@ const api = {
   async leaveGame(client, id, token) {
     client.emit('leave_game', id, token);
   },
+
+  async inviteOpponent(client, opponentMail, token) {
+    client.emit('invite_opponent', opponentMail, token);
+  },
 };
 module.exports = api;

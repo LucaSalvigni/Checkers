@@ -8,4 +8,5 @@ require('./lobbyTest/getLobbiesTest');
 require('./lobbyTest/joinLobbyTest');
 require('./testWithGameService/movePieceTest');
 require('./testWithGameService/leaveGameTest');
+require('./lobbyTest/inviteOpponentTest');
 // require('./lobbyTest/deleteLobbyTest');
