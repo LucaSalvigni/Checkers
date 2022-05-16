@@ -30,7 +30,7 @@ jobs:
         run: |
           cd Backend/Checkers-GameService
           npm ci
-      - name: Test and build
+      - name: Test
         run: |
           cd Backend/Checkers-GameService
           npm run gulp test
