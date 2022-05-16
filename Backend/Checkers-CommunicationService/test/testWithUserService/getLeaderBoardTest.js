@@ -9,7 +9,7 @@ describe('Communication Service getLeaderboard Tests', async () => {
       done();
     });
   });
-  it('getLeaderboard should fail', (done) => {
+  it('getLeaderboard should fail for token', (done) => {
     api.getLeaderboard(api.getClient(), '');
     api.getClient().off('token_error');
     api.getClient().on('token_error', (arg) => {

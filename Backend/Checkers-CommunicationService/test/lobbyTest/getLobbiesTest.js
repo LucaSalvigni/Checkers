@@ -17,4 +17,12 @@ describe('Communication Service Get Lobbies Tests', async () => {
       done();
     });
   });
+  it('get lobbies should fail for token', (done) => {
+    api.getLobbies(api.getClient2(), 'BestLobby', '500', '');
+    api.getClient2().off('token_error');
+    api.getClient2().on('token_error', (arg) => {
+      assert.equal(arg.message, 'Please login before request a lobby');
+      done();
+    });
+  });
 });

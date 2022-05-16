@@ -154,7 +154,7 @@ async function setupGame(gameId, hostMail, opponentMail) {
   const hostSpecs = await network.askService('get', `${userService}/profile/getProfile`, { mail: hostMail });
   const opponentSpecs = await network.askService('get', `${userService}/profile/getProfile`, { mail: opponentMail });
   if (hostSpecs.status && opponentSpecs.status) {
-    const board = await network.askService('post', `${gameService}/game/lobbies/createGame`, { gameId, hostId: hostSpecs.response.id, opponent: opponentSpecs.response.id });
+    const board = await network.askService('post', `${gameService}/game/lobbies/createGame`, { gameId, hostId: hostSpecs.response.mail, opponent: opponentSpecs.response.mail });
     if (board.status) {
       game.push(hostSpecs.response);
       game.push(opponentSpecs.response);
@@ -388,7 +388,7 @@ exports.socket = async function (server) {
         const liveLobbies = await getLobbies(stars);
         client.emit('lobbies', liveLobbies);
       } else {
-        client.emit('token_error', { message: user[1] });
+        client.emit('token_error', { message: 'Please login before request a lobby' });
       }
     });
     /**
@@ -551,7 +551,7 @@ exports.socket = async function (server) {
           const winner = lobby.getPlayers().filter((p) => p !== player).shift();
           result = await network.askService('delete', `${gameService}/game/leaveGame`, { gameId: lobbyId, playerId: player });
           if (result.status) {
-            result = result.response.data;
+            result = result.response;
             // eslint-disable-next-line max-len
             const updatedUsers = await updatePoints(winner, process.env.WIN_STARS, player, process.env.LOSS_STARS);
             if (updatedUsers.length > 0) {
