@@ -1,32 +1,4 @@
 services:
-  #commmunicationservice:
-    #container_name: commmunicationservice
-    #image: registry.digitalocean.com/checkers-cr/checkers:commmunicationservice
-    #build: 
-      #context: ./Backend
-      #args:
-        #- SERVICENAME=CommunicationService
-        #- SERVICEDIR=Checkers-CommunicationService
-        #- ARG_PORT=3031
-    #environment:
-      #- DB_PSW=${DB_PSW}
-    #restart: always
-    #ports:
-      #- 3030:3030
-  userservice:
-    container_name: userservice
-    image: registry.digitalocean.com/checkers-cr/checkers:userservice
-    build: 
-      context: ./Backend
-      args:
-        - SERVICENAME=UserService
-        - SERVICEDIR=Checkers-UserService
-        - ARG_PORT=3031
-    environment:
-      - DB_PSW=${DB_PSW}
-    restart: always
-    ports:
-      - 3031:3031
   gameservice:
     container_name: gameservice
     image: registry.digitalocean.com/checkers-cr/checkers:gameservice
@@ -41,3 +13,33 @@ services:
     restart: always
     ports:
       - 3032:3032
+      
+  userservice:
+    container_name: userservice
+    image: registry.digitalocean.com/checkers-cr/checkers:userservice
+    build: 
+      context: ./Backend
+      args:
+        - SERVICENAME=UserService
+        - SERVICEDIR=Checkers-UserService
+        - ARG_PORT=3031
+    environment:
+      - DB_PSW=${DB_PSW}
+    restart: always
+    ports:
+      - 3031:3031
+  
+  communicationservice:
+    container_name: communicationservice
+    image: registry.digitalocean.com/checkers-cr/checkers:communicationservice
+    build: 
+      context: ./Backend
+      args:
+        - SERVICENAME=CommunicationService
+        - SERVICEDIR=Checkers-CommunicationService
+        - ARG_PORT=3030
+    environment:
+      - DB_PSW=${DB_PSW}
+    restart: always
+    ports:
+      - 3030:3030
