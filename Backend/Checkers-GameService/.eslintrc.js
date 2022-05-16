@@ -11,6 +11,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
   },
+  ignorePatterns: ['draughts.js', '**/build/*.js'],
   rules: {
     'no-underscore-dangle': ['error', { allow: ['_id'] }],
   },

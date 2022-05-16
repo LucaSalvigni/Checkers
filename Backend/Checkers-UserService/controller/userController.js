@@ -257,6 +257,7 @@ exports.getProfile = async function (req, res) {
   try {
     const data = await User.findOne({ mail }, 'username avatar first_name last_name stars mail').lean();
     res.json({
+      id: data._id,
       username: data.username,
       avatar: data.avatar,
       first_name: data.first_name,

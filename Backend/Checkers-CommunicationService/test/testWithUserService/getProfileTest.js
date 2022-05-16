@@ -3,7 +3,7 @@ const api = require('../utils/api');
 
 describe('Communication Service getProfile Tests', async () => {
   it('getProfile should work', (done) => {
-    console.log(api.getToken())
+    console.log(api.getToken());
     api.getProfile(api.getClient(), api.getToken());
     api.getClient().on('user_profile', (arg) => {
       console.log(arg);

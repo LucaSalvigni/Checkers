@@ -9,7 +9,7 @@ describe('Communication Service Get Lobbies Tests', async () => {
       assert.equal(arg.message, 'Authentication successfull, welcome back Tordent97!');
       done();
     });
-  })
+  });
   it('get lobbies should work', (done) => {
     api.getLobbies(api.getClient2(), '500', api.getToken2());
     api.getClient2().on('lobbies', (arg) => {

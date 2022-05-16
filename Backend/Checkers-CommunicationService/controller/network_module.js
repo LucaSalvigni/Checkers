@@ -52,7 +52,7 @@ async function askService(method, url, params) {
         response = await axios.post(url, params, { httpsAgent });
         break;
       case 'put':
-        response = await axios.put(url, params.params, { httpsAgent });
+        response = await axios.put(url, params, { httpsAgent });
         break;
       case 'delete':
         response = await axios.delete(url, { data: params }, { httpsAgent });

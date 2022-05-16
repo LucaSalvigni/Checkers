@@ -1,5 +1,6 @@
 const BiMap = require('bidirectional-map');
 const socket = require('socket.io');
+const mongoose = require('mongoose');
 const network = require('./network_module');
 const Lobby = require('../models/lobby');
 
@@ -26,7 +27,7 @@ function log(msg) {
  * @returns a 2 char long random ID
  */
 function getId() {
-  return Math.random().toString(36).slice(2);
+  return new mongoose.Types.ObjectId();
 }
 /**
  * Checks a user's token validity.
@@ -76,9 +77,9 @@ function isInLobby(playerMail) {
  */
 function buildLobby(roomName, client, maxStars) {
   const newRoomId = getId();
-  lobbies.set(newRoomId, new Lobby(maxStars, roomName, onlineUsers.get(client.id)));
-  client.join(newRoomId);
-  return newRoomId;
+  lobbies.set(newRoomId.toString(), new Lobby(maxStars, roomName, onlineUsers.get(client.id)));
+  client.join(newRoomId.toString());
+  return newRoomId.toString();
 }
 
 /**
@@ -102,27 +103,11 @@ async function getUsername(mail) {
 // TODO: CHECK THIS
 async function getLobbies(userStars) {
   const data = [];
-  /* const tmp = lobbies.entries();
-  for (const [lobbyId, lobby] of tmp) {
-    if (lobby.isFree() && (lobby.getStars() >= userStars)) {
-      const username = await getUsername(lobby.getPlayers(0));
-      if (username === null) {
-        log('something wrong with username');
-      } else {
-        data.push({
-          lobbyId,
-          name: lobby.getName(),
-          max_stars: lobby.getStars(),
-          host: username,
-        });
-      }
-    }
-  } */
   const validLobbies = Array.from(lobbies.entries())
-    .filter(([, lobby]) => lobby.isFree() && (lobby.getStars() >= userStars))
-  for(const i in validLobbies) {
-    let lobby = validLobbies[i]
-    const username = await getUsername(lobby[1].getPlayers(0))
+    .filter(([, lobby]) => lobby.isFree() && (lobby.getStars() >= userStars));
+  for (const i in validLobbies) {
+    const lobby = validLobbies[i];
+    const username = await getUsername(lobby[1].getPlayers(0));
     if (username === null) {
       log('something wrong with username');
     } else {
@@ -165,13 +150,12 @@ function joinLobby(lobbyId, client, player) {
  * @returns a new game istance to be sent to client
  */
 async function setupGame(gameId, hostMail, opponentMail) {
+  // Just a comment
   const game = [];
   const hostSpecs = await network.askService('get', `${userService}/profile/getProfile`, { mail: hostMail });
-
   const opponentSpecs = await network.askService('get', `${userService}/profile/getProfile`, { mail: opponentMail });
-
   if (hostSpecs.status && opponentSpecs.status) {
-    const board = await network.askService('post', `${gameService}/game/lobbies/create_game`, { game_id: gameId, host_id: hostSpecs.response.mail, opponent: opponentSpecs.response.mail });
+    const board = await network.askService('post', `${gameService}/game/lobbies/createGame`, { hostId: hostSpecs.response.id, opponent: opponentSpecs.response.id });
     if (board.status) {
       game.push(hostSpecs.response);
       game.push(opponentSpecs.response);
@@ -441,7 +425,7 @@ exports.socket = async function (server) {
       if (user[0]) {
         const userMail = onlineUsers.get(client.id);
         if (!isInLobby(userMail)) {
-          log(`${userMail} joined a lobby`);
+          console.log(lobbyId);
           if (lobbies.has(lobbyId)) {
             const host = lobbies.get(lobbyId).getPlayers()[0];
             if (joinLobby(lobbyId, client, userMail)) {
@@ -458,19 +442,19 @@ exports.socket = async function (server) {
                 io.to(lobbyId).emit('server_error', { message: 'Server error while creating a game, please try again' });
               }
             } else {
-              log(`error in join lobby for lobby${lobbyId}`);
+              log(`error in join lobby for lobby ${lobbyId}`);
               client.emit('server_error', { message: 'Server error while joining lobby, please try again' });
             }
           } else {
-            log(`error2 in join lobby for lobby${lobbyId}`);
+            log(`error2 in join lobby for lobby ${lobbyId}`);
             client.emit('server_error', { message: "Such lobby doesn't exist anymore" });
           }
         } else {
-          log(`error3 in join lobby for lobby${lobbyId}`);
+          log(`error3 in join lobby for lobby ${lobbyId}`);
           client.emit('client_error', { message: 'Player is not online or is already in a lobby' });
         }
       } else {
-        log(`error4 in join lobby for lobby${lobbyId}`);
+        log(`error4 in join lobby for lobby ${lobbyId}`);
         client.emit('token_error', { message: user[1] });
       }
     });
@@ -484,7 +468,8 @@ exports.socket = async function (server) {
         if (lobbies.has(lobbyId)) {
           const lobby = lobbies.get(lobbyId);
           if (lobby.hasPlayer(player) && lobby.turn === player) {
-            let moveResult = await network.askService('put', `${gameService}/game/movePiece`, { game_id: lobbyId, from, to });
+            console.log('Request game controller');
+            let moveResult = await network.askService('put', `${gameService}/game/movePiece`, { gameId: lobbyId, from, to });
             // If no one won
             if (moveResult.status) {
               moveResult = moveResult.response;

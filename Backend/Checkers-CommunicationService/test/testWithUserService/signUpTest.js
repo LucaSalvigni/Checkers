@@ -4,9 +4,9 @@ const User = require('../../../Checkers-UserService/models/userModel');
 
 describe('Communication Service SignUp Tests', async () => {
   before(async () => {
-    const checkUser = await User.find({ mail: 'userok@testusers.com' });
+    const checkUser = await User.find({ mail: 'newtest@newtest.com' });
     if (checkUser.length > 0) {
-      await User.deleteMany({ mail: 'userok@testusers.com' });
+      await User.deleteMany({ mail: 'newtest@newtest.com' });
     }
     const checkUser2 = await User.find({ mail: 'test2@test2.com' });
     if (checkUser2.length > 0) {
@@ -14,7 +14,7 @@ describe('Communication Service SignUp Tests', async () => {
     }
   });
   it('signUp should work', (done) => {
-    api.registerUser(api.getClient(), api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*'));
+    api.registerUser(api.getClient(), api.createUser('newtest@newtest.com', 'filippo23', '1231AAcc*'));
     api.getClient().on('signup_success', (arg) => {
       assert.equal(arg.message, 'Sign up completed successfully.');
     });

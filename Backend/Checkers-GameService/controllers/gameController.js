@@ -107,11 +107,13 @@ function parseFEN(game) {
 // Exports
 exports.createGame = async function createGame(req, res) {
   try {
+    const { gameId } = req.body;
     const { hostId } = req.body;
     const { opponent } = req.body;
 
     const newGame = new Draughts();
     let savedGame = new Game({
+      _id: gameId,
       white: hostId,
       black: opponent,
       finished: false,
@@ -161,10 +163,10 @@ exports.leaveGame = async function leaveGame(req, res) {
     const game = await Game.findById(gameId);
     if (game) {
       log(`${quitter} is leaving game ${gameId}`);
-      if (game.white.equals(quitter)) {
+      if (game.white === quitter) {
         log(`${quitter} is the host of game ${gameId}`);
         await gameEnd(game, game.black);
-      } else if (game.black.equals(quitter)) {
+      } else if (game.black === quitter) {
         log(`${quitter} is not the host of game ${gameId}`);
         await gameEnd(game, game.white);
       } else {
@@ -280,6 +282,11 @@ exports.movePiece = async function movePiece(req, res) {
 exports.getGamesByUser = async function getGames(req, res) {
   try {
     const { user } = req.query;
+    if (user === undefined) {
+      res.status(400).json({ error: 'User not defined' });
+      return;
+    }
+
     const data = [];
     log(`Getting games for user ${user}`);
     const games = await Game.find({
