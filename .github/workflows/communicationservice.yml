@@ -42,11 +42,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: npm ci
-      - name: Debug Info
+      - name: Test
         run: |
           cd Backend/Checkers-CommunicationService
-          npm run test
-      - name: Test and build
-        run: |
-          cd Backend/Checkers-CommunicationService
-          npm run gulp
+          npm run gulp test

@@ -23,7 +23,7 @@ jobs:
         run: |
           cd Frontend/Checkers-Frontend
           npm ci
-      - name: Test and build
+      - name: Test
         run: |
           cd Frontend/Checkers-Frontend
           npm run gulp test

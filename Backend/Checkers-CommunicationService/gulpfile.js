@@ -66,11 +66,15 @@ function copyPackage() {
   return src('./package.json')
     .pipe(dest(`${paths.prod_build}`));
 }
-exports.default = series(
+
+exports.test = series(
   clean,
   qualityAssurance,
   doTest,
   testQualityAssurance,
+);
+
+exports.build = series(
   createProdBuildFolder,
   copyNodeJSCodeTask,
   copyPackage,
