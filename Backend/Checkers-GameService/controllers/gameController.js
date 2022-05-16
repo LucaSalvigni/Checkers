@@ -282,7 +282,7 @@ exports.movePiece = async function movePiece(req, res) {
 exports.getGamesByUser = async function getGames(req, res) {
   try {
     const { user } = req.query;
-    if(user === undefined) {
+    if (user === undefined) {
       res.status(400).json({ error: 'User not defined' });
       return;
     }

@@ -81,14 +81,15 @@ function deleteDistBuildFolder() {
   return del("./dist", { force: true });
 }
 
-exports.default = series(
-  cleanPreviousBuild,
+exports.test = series(
+  clean,
   qualityAssurance,
-  buildVueCodeTask,
   doTest,
   testQualityAssurance,
+);
+
+exports.build = series(
   createProdBuildFolder,
-  copyVueCodeTask,
-  zippingTask,
-  deleteDistBuildFolder
+  copyNodeJSCodeTask,
+  copyPackageTask,
 );
