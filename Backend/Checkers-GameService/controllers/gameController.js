@@ -163,10 +163,10 @@ exports.leaveGame = async function leaveGame(req, res) {
     const game = await Game.findById(gameId);
     if (game) {
       log(`${quitter} is leaving game ${gameId}`);
-      if (game.white.equals(quitter)) {
+      if (game.white === quitter) {
         log(`${quitter} is the host of game ${gameId}`);
         await gameEnd(game, game.black);
-      } else if (game.black.equals(quitter)) {
+      } else if (game.black === quitter) {
         log(`${quitter} is not the host of game ${gameId}`);
         await gameEnd(game, game.white);
       } else {
@@ -215,7 +215,6 @@ exports.turnChange = async function turnChange(req, res) {
  * A user moves a piece inside the board
  */
 exports.movePiece = async function movePiece(req, res) {
-  console.log(req.body)
   const { gameId } = req.body;
   const { from } = req.body;
   const { to } = req.body;
@@ -283,6 +282,11 @@ exports.movePiece = async function movePiece(req, res) {
 exports.getGamesByUser = async function getGames(req, res) {
   try {
     const { user } = req.query;
+    if(user === undefined) {
+      res.status(400).json({ error: 'User not defined' });
+      return;
+    }
+
     const data = [];
     log(`Getting games for user ${user}`);
     const games = await Game.find({

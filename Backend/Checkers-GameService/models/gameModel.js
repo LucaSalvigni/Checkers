@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 
 const gameSchema = new mongoose.Schema({
   white: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'users',
     required: true,
   },
   black: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'users',
     required: true,
   },
@@ -16,7 +16,7 @@ const gameSchema = new mongoose.Schema({
     required: true,
   },
   winner: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'users',
   },
   finished: {

@@ -9,8 +9,9 @@ const Draughts = require('../controllers/draughts');
 
 let testGame;
 const randomID = new mongoose.Types.ObjectId();
-const player = '6263c5d6e4e2e9916c574c8a';
-const opponent = '6266a229ea5c6213e5a60cc6';
+const randomUser = 'pythondevsarentrealdevs@boom.yeet';
+const player = 'ciao@ciao.com';
+const opponent = 'ciao2@ciao.com';
 
 async function createGame(game) {
   return axiosPostRequest('/game/lobbies/createGame', { hostId: game.hostId, opponent: game.opponentId });
@@ -68,8 +69,6 @@ describe('Game', async () => {
   describe('Game Creation', async () => {
     it('should throw error', async () => {
       let newGame = {
-        hostId: 'oogabooga',
-        opponentId: 'oogabooga2',
       };
       newGame = await createGame(newGame);
       expect(newGame.status).to.equal(500);
@@ -88,13 +87,13 @@ describe('Game', async () => {
 
   describe('GET Games', async () => {
     it('should not find any game', async () => {
-      const games = await getGames(randomID.toString());
+      const games = await getGames(randomUser);
       expect(games.status).to.equal(400);
     });
 
-    it('should throw error', async () => {
-      const games = await getGames("BOOGALOOOBA");
-      expect(games.status).to.equal(500);
+    it('should return 400 bad request', async () => {
+      const games = await getGames();
+      expect(games.status).to.equal(400);
     });
 
     it('should retrieve a game', async () => {
@@ -221,7 +220,7 @@ describe('Game', async () => {
       const afterMove = await movePiece(gameMove);
       expect(afterMove.status).to.equal(200);
       expect(afterMove.response.ended).to.be.true;
-      expect(afterMove.response.winner).to.equal('6263c5d6e4e2e9916c574c8a');
+      expect(afterMove.response.winner).to.equal(player);
     });
 
     it('should end the game with player2 Winner', async () => {
@@ -236,7 +235,7 @@ describe('Game', async () => {
       const afterMove = await movePiece(gameMove);
       expect(afterMove.status).to.equal(200);
       expect(afterMove.response.ended).to.be.true;
-      expect(afterMove.response.winner).to.equal('6266a229ea5c6213e5a60cc6');
+      expect(afterMove.response.winner).to.equal(opponent);
     });
 
     it('should end in a tie', async () => {
