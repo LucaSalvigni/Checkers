@@ -20,6 +20,9 @@ jobs:
   userservice:
     uses: ./.github/workflows/userservice.yml
     secrets: inherit
+  communicationservice:
+    uses: ./.github/workflows/communicationservice.yml
+    secrets: inherit
 
   getVersion:
     runs-on: ubuntu-latest
@@ -40,7 +43,7 @@ jobs:
 
   build_and_push:
     runs-on: ubuntu-latest
-    needs: [ frontend, gameservice, userservice, getVersion ]
+    needs: [ frontend, gameservice, userservice, communicationservice, getVersion ]
     steps:
       - uses: actions/setup-node@v3
         with:
@@ -73,6 +76,12 @@ jobs:
 
       - name: Build container images
         run: docker-compose build
+
+      - name: Tag container images
+        run: |
+          docker tag checkers_gameservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
+          docker tag checkers_userservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
+          docker tag checkers_communicationservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):communicationservice
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
