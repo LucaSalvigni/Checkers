@@ -93,15 +93,9 @@ describe('Game', async () => {
       expect(games.status).to.equal(400);
     });
 
-<<<<<<< HEAD
-    it('should throw error', async () => {
-      const games = await getGames('BOOGALOOOBA');
-      expect(games.status).to.equal(500);
-=======
     it('should return 400 bad request', async () => {
       const games = await getGames();
       expect(games.status).to.equal(400);
->>>>>>> develop
     });
 
     it('should retrieve a game', async () => {
