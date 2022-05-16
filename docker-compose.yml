@@ -1,6 +1,7 @@
 services:
   gameservice:
     container_name: gameservice
+    image: registry.digitalocean.com/checkers-cr/checkers:gameservice
     build: 
       context: ./Backend
       args:
@@ -15,6 +16,7 @@ services:
       
   userservice:
     container_name: userservice
+    image: registry.digitalocean.com/checkers-cr/checkers:userservice
     build: 
       context: ./Backend
       args:
@@ -29,6 +31,7 @@ services:
   
   communicationservice:
     container_name: communicationservice
+    image: registry.digitalocean.com/checkers-cr/checkers:communicationservice
     build: 
       context: ./Backend
       args:

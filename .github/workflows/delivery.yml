@@ -77,12 +77,6 @@ jobs:
       - name: Build container images
         run: docker-compose build
 
-      - name: Tag container images
-        run: |
-          docker tag checkers_gameservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
-          docker tag checkers_userservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
-          docker tag checkers_communicationservice $(echo $REGISTRY)/$(echo $IMAGE_NAME):communicationservice
-
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
@@ -127,9 +121,9 @@ jobs:
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             # Stop running containers
-            docker stop userservice gameservice
+            docker stop userservice gameservice communicationservice
             # Remove old containers
-            docker rm userservice gameservice
+            docker rm userservice gameservice communicationservice
             # Run new containers from new images
             docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
             docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
