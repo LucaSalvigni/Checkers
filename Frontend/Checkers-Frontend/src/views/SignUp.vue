@@ -26,7 +26,7 @@
             <input
               type="text"
               placeholder="Insert name"
-              class="first_name input input-bordered w-13"
+              class="firstName input input-bordered w-13"
             />
           </div>
 
@@ -37,7 +37,7 @@
             <input
               type="text"
               placeholder="Insert last name"
-              class="last_name input input-bordered w-13"
+              class="lastName input input-bordered w-13"
             />
           </div>
 
@@ -72,12 +72,14 @@
             <input
               type="password"
               placeholder="Confim password"
-              class="confirm_password input input-bordered w-13"
+              class="confirmPassword input input-bordered w-13"
             />
           </div>
 
           <div class="object-center space-x-2 mb-3 mt-10">
-            <label class="signup-btn text-base font-semibold btn"
+            <label
+              class="signup-btn text-base font-semibold btn"
+              @click="signup"
               >Sign up</label
             >
             <div class="signup-modal modal modal-close">
@@ -89,7 +91,7 @@
                 />
                 <p class="text-base font-semibold msg">Ciao</p>
                 <div class="modal-action">
-                  <label class="btn">Accept</label>
+                  <label class="btn" @click="close">Accept</label>
                 </div>
               </div>
             </div>
@@ -101,8 +103,71 @@
 </template>
 
 <script>
+import api from "../../api.js";
+import { getCurrentInstance } from "vue";
+
+var signupModal = document.getElementsByClassName("signup-modal");
+var msg = document.getElementsByClassName("msg");
+var signup = false;
+
 export default {
   name: "SignUp",
+  data() {
+    return {
+      buttonSound:
+        getCurrentInstance().appContext.config.globalProperties.$BUTTON_CLICK,
+    };
+  },
+  methods: {
+    // Send a request of signup to the backend
+    signup() {
+      this.buttonSound.play();
+      var mailformat =
+        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      var username = document.getElementsByClassName("username")[0].value;
+      var firstName = document.getElementsByClassName("firstName")[0].value;
+      var lastName = document.getElementsByClassName("lastName")[0].value;
+      var mail = document.getElementsByClassName("mail")[0].value;
+      var pw = document.getElementsByClassName("password")[0].value;
+      var confirmPw =
+        document.getElementsByClassName("confirmPassword")[0].value;
+      if (mail.match(mailformat) && pw === confirmPw) {
+        console.log(
+          "" + firstName + " " + lastName + " " + username + " " + mail
+        );
+        api.signup(this.$socket, mail, pw, username, firstName, lastName);
+      } else {
+        msg[0].textContent =
+          "Insert a valid email and/or check that the passwords are the same";
+        signupModal[0].setAttribute("class", "signup-modal modal modal-open");
+      }
+    },
+    // Close modal and redirect to login if the user signup correctly
+    close() {
+      this.buttonSound.play();
+      signupModal[0].setAttribute("class", "signup-modal modal modal-close");
+      if (signup) {
+        this.$router.push("/login");
+      }
+    },
+  },
+  sockets: {
+    // Success response from backend to the user when he try to signup
+    signup_success(res) {
+      signup = true;
+      msg[0].textContent = res.message;
+      signupModal[0].setAttribute("class", "signup-modal modal modal-open");
+    },
+    // Error response from backend to the user when he try to signup
+    signup_error(res) {
+      msg[0].textContent = "";
+      res.forEach((elem) => {
+        msg[0].textContent = elem.message + "\n";
+      });
+      msg[0].textContent = res[0].message;
+      signupModal[0].setAttribute("class", "signup-modal modal modal-open");
+    },
+  },
 };
 </script>
 

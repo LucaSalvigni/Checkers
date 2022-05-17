@@ -86,7 +86,7 @@ exports.test = series(
   qualityAssurance,
   buildVueCodeTask,
   doTest,
-  testQualityAssurance,
+  testQualityAssurance
 );
 
 exports.build = series(

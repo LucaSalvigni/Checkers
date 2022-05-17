@@ -31,7 +31,9 @@
           </div>
 
           <div class="object-center space-x-2 mt-10">
-            <label class="btn login-btn text-base font-semibold">Sign in</label>
+            <label class="btn login-btn text-base font-semibold" @click="login"
+              >Sign in</label
+            >
             <div class="login-fail modal">
               <div class="modal-box">
                 <img
@@ -41,7 +43,7 @@
                 />
                 <p class="msg text-base font-semibold">Ciao</p>
                 <div class="modal-action">
-                  <label class="btn text-base">Accept</label>
+                  <label class="btn text-base" @click="close">Accept</label>
                 </div>
               </div>
             </div>
@@ -67,7 +69,14 @@
 </template>
 
 <script>
+import api from "../../api";
+import store from "../store";
 import { getCurrentInstance } from "vue";
+
+var mail = document.getElementsByClassName("mail");
+var password = document.getElementsByClassName("password");
+var loginFail = document.getElementsByClassName("login-fail");
+var msg = document.getElementsByClassName("msg");
 
 export default {
   name: "LogIn",
@@ -78,8 +87,38 @@ export default {
     };
   },
   methods: {
+    login() {
+      this.buttonClick(this.buttonSound);
+      if (mail[0].value === "" && password[0].value === "") {
+        msg[0].textContent = "Insert a valid email and/or password";
+        loginFail[0].setAttribute("class", "login-fail modal modal-open");
+      } else {
+        api.login(this.$socket, mail[0].value, password[0].value);
+      }
+    },
+    // Close modal
+    close() {
+      this.buttonClick(this.buttonSound);
+      loginFail[0].setAttribute("class", "login-fail modal");
+      mail[0].value = "";
+      password[0].value = "";
+    },
     buttonClick(sound) {
       sound.play();
+    },
+  },
+  sockets: {
+    // Response from backend that confirm the authentication
+    login_ok(res) {
+      //EXAMPLE ON HOW TO USE STORE
+      store.commit("setToken", res.token);
+      store.commit("setUser", res.user);
+      this.$router.push("/");
+    },
+    // Response from backend that give a message error to the user
+    login_error(err) {
+      msg[0].textContent = err.message.message;
+      loginFail[0].setAttribute("class", "login-fail modal modal-open");
     },
   },
 };

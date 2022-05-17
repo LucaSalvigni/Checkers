@@ -21,15 +21,15 @@ describe('SignUp Contain Test', ()=> {
 
         expect(wrapper.find('.username').exists()).toBeTruthy()
 
-        expect(wrapper.find('.first_name').exists()).toBeTruthy()
+        expect(wrapper.find('.firstName').exists()).toBeTruthy()
 
-        expect(wrapper.find('.last_name').exists()).toBeTruthy()
+        expect(wrapper.find('.lastName').exists()).toBeTruthy()
 
         expect(wrapper.find('.mail').exists()).toBeTruthy()
 
         expect(wrapper.find('.password').exists()).toBeTruthy()
 
-        expect(wrapper.find('.confirm_password').exists()).toBeTruthy()
+        expect(wrapper.find('.confirmPassword').exists()).toBeTruthy()
 
         expect(wrapper.find('.signup-btn').exists()).toBeTruthy()
     })
@@ -42,13 +42,13 @@ describe('SignUp Inputs Test', ()=> {
         await usernameInput.setValue('username')
         expect(wrapper.find('.username').element.value).toBe('username')
 
-        const firstNameInput = wrapper.find('.first_name')
+        const firstNameInput = wrapper.find('.firstName')
         await firstNameInput.setValue('firstName')
-        expect(wrapper.find('.first_name').element.value).toBe('firstName')
+        expect(wrapper.find('.firstName').element.value).toBe('firstName')
 
-        const lastNameInput = wrapper.find('.last_name')
+        const lastNameInput = wrapper.find('.lastName')
         await lastNameInput.setValue('lastName')
-        expect(wrapper.find('.last_name').element.value).toBe('lastName')
+        expect(wrapper.find('.lastName').element.value).toBe('lastName')
 
         const mailInput = wrapper.find('.mail')
         await mailInput.setValue('value')
@@ -58,8 +58,8 @@ describe('SignUp Inputs Test', ()=> {
         await passwordInput.setValue('pass')
         expect(wrapper.find('.password').element.value).toBe('pass')
 
-        const confirmPasswordInput = wrapper.find('.confirm_password')
+        const confirmPasswordInput = wrapper.find('.confirmPassword')
         await confirmPasswordInput.setValue('confPass')
-        expect(wrapper.find('.confirm_password').element.value).toBe('confPass')
+        expect(wrapper.find('.confirmPassword').element.value).toBe('confPass')
     })
 })
