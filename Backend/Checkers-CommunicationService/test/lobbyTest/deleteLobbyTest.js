@@ -2,6 +2,14 @@ const { assert } = require('chai');
 const api = require('../utils/api');
 
 describe('Communication Service Delete Specific Lobby Test', async () => {
+  before((done) => {
+    api.buildLobby(api.getClient(), 'BestLobby', '500', api.getToken());
+    api.getClient().on('lobbies', (arg) => {
+      console.log(arg);
+      api.setLobbyId(arg.lobbyId);
+      done();
+    });
+  });
   it('delete lobby should work', (done) => {
     api.deleteLobby(api.getClient(), api.getLobbyId(), api.getToken());
     api.getClient().on('lobby_deleted', (arg) => {

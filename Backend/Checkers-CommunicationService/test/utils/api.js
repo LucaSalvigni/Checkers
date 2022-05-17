@@ -106,5 +106,17 @@ const api = {
   async inviteOpponent(client, opponentMail, token) {
     client.emit('invite_opponent', opponentMail, token);
   },
+
+  async acceptInvite(client, token, opponentMail) {
+    client.emit('accept_invite', token, opponentMail);
+  },
+
+  async declineInvite(client, token, opponentMail) {
+    client.emit('decline_invite', token, opponentMail);
+  },
+
+  async sendMessage(client, id, msg, token) {
+    client.emit('game_msg', id, msg, token);
+  },
 };
 module.exports = api;
