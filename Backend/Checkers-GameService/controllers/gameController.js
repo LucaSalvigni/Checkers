@@ -1,9 +1,6 @@
 const Draughts = require('./draughts');
 const Game = require('../models/gameModel');
 
-const winStars = 100;
-const lossStars = -70;
-
 // Utils
 function log(msg) {
   if (process.env.NODE_ENV === 'development') {
