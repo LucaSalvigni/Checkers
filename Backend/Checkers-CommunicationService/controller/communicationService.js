@@ -93,6 +93,7 @@ async function getUsername(mail) {
   }
   return 'Deleted user';
 }
+
 /**
  * Returns active lobbies in which a user can join in
  * @param {*} userStars of the user who's searching lobbies

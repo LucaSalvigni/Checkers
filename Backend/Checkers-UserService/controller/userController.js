@@ -412,3 +412,4 @@ exports.updatePoints = async function (req, res) {
     res.status(500).send({ message: 'Something went wrong while updating your points' });
   }
 };
+
