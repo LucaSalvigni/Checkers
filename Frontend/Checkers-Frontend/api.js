@@ -43,8 +43,8 @@ var api = {
     socket.emit("get_leaderboard", getToken());
   },
 
-  get_history(socket) {
-    socket.emit("get_history", getToken());
+  get_history(mail, socket) {
+    socket.emit("get_history", mail, getToken());
   },
 
   get_profile(socket) {

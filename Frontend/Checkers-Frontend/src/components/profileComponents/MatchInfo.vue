@@ -1,45 +1,64 @@
 <!-- Component of user match history -->
 
 <template>
-  <div class="main-div flex flex-col justify-center px-32 py-14">
-    <div class="mb-10">
-      <h1 class="font-bold text-3xl">Global leaderboard</h1>
-    </div>
-    <div class="overflow-x-auto">
-      <table class="table w-full">
-        <!-- head -->
+  <div class="overflow-hidden">
+    <div class="overflow-scroll">
+      <table class="table table-compact w-full">
         <thead>
           <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Job</th>
-            <th>Favorite Color</th>
+            <th>Game</th>
+            <th>Winner</th>
+            <th>Looser</th>
           </tr>
         </thead>
+
         <tbody>
-          <!-- row 1 -->
-          <tr>
-            <th>1</th>
-            <td>Cy Ganderton</td>
-            <td>Quality Control Specialist</td>
-            <td>Blue</td>
-          </tr>
-          <!-- row 2 -->
-          <tr>
-            <th>2</th>
-            <td>Hart Hagerty</td>
-            <td>Desktop Support Technician</td>
-            <td>Purple</td>
-          </tr>
-          <!-- row 3 -->
-          <tr>
-            <th>3</th>
-            <td>Brice Swyre</td>
-            <td>Tax Accountant</td>
-            <td>Red</td>
-          </tr>
+          <template v-for="(user, i) in currentPage" :key="i">
+            <tr>
+              <th
+                :textContent="'#' + (history.indexOf(currentPage[i]) + 1)"
+              ></th>
+              <td>
+                <div class="flex items-center space-x-3">
+                  <div>
+                    <div class="font-bold">
+                      {{ user.winner.username }}
+                    </div>
+                    <div class="text-sm opacity-50">
+                      {{ user.winner.mail }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="flex items-center space-x-3">
+                  <div>
+                    <div class="font-bold">
+                      {{ user.loser.username }}
+                    </div>
+                    <div class="text-sm opacity-50">
+                      {{ user.loser.mail }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </template>
         </tbody>
       </table>
+    </div>
+
+    <div v-if="history.length > perPage" class="flex mt-3 justify-center">
+      <button class="btn mr-5 btn-disabled" @click="previousPage($event)">
+        Previous
+      </button>
+      <button class="btn" @click="nextPage($event)">Next</button>
+    </div>
+    <div v-else class="btn-group mt-4">
+      <button class="btn mr-5 btn-disabled" @click="previousPage($event)">
+        Previous
+      </button>
+      <button class="btn btn-disabled" @click="nextPage($event)">Next</button>
     </div>
   </div>
 </template>
@@ -47,6 +66,75 @@
 <script>
 export default {
   name: "HistoryInfo",
+  data() {
+    return {
+      history: [], // Contains all matches
+      currentPage: [], // Contains the matches on the current page
+      perPage: 7, // Maximum match per page
+      page: 1, // Indicator of the page
+      buttonSound: this.$BUTTON_CLICK,
+    };
+  },
+  methods: {
+    // Go ahead with matches
+    nextPage(button) {
+      this.buttonSound.play();
+      this.currentPage = [];
+      for (
+        let i = this.perPage * this.page;
+        i < (this.page + 1) * this.perPage;
+        i++
+      ) {
+        if (this.history[i] === undefined) {
+          break;
+        }
+        this.currentPage.push(this.history[i]);
+      }
+      this.page++;
+      if (this.history.at(-1) === this.currentPage.at(-1)) {
+        button.path[1].children[1].setAttribute("class", "btn btn-disabled");
+      }
+      if (button.path[1].children[0].className.includes("disabled")) {
+        button.path[1].children[0].setAttribute("class", "btn mr-5");
+      }
+    },
+    // Go back with matches
+    previousPage(button) {
+      this.buttonSound.play();
+      this.currentPage = [];
+      var fillTo = this.perPage * this.page - 1 - this.perPage;
+      for (let i = fillTo - this.perPage + 1; i <= fillTo; i++) {
+        if (this.history[i] === undefined) {
+          break;
+        }
+        this.currentPage.push(this.history[i]);
+      }
+      this.page--;
+      if (this.history[0] === this.currentPage[0]) {
+        button.path[1].children[0].setAttribute(
+          "class",
+          "btn mr-5 btn-disabled"
+        );
+      }
+      if (button.path[1].children[1].className.includes("disabled")) {
+        button.path[1].children[1].setAttribute("class", "btn");
+      }
+    },
+  },
+  sockets: {
+    // Response sent by backend that contains all matches done by a specific user
+    user_history(res) {
+      if (!Object.prototype.hasOwnProperty.call(res, "error")) {
+        this.history = res;
+        for (let i = 0; i < this.perPage; i++) {
+          if (this.history[i] === undefined) {
+            break;
+          }
+          this.currentPage.push(this.history[i]);
+        }
+      }
+    },
+  },
 };
 </script>
 

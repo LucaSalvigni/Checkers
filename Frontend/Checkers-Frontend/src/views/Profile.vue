@@ -76,7 +76,6 @@
 import DataInfo from "../components/profileComponents/DataInfo.vue";
 import MatchInfo from "../components/profileComponents/MatchInfo.vue";
 import api from "../../api.js";
-import { getCurrentInstance } from "vue";
 
 export default {
   name: "UserProfile",
@@ -93,8 +92,8 @@ export default {
       username: "Username",
       tabName: "User Info",
       stars: "Stars",
-      buttonSound:
-        getCurrentInstance().appContext.config.globalProperties.$BUTTON_CLICK,
+      mail: "Email",
+      buttonSound: this.$BUTTON_CLICK,
     };
   },
   methods: {
@@ -106,6 +105,7 @@ export default {
         this.$refs.dataInfo.setAttribute("class", "tab tab-lg tab-active");
         this.$refs.matchInfo.setAttribute("class", "tab tab-lg");
       }
+      api.get_profile(this.$socket);
     },
     // Show match history info when match info tab is active
     matchInfo() {
@@ -115,6 +115,7 @@ export default {
         this.$refs.matchInfo.setAttribute("class", "tab tab-lg tab-active");
         this.$refs.dataInfo.setAttribute("class", "tab tab-lg");
       }
+      api.get_history(this.mail, this.$socket);
     },
     buttonClick(sound) {
       sound.play();
@@ -123,11 +124,11 @@ export default {
   sockets: {
     // Response from backend that contains user's info
     user_profile(res) {
-      console.log(res);
       this.avatar = res.avatar;
       this.first_last_name = res.firstName + " " + res.lastName;
       this.username = res.username;
       this.stars = res.stars;
+      this.mail = res.mail;
     },
   },
 };

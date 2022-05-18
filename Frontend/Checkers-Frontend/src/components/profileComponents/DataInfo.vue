@@ -18,7 +18,7 @@
     <input
       type="text"
       placeholder="First Name"
-      :value="first_name"
+      :value="firstName"
       class="text-sm first_name input input-bordered w-screen"
     />
 
@@ -28,7 +28,7 @@
     <input
       type="text"
       placeholder="Last Name"
-      :value="last_name"
+      :value="lastName"
       class="text-sm last_name input input-bordered w-screen"
     />
 
@@ -83,15 +83,110 @@
 </template>
 
 <script>
+import store from "../../store/index.js";
+import api from "../../../api.js";
+
+var update_modal = document.getElementsByClassName("update-modal");
+var msg = document.getElementsByClassName("msg");
+var avatar = "";
+
 export default {
   name: "UserInfo",
   data() {
+    // Request user's info to backend
+    api.get_profile(this.$socket);
     return {
-      first_name: "Name",
-      last_name: "LastName",
+      firstName: "Name",
+      lastName: "LastName",
       mail: "info@site.com",
       username: "Username",
+      buttonSound: this.$BUTTON_CLICK,
+      user: store.getters.user,
     };
+  },
+  methods: {
+    // Save the user's change and send it to the backend
+    save_profile() {
+      this.buttonSound.play();
+      const user = {
+        username: document.getElementsByClassName("username")[0].value,
+        firstName: document.getElementsByClassName("first_name")[0].value,
+        lastName: document.getElementsByClassName("last_name")[0].value,
+        mail: document.getElementsByClassName("mail")[0].value,
+        avatar: avatar,
+      };
+      var mailformat =
+        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      if (this.user.mail.match(mailformat)) {
+        api.update_profile(this.$socket, user, localStorage.token);
+      } else {
+        msg[0].textContent =
+          "Insert a valid email and/or check that the passwords are the same";
+        update_modal[0].setAttribute("class", "update-modal modal modal-open");
+      }
+      //TODO UPDATE STATE.USER AND SEND UPDATE TO BACKEND
+      //api.update_profile(this.$socket, user, localStorage.token)
+    },
+    // Close modal
+    close() {
+      this.buttonSound.play();
+      update_modal[0].setAttribute("class", "update-modal modal");
+      this.$forceUpdate();
+    },
+    // Allow user to upload a profile image
+    uploadImage() {
+      let input = this.$refs.fileInput;
+      let file = input.files;
+      if (file && file[0]) {
+        var image = new Image();
+        let reader = new FileReader();
+        image.onload = function () {
+          var canvas = document.createElement("canvas");
+          var ctx = canvas.getContext("2d");
+          //ctx.drawImage(image, 0, 0, canvas.width,canvas.height);
+          var hRatio = canvas.width / image.width;
+          var vRatio = canvas.height / image.height;
+          var ratio = Math.min(hRatio, vRatio);
+          var centerShift_x = (canvas.width - image.width * ratio) / 2;
+          var centerShift_y = (canvas.height - image.height * ratio) / 2;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(
+            image,
+            0,
+            0,
+            image.width,
+            image.height,
+            centerShift_x,
+            centerShift_y,
+            image.width * ratio,
+            image.height * ratio
+          );
+          var dataurl = canvas.toDataURL(image.type);
+          avatar = dataurl;
+          console.log(avatar);
+        };
+        reader.onload = (e) => {
+          console.log(e.target.result);
+          image.src = e.target.result;
+        };
+        reader.readAsDataURL(file[0]);
+      }
+    },
+  },
+  sockets: {
+    // Sent by backend to give user an update succesfull or if there is an error
+    updated_user(user) {
+      msg[0].textContent = "Update successful";
+      update_modal[0].setAttribute("class", "update-modal modal modal-open");
+      store.commit("setUser", user);
+    },
+    // Response by backend when user request info
+    user_profile(res) {
+      this.firstName = res.firstName;
+      this.lastName = res.lastName;
+      this.mail = res.mail;
+      this.username = res.username;
+    },
   },
 };
 </script>
