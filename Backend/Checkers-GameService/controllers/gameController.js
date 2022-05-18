@@ -300,3 +300,4 @@ exports.getGamesByUser = async function getGames(req, res) {
     res.status(500).send({ message: 'Internal server error while finding games' });
   }
 };
+

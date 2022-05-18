@@ -19,7 +19,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]     
+        java_version: [ 14, 16, 18]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/setup-node@v3
