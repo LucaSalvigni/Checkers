@@ -174,12 +174,7 @@ exports.leaveGame = async function leaveGame(req, res) {
         res.status(400).send({ message: `${quitter} is not in any game` });
         return;
       }
-
-      // TODO ?
-      const data = [];
-      data.push(`You successfully left the game!\n ${winStars} stars have been removed from your profile!`);
-      data.push(`The opponent has left the game!\n ${lossStars} stars have been added to your profile`);
-      res.status(200).send(data);
+      res.status(200).send();
     } else {
       log(`There is no such thing as game ${gameId}`);
       res.status(400).send({ message: 'There is no such game' });
