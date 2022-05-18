@@ -255,13 +255,13 @@ exports.getProfile = async function (req, res) {
   const { mail } = req.query;
   log(`Getting ${mail} profile`);
   try {
-    const data = await User.findOne({ mail }, 'username avatar first_name last_name stars mail').lean();
+    const data = await User.findOne({ mail }, 'username avatar firstName lastName stars mail').lean();
     res.json({
       id: data._id,
       username: data.username,
       avatar: data.avatar,
-      first_name: data.first_name,
-      last_name: data.last_name,
+      firstName: data.firstName,
+      lastName: data.lastName,
       stars: data.stars,
       mail: data.mail,
     });
