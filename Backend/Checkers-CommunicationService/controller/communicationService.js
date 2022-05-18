@@ -786,5 +786,14 @@ exports.socket = async function (server) {
         client.emit('token_error', { message: user[1] });
       }
     });
+
+    client.on('get_history', async (mail, token) => {
+      const user = await isAuthenticated(token, client.id);
+      if (user[0]) {
+        log(`${mail} just want to see all games he did`);
+        const history = await network.askService('get', `${gameService}/game/getGamesByUser`, { user: mail });
+        client.emit('user_history', history.response_data);
+      }
+    });
   });
 };
