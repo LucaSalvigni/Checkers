@@ -17,14 +17,12 @@
 
 <script>
 import toasty from "toasty";
-import { getCurrentInstance } from "vue";
 
 export default {
   data() {
     return {
       toasty: toasty(),
-      buttonSound:
-        getCurrentInstance().appContext.config.globalProperties.$BUTTON_CLICK,
+      buttonSound: this.$BUTTON_CLICK,
     };
   },
   mounted() {

@@ -229,19 +229,25 @@
 </template>
 
 <script>
-import { getCurrentInstance } from "vue";
+import api from "../../api.js";
+import store from "../store";
 
 export default {
   name: "HomeView",
   data() {
     return {
-      buttonSound:
-        getCurrentInstance().appContext.config.globalProperties.$BUTTON_CLICK,
+      buttonSound: this.$BUTTON_CLICK,
     };
   },
   methods: {
     lobbyOpened(router) {
-      router.push("/lobbies");
+      this.buttonClick(this.buttonSound);
+      if (sessionStorage.token !== "") {
+        api.get_lobbies(this.$socket, store.getters.user.stars);
+        router.push("/lobbies");
+      } else {
+        router.push("/404");
+      }
     },
     buttonClick(sound) {
       sound.play();

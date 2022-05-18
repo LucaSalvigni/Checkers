@@ -1,50 +1,58 @@
 <!-- This is the Lobbies component -->
 <template>
-  <div class="main-div flex flex-col justify-center px-32 py-14">
-    <div class="mb-10">
-      <h1 class="font-bold text-3xl">Global leaderboard</h1>
-    </div>
-    <div class="overflow-x-auto">
-      <table class="table w-full">
-        <!-- head -->
-        <thead>
-          <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Job</th>
-            <th>Favorite Color</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- row 1 -->
-          <tr>
-            <th>1</th>
-            <td>Cy Ganderton</td>
-            <td>Quality Control Specialist</td>
-            <td>Blue</td>
-          </tr>
-          <!-- row 2 -->
-          <tr>
-            <th>2</th>
-            <td>Hart Hagerty</td>
-            <td>Desktop Support Technician</td>
-            <td>Purple</td>
-          </tr>
-          <!-- row 3 -->
-          <tr>
-            <th>3</th>
-            <td>Brice Swyre</td>
-            <td>Tax Accountant</td>
-            <td>Red</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div class="lobbies overflow-x-auto py-8 px-5">
+    <table class="table w-full">
+      <thead>
+        <tr>
+          <th>Lobby Owner</th>
+          <th>Lobby Name</th>
+          <th>Max Stars</th>
+          <th>Join</th>
+        </tr>
+      </thead>
+      <tbody v-for="(lobby, index) in lobbies" :key="index">
+        <tr>
+          <td :textContent="lobby.host"></td>
+          <td :textContent="lobby.name"></td>
+          <td :textContent="lobby.max_stars"></td>
+          <td>
+            <router-link
+              class="join-lobby btn"
+              to="/inGame"
+              @click="joinLobby(lobby.lobby_id)"
+              >Join Lobby</router-link
+            >
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script>
+import api from "../../api.js";
+
 export default {
   name: "OpenLobbies",
+  data() {
+    return {
+      lobbies: [], //all open lobbies
+    };
+  },
+  methods: {
+    // Join a specific lobby
+    joinLobby(id) {
+      this.$BUTTON_CLICK.play();
+      if (this.lobbies.length > 0) {
+        api.join_lobby(this.$socket, id);
+      }
+    },
+  },
+  sockets: {
+    // Response from backend that give all open lobbies that player can join
+    lobbies(res) {
+      this.lobbies = res;
+    },
+  },
 };
 </script>

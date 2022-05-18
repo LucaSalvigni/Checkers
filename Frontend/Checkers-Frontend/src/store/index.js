@@ -21,6 +21,7 @@ export default createStore({
   getters: {
     is_authenticated: (state) => state.authenticated,
     is_in_game: (state) => state.in_game,
+    toke: (state) => state.token,
     user: (state) => state.user,
   },
   mutations: {
