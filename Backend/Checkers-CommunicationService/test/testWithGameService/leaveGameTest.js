@@ -1,4 +1,3 @@
-const { assert } = require('chai');
 const api = require('../utils/api');
 
 describe('Communication Service Leave Game Test', async () => {
