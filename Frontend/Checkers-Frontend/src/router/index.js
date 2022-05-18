@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Error404 from "../views/ErrorView.vue";
 import HomeView from "../views/Home.vue";
-import LeaderBoard from "../views/LeaderBoard";
-import LogIn from "../views/LogIn";
-import Profile from "../views/Profile";
-import SignUp from "../views/SignUp";
-import Lobbies from "../views/Lobbies";
-import Game from "../views/Game";
+import LeaderBoard from "../views/LeaderBoard.vue";
+import LogIn from "../views/LogIn.vue";
+import Profile from "../views/Profile.vue";
+import SignUp from "../views/SignUp.vue";
+import Lobbies from "../views/Lobbies.vue";
+import Game from "../views/Game.vue";
 
 const routes = [
   {
@@ -52,8 +52,10 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
+
+export { routes };
 
 export default router;

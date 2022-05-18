@@ -104,7 +104,6 @@
 
 <script>
 import api from "../../api.js";
-import { getCurrentInstance } from "vue";
 
 var signupModal = document.getElementsByClassName("signup-modal");
 var msg = document.getElementsByClassName("msg");
@@ -114,8 +113,7 @@ export default {
   name: "SignUp",
   data() {
     return {
-      buttonSound:
-        getCurrentInstance().appContext.config.globalProperties.$BUTTON_CLICK,
+      buttonSound: this.$BUTTON_CLICK,
     };
   },
   methods: {

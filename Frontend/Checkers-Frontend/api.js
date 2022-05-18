@@ -3,8 +3,8 @@ function getToken() {
 }
 
 var api = {
-  signup(socket, email, password, username, first_name, last_name) {
-    socket.emit("signup", email, password, username, first_name, last_name);
+  signup(socket, email, password, username, firstName, lastName) {
+    socket.emit("signup", email, password, username, firstName, lastName);
   },
 
   login(socket, email, password) {
@@ -19,24 +19,24 @@ var api = {
     socket.emit("get_lobbies", stars, getToken());
   },
 
-  join_lobby(socket, lobby_id) {
-    socket.emit("join_lobby", lobby_id, getToken());
+  join_lobby(socket, lobbyId) {
+    socket.emit("join_lobby", lobbyId, getToken());
   },
 
-  delete_lobby(socket, lobby_id) {
-    socket.emit("delete_lobby", lobby_id, getToken());
+  delete_lobby(socket, lobbyId) {
+    socket.emit("delete_lobby", lobbyId, getToken());
   },
 
-  invite_opponent(socket, opponent_mail) {
-    socket.emit("invite_opponent", getToken(), opponent_mail);
+  invite_opponent(socket, opponentMail) {
+    socket.emit("invite_opponent", getToken(), opponentMail);
   },
 
-  accept_invite(socket, opponent_mail) {
-    socket.emit("accept_invite", getToken(), opponent_mail);
+  accept_invite(socket, opponentMail) {
+    socket.emit("accept_invite", getToken(), opponentMail);
   },
 
-  decline_invite(socket, opponent_mail) {
-    socket.emit("decline_invite", getToken(), opponent_mail);
+  decline_invite(socket, opponentMail) {
+    socket.emit("decline_invite", getToken(), opponentMail);
   },
 
   get_leaderboard(socket) {
@@ -55,28 +55,28 @@ var api = {
     socket.emit("update_profile", params, getToken());
   },
 
-  leave_game(socket, lobby_id) {
-    socket.emit("leave_game", lobby_id, getToken());
+  leave_game(socket, lobbyId) {
+    socket.emit("leave_game", lobbyId, getToken());
   },
 
-  tie_game(socket, lobby_id) {
-    socket.emit("tie_game", lobby_id, getToken());
+  tie_game(socket, lobbyId) {
+    socket.emit("tie_game", lobbyId, getToken());
   },
 
-  game_history(socket, lobby_id) {
-    socket.emit("game_history", lobby_id, getToken());
+  game_history(socket, lobbyId) {
+    socket.emit("game_history", lobbyId, getToken());
   },
 
-  move_piece(socket, lobby_id, from, to) {
-    socket.emit("move_piece", lobby_id, from, to, getToken());
+  move_piece(socket, lobbyId, from, to) {
+    socket.emit("move_piece", lobbyId, from, to, getToken());
   },
 
   global_msg(socket, msg) {
     socket.emit("global_msg", msg, getToken());
   },
 
-  game_msg(socket, lobby_id, msg) {
-    socket.emit("game_msg", lobby_id, msg, getToken());
+  game_msg(socket, lobbyId, msg) {
+    socket.emit("game_msg", lobbyId, msg, getToken());
   },
 
   refresh_token(socket, token) {

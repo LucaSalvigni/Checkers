@@ -75,6 +75,7 @@
 <script>
 import DataInfo from "../components/profileComponents/DataInfo.vue";
 import MatchInfo from "../components/profileComponents/MatchInfo.vue";
+import api from "../../api.js";
 import { getCurrentInstance } from "vue";
 
 export default {
@@ -84,6 +85,8 @@ export default {
     MatchInfo,
   },
   data() {
+    // Request user info to backend
+    api.get_profile(this.$socket);
     return {
       avatar: "http://daisyui.com/tailwind-css-component-profile-1@40w.png",
       first_last_name: "Name Surname",
@@ -115,6 +118,16 @@ export default {
     },
     buttonClick(sound) {
       sound.play();
+    },
+  },
+  sockets: {
+    // Response from backend that contains user's info
+    user_profile(res) {
+      console.log(res);
+      this.avatar = res.avatar;
+      this.first_last_name = res.firstName + " " + res.lastName;
+      this.username = res.username;
+      this.stars = res.stars;
     },
   },
 };
