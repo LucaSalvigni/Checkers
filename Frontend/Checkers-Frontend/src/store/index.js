@@ -1,7 +1,8 @@
 // This is the store that contains user's info
 import { createStore } from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
-export default createStore({
+const store = createStore({
   state: {
     user: {
       username: "",
@@ -18,10 +19,11 @@ export default createStore({
     in_game: false,
     authenticated: false,
   },
+  plugins: [createPersistedState()],
   getters: {
     is_authenticated: (state) => state.authenticated,
     is_in_game: (state) => state.in_game,
-    toke: (state) => state.token,
+    token: (state) => state.token,
     user: (state) => state.user,
   },
   mutations: {
@@ -51,10 +53,12 @@ export default createStore({
       //axios.defaults.headers.common['Authorization'] = ""
     },
     setUser(state, user) {
-      state.user = Object.assign({}, user);
+      state.user = user;
     },
     setInGame(state, value) {
       state.in_game = value;
     },
   },
 });
+
+export default store;
