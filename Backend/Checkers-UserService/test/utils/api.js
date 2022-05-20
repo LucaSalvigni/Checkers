@@ -11,6 +11,8 @@ chai.should(); */
 const key = process.env.USER_KEY;
 const cert = process.env.USER_CERT;
 
+let userToken = '';
+
 axiosRetry(axios, {
   retries: 3,
   retryDelay: axiosRetry.exponentialDelay,
@@ -24,6 +26,15 @@ const httpsAgent = new https.Agent({
 });
 
 const api = {
+
+  getToken() {
+    return userToken;
+  },
+
+  setToken(value) {
+    userToken = value;
+  },
+
   async createUser(mail, username, password) {
     return {
       first_name: 'Tests',

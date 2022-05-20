@@ -1,15 +1,9 @@
 const { expect } = require('chai');
 const api = require('./utils/api');
 
-let token = null;
-
 describe('Verify token Test', async () => {
-  before(async () => {
-    const loggedUser = await api.loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
-    token = loggedUser.response.token;
-  });
   it('should correct token', async () => {
-    const verifiedToken = await api.verifyTokenUser(token);
+    const verifiedToken = await api.verifyTokenUser(api.getToken());
     console.log(verifiedToken);
     if (verifiedToken.status === 200) {
       expect(verifiedToken.status).to.equal(200);

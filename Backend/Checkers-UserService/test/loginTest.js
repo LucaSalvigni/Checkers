@@ -4,6 +4,7 @@ const api = require('./utils/api');
 describe('Login Test', async () => {
   it('should login', async () => {
     const loggedUser = await api.loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
+    api.setToken(loggedUser.response.token);
     if (loggedUser.status === 200) {
       expect(loggedUser.status).to.equal(200);
     } else {
