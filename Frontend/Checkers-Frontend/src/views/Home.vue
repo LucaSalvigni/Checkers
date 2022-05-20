@@ -54,7 +54,13 @@
             />
           </div>
           <div class="flex flex-row modal-action">
-            <label for="create-lobby-modal" class="accept btn"> Create </label>
+            <label
+              for="create-lobby-modal"
+              class="accept btn"
+              @click="startingMatch"
+            >
+              Create
+            </label>
             <label
               for="create-lobby-modal"
               class="cancel-create btn"
@@ -97,7 +103,9 @@
             />
           </div>
           <div class="flex flex-row modal-action">
-            <label for="friends-modal" class="accept btn">Send</label>
+            <label for="friends-modal" class="accept btn" @click="invitePlayer"
+              >Send</label
+            >
             <label
               for="friends-modal"
               class="cancel-invite btn"
@@ -165,7 +173,11 @@
                 />
               </div>
               <div class="flex flex-row modal-action">
-                <label for="create-lobby-modal" class="accept btn">
+                <label
+                  for="create-lobby-modal"
+                  class="accept btn"
+                  @click="startingMatch"
+                >
                   Create
                 </label>
                 <label
@@ -212,7 +224,12 @@
                 />
               </div>
               <div class="flex flex-row modal-action">
-                <label for="friends-modal" class="accept btn">Send</label>
+                <label
+                  for="friends-modal"
+                  class="accept btn"
+                  @click="invitePlayer"
+                  >Send</label
+                >
                 <label
                   for="friends-modal"
                   class="drop-cancel-invite btn"
@@ -230,7 +247,11 @@
 
 <script>
 import api from "../../api.js";
-import store from "../store";
+
+var lobbyName = document.getElementsByClassName("input-name");
+var starTextBox = document.getElementsByClassName("input-star");
+// var starTextBox2 = document.getElementsByClassName("input-star2");
+var opponent = document.getElementsByClassName("opponent-mail");
 
 export default {
   name: "HomeView",
@@ -240,13 +261,31 @@ export default {
     };
   },
   methods: {
+    startingMatch() {
+      this.buttonClick(this.buttonSound);
+      console.log(sessionStorage.token);
+      if (this.$store.getters.token !== "" || sessionStorage.token !== "") {
+        api.build_lobby(this.$socket, lobbyName[0].value, starTextBox[0].value);
+        this.$router.push("/game");
+      } else {
+        this.$router.push("/404");
+      }
+    },
     lobbyOpened(router) {
       this.buttonClick(this.buttonSound);
-      if (sessionStorage.token !== "") {
-        api.get_lobbies(this.$socket, store.getters.user.stars);
+      if (this.$store.getters.token !== "" || sessionStorage.token !== "") {
+        api.get_lobbies(this.$socket, this.$store.getters.user.stars);
         router.push("/lobbies");
       } else {
         router.push("/404");
+      }
+    },
+    invitePlayer() {
+      this.buttonClick(this.buttonSound);
+      if (this.$store.getters.token !== "" || sessionStorage.token !== "") {
+        api.invite_opponent(this.$socket, opponent[0].value);
+      } else {
+        this.$router.push("/404");
       }
     },
     buttonClick(sound) {
