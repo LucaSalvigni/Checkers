@@ -601,26 +601,19 @@ exports.socket = async function (server) {
         io.to(opponentId).emit('lobby_invitation', userMail);
 
         // If such player already exists in invitationTimeouts map
-        if (invitationTimeouts.has(userMail)) {
-          invitationTimeouts.get(userMail).set(opponentMail, setTimeout(() => {
-            // Inform both players that the invite has timed out
-            io.to(opponentId).emit('invitation_timeout', userMail);
-            client.emit('invitation_timeout', userMail);
-            // Clear the timeout associated to such invite
-            clearTimeout(invitationTimeouts.get(userMail).get(opponentMail));
-            invitationTimeouts.get(userMail).delete(opponentMail);
-          }, process.env.INVITE_TIMEOUT));
-        } else {
+        if (!invitationTimeouts.has(userMail)) {
           invitationTimeouts.set(userMail, new Map());
-          invitationTimeouts.get(userMail).set(opponentMail, setTimeout(() => {
+        }
+        invitationTimeouts.get(userMail).set(opponentMail, setTimeout(() => {
           // Inform both players that the invite has timed out
+          if (invitationTimeouts.has(userMail)) {
             io.to(opponentId).emit('invitation_timeout', userMail);
             client.emit('invitation_timeout', userMail);
             // Clear the timeout associated to such invite
             clearTimeout(invitationTimeouts.get(userMail).get(opponentMail));
             invitationTimeouts.get(userMail).delete(opponentMail);
-          }, process.env.INVITE_TIMEOUT));
-        }
+          }
+        }, process.env.INVITE_TIMEOUT));
       } else {
         client.emit('invite_error', { message: `Can't invite player ${opponentMail}` });
       }
@@ -649,6 +642,7 @@ exports.socket = async function (server) {
                 io.to(lobbyId).emit('game_started', game);
               }, 700);
               log(`${opponentMail}(host) and ${userMail} just started a game through invitations`);
+              log(invitationTimeouts)
               if (invitationTimeouts.has(userMail)) {
                 // eslint-disable-next-line max-len
                 Object.values(invitationTimeouts.get(userMail)).forEach((timeout) => clearTimeout(timeout));
@@ -793,7 +787,7 @@ exports.socket = async function (server) {
       if (user[0]) {
         log(`${mail} just want to see all games he did`);
         const history = await network.askService('get', `${gameService}/game/getGamesByUser`, { user: mail });
-        client.emit('user_history', history.response_data);
+        client.emit('user_history', history.response);
       }
     });
   });
