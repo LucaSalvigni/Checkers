@@ -57,11 +57,14 @@
         ref="file-input"
         type="file"
         accept="image/png, image/gif, image/jpeg"
+        @input="uploadImage"
       />
     </div>
 
     <div class="object-center space-x-2 mt-10">
-      <label class="btn font-semibold text-base">Save</label>
+      <label class="btn font-semibold text-base" @click.prevent="save_profile"
+        >Save</label
+      >
     </div>
 
     <div class="update-modal modal modal-close">
@@ -69,13 +72,13 @@
         <div class="flex flex-col items-center">
           <img
             class="w-40 h-28"
-            src="../../assets/logo.png"
+            src="../../assets/msg_image.png"
             alt="Modal Logo Image"
           />
           <p class="font-semibold text-base msg">Ciao</p>
         </div>
         <div class="modal-action justify-center">
-          <label class="btn">Accept</label>
+          <label class="btn" @click="close">Accept</label>
         </div>
       </div>
     </div>
@@ -83,7 +86,6 @@
 </template>
 
 <script>
-import store from "../../store/index.js";
 import api from "../../../api.js";
 
 var update_modal = document.getElementsByClassName("update-modal");
@@ -101,7 +103,7 @@ export default {
       mail: "info@site.com",
       username: "Username",
       buttonSound: this.$BUTTON_CLICK,
-      user: store.getters.user,
+      user: this.$store.getters.user,
     };
   },
   methods: {
@@ -178,7 +180,7 @@ export default {
     updated_user(user) {
       msg[0].textContent = "Update successful";
       update_modal[0].setAttribute("class", "update-modal modal modal-open");
-      store.commit("setUser", user);
+      this.$store.commit("setUser", user);
     },
     // Response by backend when user request info
     user_profile(res) {

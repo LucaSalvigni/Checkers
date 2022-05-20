@@ -114,8 +114,9 @@ export default {
         this.tabName = "Match History";
         this.$refs.matchInfo.setAttribute("class", "tab tab-lg tab-active");
         this.$refs.dataInfo.setAttribute("class", "tab tab-lg");
+        console.log(this.$store.getters.user);
+        api.get_history(this.mail, this.$socket);
       }
-      api.get_history(this.mail, this.$socket);
     },
     buttonClick(sound) {
       sound.play();

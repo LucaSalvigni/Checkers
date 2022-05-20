@@ -7,8 +7,9 @@
         <thead>
           <tr>
             <th>Game</th>
+            <th>Black</th>
+            <th>White</th>
             <th>Winner</th>
-            <th>Looser</th>
           </tr>
         </thead>
 
@@ -22,10 +23,7 @@
                 <div class="flex items-center space-x-3">
                   <div>
                     <div class="font-bold">
-                      {{ user.winner.username }}
-                    </div>
-                    <div class="text-sm opacity-50">
-                      {{ user.winner.mail }}
+                      {{ user.black }}
                     </div>
                   </div>
                 </div>
@@ -34,10 +32,16 @@
                 <div class="flex items-center space-x-3">
                   <div>
                     <div class="font-bold">
-                      {{ user.loser.username }}
+                      {{ user.white }}
                     </div>
-                    <div class="text-sm opacity-50">
-                      {{ user.loser.mail }}
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="flex items-center space-x-3">
+                  <div>
+                    <div class="font-bold">
+                      {{ user.winner }}
                     </div>
                   </div>
                 </div>
@@ -125,7 +129,7 @@ export default {
     // Response sent by backend that contains all matches done by a specific user
     user_history(res) {
       if (!Object.prototype.hasOwnProperty.call(res, "error")) {
-        this.history = res;
+        this.history = res[0];
         for (let i = 0; i < this.perPage; i++) {
           if (this.history[i] === undefined) {
             break;
