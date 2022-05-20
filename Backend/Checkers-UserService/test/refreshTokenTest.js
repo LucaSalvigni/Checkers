@@ -6,6 +6,7 @@ describe('Refresh token Test', async () => {
     const refreshUserToken = await api.refreshTokenUser('userok@testusers.com', api.getToken());
     console.log(refreshUserToken);
     if (refreshUserToken.status === 200) {
+      api.setToken(refreshUserToken.response.checkToken);
       expect(refreshUserToken.status).to.equal(200);
     } else {
       expect(refreshUserToken.status).to.equal(400);
