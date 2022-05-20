@@ -13,6 +13,7 @@ module.exports = {
   },
   ignorePatterns: ['draughts.js', '**/build/*.js'],
   rules: {
+    'no-console': 'off',
     'no-underscore-dangle': ['error', { allow: ['_id'] }],
   },
   globals: {
