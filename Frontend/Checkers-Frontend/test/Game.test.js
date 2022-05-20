@@ -40,7 +40,7 @@ describe('CheckerBoard mount test', () => {
     })
 })
 
-describe('Cell contain test', () => {
+/*describe('Cell contain test', () => {
     it('should not contain', () => {
         const cell = mount(Cell, {
             cell: 0
@@ -84,4 +84,4 @@ describe('Chat Test', () => {
         await wrapper.vm.sendMessage(message2)
         expect(wrapper.vm.newMessagesCount).toBe(0)
     })
-})
+})*/
