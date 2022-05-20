@@ -4,6 +4,7 @@ const api = require('../utils/api');
 describe('Communication Service invite Opponent Tests', async () => {
   it('invite opponent should work', (done) => {
     api.inviteOpponent(api.getClient(), api.getToken(), 'test2@test2.com');
+    api.getClient2().off('lobby_invitation');
     api.getClient2().on('lobby_invitation', (arg) => {
       assert.equal(arg, 'newtest@newtest.com');
       done();
@@ -11,6 +12,7 @@ describe('Communication Service invite Opponent Tests', async () => {
   });
   it('invite opponent should give an error', (done) => {
     api.inviteOpponent(api.getClient(), api.getToken(), 'banana@ban.com');
+    api.getClient().off('invite_error');
     api.getClient().on('invite_error', (arg) => {
       assert.equal(arg.message, "Can't invite player banana@ban.com");
       done();

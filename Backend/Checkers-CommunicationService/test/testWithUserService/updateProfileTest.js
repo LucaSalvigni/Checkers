@@ -19,6 +19,7 @@ const newWrongValues = {
 describe('Communication Service Update Tests', async () => {
   it('update should work', (done) => {
     api.updateUserProfile(api.getClient(), newValues, api.getToken());
+    api.getClient().off('updated_user');
     api.getClient().on('updated_user', (arg) => {
       console.log(arg);
       done();
@@ -26,6 +27,7 @@ describe('Communication Service Update Tests', async () => {
   });
   it('update should fail', (done) => {
     api.updateUserProfile(api.getClient(), newWrongValues, api.getToken());
+    api.getClient().off('client_error');
     api.getClient().on('client_error', (arg) => {
       assert.equal(arg.message.message, "You can't change the email associated to an account.");
       done();
