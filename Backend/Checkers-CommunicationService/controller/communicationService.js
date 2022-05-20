@@ -470,11 +470,13 @@ exports.socket = async function (server) {
             // If no one won
             if (moveResult.status) {
               moveResult = moveResult.response;
+              const winner = player;
+              const loser = lobby.getPlayers().filter((p) => p !== winner).shift();
               if (moveResult.winner === undefined || moveResult.winner === '') {
                 // If the game tied
                 if ('tie' in moveResult && moveResult.tie === true) {
                   // eslint-disable-next-line max-len
-                  const updatedUsers = await updatePoints(moveResult.winner, process.env.TIE_STARS, moveResult.loser, process.env.TIE_STARS, true);
+                  const updatedUsers = await updatePoints(winner, process.env.TIE_STARS, loser, process.env.TIE_STARS, true);
                   io.to(lobbyId).emit('update_board', moveResult.board);
                   io.to(onlineUsers.getKey(updatedUsers[0].mail)).emit('game_ended', {
                     user: onlineUsers[0],
@@ -499,21 +501,21 @@ exports.socket = async function (server) {
               } else {
                 // we have a winner!
                 // eslint-disable-next-line max-len
-                const updatedUsers = await updatePoints(moveResult.winner, process.env.WIN_STARS, moveResult.loser, process.env.LOSS_STARS);
+                const updatedUsers = await updatePoints(winner, process.env.WIN_STARS, loser, process.env.LOSS_STARS);
                 if (updatedUsers.length !== 0) {
                   io.to(lobbyId).emit('update_board', moveResult.board);
-                  const winner = onlineUsers.getKey(moveResult.winner);
-                  const loser = onlineUsers.getKey(moveResult.loser);
+                  // const winner = onlineUsers.getKey(moveResult.winner);
+                  // const loser = onlineUsers.getKey(moveResult.loser);
                   // Inform winner
-                  io.to(winner).emit('game_ended', {
+                  io.to(onlineUsers.getKey(winner)).emit('game_ended', {
                     // eslint-disable-next-line max-len
-                    user: (moveResult.winner === updatedUsers[0].mail ? updatedUsers[0] : updatedUsers[1]),
+                    user: (winner === updatedUsers[0].mail ? updatedUsers[0] : updatedUsers[1]),
                     message: `Congratulations, you just have won this match, enjoy the ${process.env.WIN_STARS} stars one of our elves just put under your christmas tree!`,
                   });
                   // Inform loser
-                  io.to(loser).emit('game_ended', {
+                  io.to(onlineUsers.getKey(loser)).emit('game_ended', {
                     // eslint-disable-next-line max-len
-                    user: (moveResult.loser === updatedUsers[0].mail ? updatedUsers[0] : updatedUsers[1]),
+                    user: (loser === updatedUsers[0].mail ? updatedUsers[0] : updatedUsers[1]),
                     message: `I'm afraid I'll have to tell you you lost this game, ${process.env.LOSS_STARS} stars have been removed from your profile but if you ask me that was just opponent's luck, don't give up yet`,
                   });
                   log(`Successfully sent end_game for  game ${lobbyId}`);

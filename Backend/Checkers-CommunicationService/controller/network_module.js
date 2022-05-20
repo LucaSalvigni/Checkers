@@ -1,5 +1,12 @@
 const { default: axios } = require('axios');
+const axiosRetry = require('axios-retry');
 const https = require('https');
+
+axiosRetry(axios, {
+  retries: 3,
+  retryDelay: axiosRetry.exponentialDelay,
+  retryCondition: (e) => e.response.status === 401,
+});
 
 let httpsAgent = new https.Agent({});
 
