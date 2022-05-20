@@ -18,8 +18,8 @@
           <td>
             <router-link
               class="join-lobby btn"
-              to="/inGame"
-              @click="joinLobby(lobby.lobby_id)"
+              to="/game"
+              @click="joinLobby(lobby.lobbyId)"
               >Join Lobby</router-link
             >
           </td>
