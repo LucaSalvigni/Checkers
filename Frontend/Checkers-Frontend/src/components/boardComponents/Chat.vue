@@ -19,13 +19,20 @@
       :always-scroll-to-bottom="alwaysScrollToBottom"
       :disable-user-list-toggle="false"
       :message-styling="messageStyling"
+      @edit="editMessage"
     />
   </div>
 </template>
 
 <script>
+import api from "../../../api.js";
+
 export default {
   name: "App",
+  props: {
+    opponent: { type: Object, default: () => {} },
+    lobbyId: { type: String, default: "" },
+  },
   data() {
     return {
       participants: [
@@ -75,6 +82,7 @@ export default {
         this.newMessagesCount = this.isChatOpen
           ? this.newMessagesCount
           : this.newMessagesCount + 1;
+        api.game_msg(this.$socket, this.lobbyId, message.data.text);
         this.onMessageWasSent(message);
       }
     },
@@ -92,11 +100,29 @@ export default {
       this.isChatOpen = false;
     },
     // Edit the new message
-    /*editMessage(message) {
+    editMessage(message) {
       const m = this.messageList.find((m) => m.id === message.id);
       m.isEdited = true;
       m.data.text = message.data.text;
-    },*/
+    },
+  },
+  sockets: {
+    // When there is a message from backend, add it to the chat if is not mine
+    game_msg(msg) {
+      if (this.participants[0].id === "") {
+        this.participants[0].id = this.opponent.mail;
+        this.participants[0].name = this.opponent.username;
+        this.participants[0].imageUrl = this.opponent.avatar;
+      }
+      var text = this.participants[0].name.toUpperCase() + ": " + msg.message;
+      if (msg.sender !== this.$store.getters.user.mail) {
+        this.onMessageWasSent({
+          type: "text",
+          author: this.participants[0].mail,
+          data: { text },
+        });
+      }
+    },
   },
 };
 </script>

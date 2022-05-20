@@ -4,15 +4,20 @@
   <div class="player">
     <div class="card lg:card-side flex flex-row pt-3">
       <img
-        src="../../assets/logo.png"
+        :src="player.avatar"
         alt="User's Avatar"
         class="profileImg mask mask-square p-0.5"
       />
       <div class="flex-col">
-        <p class="card-title ml-1">Username</p>
+        <p class="card-title ml-1" :innerText="player.username">Username</p>
         <div class="flex flex-row">
           <i class="fas fa-star" />
-          <p class="text-left font-semibold text-base ml-1">Stars</p>
+          <p
+            class="text-left font-semibold text-base ml-1"
+            :innerText="player.stars"
+          >
+            Stars
+          </p>
         </div>
       </div>
     </div>
@@ -22,6 +27,9 @@
 <script>
 export default {
   name: "PlayerComponent",
+  props: {
+    player: { type: Object, default: () => {} },
+  },
 };
 </script>
 
