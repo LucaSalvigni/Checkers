@@ -20,6 +20,16 @@ app.config.globalProperties.$COLOR_BOTTOM = "color-bottom";
 app.config.globalProperties.$BUTTON_CLICK = new Audio(
   require("./assets/sounds/button-click.wav")
 );
+app.config.globalProperties.$MOVE_PIECE = new Audio(
+  require("./assets/sounds/piece-move.wav")
+);
+app.config.globalProperties.$NOTIFICATION = new Audio(
+  require("./assets/sounds/notification.mp3")
+);
+app.config.globalProperties.$RED_PIECE = require("./assets/pieces/Red_Piece.png");
+app.config.globalProperties.$WHITE_PIECE = require("./assets/pieces/White_Piece.png");
+app.config.globalProperties.$RED_KING_PIECE = require("./assets/pieces/KRed_Piece.png");
+app.config.globalProperties.$WHITE_KING_PIECE = require("./assets/pieces/KWhite_Piece.png");
 
 app
   .use(
