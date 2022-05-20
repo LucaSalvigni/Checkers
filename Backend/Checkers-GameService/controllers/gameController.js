@@ -121,10 +121,9 @@ exports.createGame = async function createGame(req, res) {
     savedGame = await savedGame.save();
     log(`Just created game ${savedGame._id}`);
 
-
     res.status(200).json({
       game: savedGame,
-      board: parseFEN(new Draughts(savedGame.fen))
+      board: parseFEN(new Draughts(savedGame.fen)),
     });
   } catch (err) {
     log(err);

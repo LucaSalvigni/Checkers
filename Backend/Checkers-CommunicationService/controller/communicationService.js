@@ -642,7 +642,7 @@ exports.socket = async function (server) {
                 io.to(lobbyId).emit('game_started', game);
               }, 700);
               log(`${opponentMail}(host) and ${userMail} just started a game through invitations`);
-              log(invitationTimeouts)
+              log(invitationTimeouts);
               if (invitationTimeouts.has(userMail)) {
                 // eslint-disable-next-line max-len
                 Object.values(invitationTimeouts.get(userMail)).forEach((timeout) => clearTimeout(timeout));
