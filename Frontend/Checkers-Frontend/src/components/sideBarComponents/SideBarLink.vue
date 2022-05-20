@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { computed, getCurrentInstance } from "vue";
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 export default {
@@ -28,8 +28,7 @@ export default {
   },
   data() {
     return {
-      buttonSound:
-        getCurrentInstance().appContext.config.globalProperties.$BUTTON_CLICK,
+      buttonSound: this.$BUTTON_CLICK,
     };
   },
   methods: {

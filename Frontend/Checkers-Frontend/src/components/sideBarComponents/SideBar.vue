@@ -53,6 +53,42 @@
         >Leaderboard</SideBarLink
       >
 
+      <div class="mx-3 mt-40 indicator">
+        <div
+          v-if="invites.length > 0"
+          class="indicator-item indicator-middle badge badge-secondary"
+        ></div>
+        <div v-else></div>
+        <div v-if="invites.length > 0" class="dropdown">
+          <SideBarLink class="notifications w-44 p-0.5" icon="fas fa-bell"
+            >Notifications</SideBarLink
+          >
+          <ul
+            tabindex="0"
+            class="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52"
+          >
+            <template v-for="(invite, i) in invites" :key="i">
+              <li class="block">
+                <a @click="checkInvite(invite, i)">Invite by {{ invite }}</a>
+              </li>
+            </template>
+          </ul>
+        </div>
+        <div v-else class="dropdown">
+          <SideBarLink class="notifications w-44 p-0.5" icon="fas fa-bell"
+            >Notifications</SideBarLink
+          >
+          <ul
+            tabindex="0"
+            class="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52"
+          >
+            <li>
+              <a>There are not notifications at the moment</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
       <!--<div v-if="!$store.loading.value">-->
       <SideBarLink
         class="w-44 login mt-96 p-0.5"
@@ -72,6 +108,17 @@ export default {
   name: "SideBar",
   components: {
     SideBarLink,
+  },
+  props: {
+    invites: { type: Array, default: () => [] },
+  },
+  emits: ["check-invite"],
+  methods: {
+    // Check invites sent by another players
+    checkInvite(invite, i) {
+      this.$BUTTON_CLICK.play();
+      this.$emit("check-invite", invite, i);
+    },
   },
 };
 </script>
