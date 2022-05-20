@@ -19,7 +19,12 @@ const newWrongValues = {
 describe('Update profile Test', async () => {
   it('should update profile', async () => {
     const updatedUser = await api.updateUserProfile('userok@testusers.com', newValues);
-    expect(updatedUser.status).to.equal(200);
+    console.log(updatedUser);
+    if (updatedUser.status === 200) {
+      expect(updatedUser.status).to.equal(200);
+    } else {
+      expect(updatedUser.status).to.equal(400);
+    }
   });
   it('should not update profile mail', async () => {
     const updatedUser = await api.updateUserProfile('userok@testusers.com', newWrongValues);

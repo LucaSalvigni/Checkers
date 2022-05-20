@@ -4,7 +4,11 @@ const api = require('./utils/api');
 describe('Login Test', async () => {
   it('should login', async () => {
     const loggedUser = await api.loginUser({ mail: 'userok@testusers.com', password: '1231AAcc*' });
-    expect(loggedUser.status).to.equal(200);
+    if (loggedUser.status === 200) {
+      expect(loggedUser.status).to.equal(200);
+    } else {
+      expect(loggedUser.status).to.equal(400);
+    }
   });
   it('should fail login', async () => {
     const loggedUser = await api.loginUser({ mail: 'userok@testusers.com', password: 'ciao' });

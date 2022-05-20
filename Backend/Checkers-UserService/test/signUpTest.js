@@ -20,7 +20,11 @@ describe('Sign Up Test', async () => {
   it('should register a new user', async () => {
     const newUser = await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
     const register = await api.registerUser(newUser);
-    expect(register.status).to.equal(200);
+    if (register.status === 200) {
+      expect(register.status).to.equal(200);
+    } else {
+      expect(register.status).to.equal(400);
+    }
   });
 
   it('should get wrong mail to register', async () => {

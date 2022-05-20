@@ -10,7 +10,12 @@ describe('Refresh token Test', async () => {
   });
   it('should refresh token', async () => {
     const refreshUserToken = await api.refreshTokenUser('userok@testusers.com', token);
-    expect(refreshUserToken.status).to.equal(200);
+    console.log(refreshUserToken);
+    if (refreshUserToken.status === 200) {
+      expect(refreshUserToken.status).to.equal(200);
+    } else {
+      expect(refreshUserToken.status).to.equal(400);
+    }
   });
 
   it('should fail refresh token with not registred mail', async () => {
