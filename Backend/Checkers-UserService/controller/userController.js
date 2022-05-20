@@ -137,7 +137,7 @@ exports.login = async function (req, res) {
   } else if (mail.trim() === '' || password.trim() === '') {
     res.status(400).send({ message: "Login parameters can't have empty values" });
   } else {
-    const registeredUser = await User.findOne({ mail }, 'username first_name last_name mail salt password stars nationality wins losses avatar');
+    const registeredUser = await User.findOne({ mail }, 'username firstName lastName mail salt password stars nationality wins losses avatar');
     if (registeredUser) {
       const allegedPassword = saltFunction(password, registeredUser.salt);
       if (allegedPassword === registeredUser.password) {
@@ -149,8 +149,8 @@ exports.login = async function (req, res) {
           message: `Authentication successfull, welcome back ${registeredUser.username}!`,
           user: {
             username: registeredUser.username,
-            first_name: registeredUser.first_name,
-            last_name: registeredUser.last_name,
+            firstName: registeredUser.firstName,
+            lastName: registeredUser.lastName,
             mail,
             stars: registeredUser.stars,
             wins: registeredUser.wins,
@@ -175,7 +175,7 @@ exports.login = async function (req, res) {
 exports.refresh_token = async function (req, res) {
   const { mail } = req.query;
   const { token } = req.query;
-  const registeredUser = await User.findOne({ mail }, 'username first_name last_name mail stars nationality wins losses avatar');
+  const registeredUser = await User.findOne({ mail }, 'username firstName lastName mail stars nationality wins losses avatar');
   if (registeredUser) {
     const tokenMail = JSON.parse(Buffer.from(token.split('.')[1], 'base64')).user.mail;
     if (mail === tokenMail) {
@@ -186,8 +186,8 @@ exports.refresh_token = async function (req, res) {
         checkToken,
         user: {
           username: registeredUser.username,
-          first_name: registeredUser.first_name,
-          last_name: registeredUser.last_name,
+          firstName: registeredUser.firstName,
+          lastName: registeredUser.lastName,
           mail: registeredUser.mail,
           stars: registeredUser.stars,
           wins: registeredUser.wins,
@@ -200,8 +200,8 @@ exports.refresh_token = async function (req, res) {
           checkToken,
           user: {
             username: registeredUser.username,
-            first_name: registeredUser.first_name,
-            last_name: registeredUser.last_name,
+            firstName: registeredUser.firstName,
+            lastName: registeredUser.lastName,
             mail: registeredUser.mail,
             stars: registeredUser.stars,
             wins: registeredUser.wins,
@@ -274,8 +274,8 @@ exports.getProfile = async function (req, res) {
       res.json({
         username: data.username,
         avatar: data.avatar === '' ? 'https://picsum.photos/id/1005/400/250' : data.avatar,
-        first_name: data.first_name,
-        last_name: data.last_name,
+        firstName: data.firstName,
+        lastName: data.lastName,
         stars: data.stars,
         mail: data.mail,
       });
@@ -355,8 +355,8 @@ exports.updateProfile = async function (req, res) {
         );
         res.status(200).json({
           username: newUser.username,
-          first_name: newUser.first_name,
-          last_name: newUser.last_name,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
           mail: newUser.mail,
           stars: newUser.stars,
           avatar: newUser.avatar,
@@ -395,8 +395,8 @@ exports.updatePoints = async function (req, res) {
       log(`Just updated points for ${mail}`);
       res.status(200).json({
         username: user.username,
-        first_name: user.first_name,
-        last_name: user.last_name,
+        firstName: user.firstName,
+        lastName: user.lastName,
         mail: user.mail,
         wins: user.wins,
         losses: user.losses,
