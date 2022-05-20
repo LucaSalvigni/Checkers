@@ -70,8 +70,6 @@
 
 <script>
 import api from "../../api";
-import store from "../store";
-import { getCurrentInstance } from "vue";
 
 var mail = document.getElementsByClassName("mail");
 var password = document.getElementsByClassName("password");
@@ -82,8 +80,7 @@ export default {
   name: "LogIn",
   data() {
     return {
-      buttonSound:
-        getCurrentInstance().appContext.config.globalProperties.$BUTTON_CLICK,
+      buttonSound: this.$BUTTON_CLICK,
     };
   },
   methods: {
@@ -111,8 +108,8 @@ export default {
     // Response from backend that confirm the authentication
     login_ok(res) {
       //EXAMPLE ON HOW TO USE STORE
-      store.commit("setToken", res.token);
-      store.commit("setUser", res.user);
+      this.$store.commit("setToken", res.token);
+      this.$store.commit("setUser", res.user);
       this.$router.push("/");
     },
     // Response from backend that give a message error to the user
