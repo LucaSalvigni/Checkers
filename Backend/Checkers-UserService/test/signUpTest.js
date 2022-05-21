@@ -46,12 +46,12 @@ describe('Sign Up Test', async () => {
   });
 
   it('should user already exist', async () => {
-    const newUserFail = await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
-    const registerFail = await api.registerUser(newUserFail);
-    if (registerFail.status === 200) {
-      expect(registerFail.status).to.equal(200);
+    const newUser = await api.createUser('userok@testusers.com', 'filippo23', '1231AAcc*');
+    const register = await api.registerUser(newUser);
+    if (register.status === 200) {
+      expect(register.status).to.equal(200);
     } else {
-      expect(registerFail.status).to.equal(400);
+      expect(register.status).to.equal(400);
     }
   });
 });
