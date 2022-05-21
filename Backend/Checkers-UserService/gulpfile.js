@@ -29,6 +29,7 @@ function qualityAssurance(cb) {
 function doTest(cb) {
   log('checking all tests');
   return exec('npm run test', (err, stdout, stderr) => {
+    console.log(stderr);
     log(stdout);
     log(stderr);
     cb(err);
@@ -38,6 +39,7 @@ function doTest(cb) {
 function testQualityAssurance(cb) {
   log('test coverage');
   return exec('npm run coverage', (err, stdout, stderr) => {
+    console.log(stderr);
     log(stdout);
     log(stderr);
     cb(err);
