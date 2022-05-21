@@ -14,22 +14,23 @@ describe('Communication Service Delete Specific Lobby Test', async () => {
   it('delete lobby should work', (done) => {
     api.deleteLobby(api.getClient(), api.getLobbyId(), api.getToken());
     api.getClient().off('lobby_deleted');
+    api.getClient().off('server_error');
+    api.getClient().off('token_error');
+    api.getClient().off('client_error');
+
     api.getClient().on('lobby_deleted', (arg) => {
       console.log(arg);
       assert.equal(arg.message, 'Your lobby has been successfully deleted');
       done();
     });
-    api.getClient().off('server_error');
     api.getClient().on('server_error', (arg) => {
       console.log(arg);
       done();
     });
-    api.getClient().off('token_error');
     api.getClient().on('token_error', (arg) => {
       console.log(arg);
       done();
     });
-    api.getClient().off('client_error');
     api.getClient().on('client_error', (arg) => {
       console.log(arg);
       done();

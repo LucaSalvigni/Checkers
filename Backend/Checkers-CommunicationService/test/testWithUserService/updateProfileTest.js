@@ -20,16 +20,17 @@ describe('Communication Service Update Tests', async () => {
   it('update should work', (done) => {
     api.updateUserProfile(api.getClient(), newValues, api.getToken());
     api.getClient().off('updated_user');
+    api.getClient().off('client_error');
+    api.getClient().off('token_error');
+
     api.getClient().on('updated_user', (arg) => {
       console.log(arg);
       done();
     });
-    api.getClient().off('client_error');
     api.getClient().on('client_error', (arg) => {
       console.log(arg);
       done();
     });
-    api.getClient().off('token_error');
     api.getClient().on('token_error', (arg) => {
       console.log(arg);
       done();

@@ -5,16 +5,17 @@ describe('Communication Service getLeaderboard Tests', async () => {
   it('getLeaderboard should work', (done) => {
     api.getLeaderboard(api.getClient(), api.getToken());
     api.getClient().off('leaderboard');
+    api.getClient().off('token_error');
+    api.getClient().off('client_error');
+
     api.getClient().on('leaderboard', (arg) => {
       console.log(arg);
       done();
     });
-    api.getClient().off('token_error');
     api.getClient().on('token_error', (arg) => {
       console.log(arg);
       done();
     });
-    api.getClient().off('client_error');
     api.getClient().on('client_error', (arg) => {
       console.log(arg);
       done();

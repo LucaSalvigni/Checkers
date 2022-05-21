@@ -6,11 +6,12 @@ describe('Communication Service Send Message Tests', async () => {
     console.log(api.getLobbyId());
     api.sendMessage(api.getClient(), api.getLobbyId(), 'Ciao mi chiamo Tordent', api.getToken());
     api.getClient2().off('game_msg');
+    api.getClient().off('token_error');
+
     api.getClient2().on('game_msg', (arg) => {
       assert.equal(arg.message, 'Ciao mi chiamo Tordent');
       done();
     });
-    api.getClient().off('token_error');
     api.getClient().on('token_error', (arg) => {
       console.log(arg);
       done();

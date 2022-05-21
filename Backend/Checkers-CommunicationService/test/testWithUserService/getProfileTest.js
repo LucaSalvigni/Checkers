@@ -6,16 +6,17 @@ describe('Communication Service getProfile Tests', async () => {
     console.log(api.getToken());
     api.getProfile(api.getClient(), api.getToken());
     api.getClient().off('user_profile');
+    api.getClient().off('token_error');
+    api.getClient().off('client_error');
+
     api.getClient().on('user_profile', (arg) => {
       console.log(arg);
       done();
     });
-    api.getClient().off('token_error');
     api.getClient().on('token_error', (arg) => {
       console.log(arg);
       done();
     });
-    api.getClient().off('client_error');
     api.getClient().on('client_error', (arg) => {
       console.log(arg);
       done();

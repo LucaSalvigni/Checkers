@@ -5,17 +5,18 @@ describe('Communication Service Build Lobby Tests', async () => {
   it('build lobby should work', (done) => {
     api.buildLobby(api.getClient(), 'BestLobby', '500', api.getToken());
     api.getClient().off('lobbies');
+    api.getClient().off('client_error');
+    api.getClient().off('token_error');
+
     api.getClient().on('lobbies', (arg) => {
       console.log(arg);
       api.setLobbyId(arg.lobbyId);
       done();
     });
-    api.getClient().off('client_error');
     api.getClient().on('client_error', (arg) => {
       console.log(arg);
       done();
     });
-    api.getClient().off('token_error');
     api.getClient().on('token_error', (arg) => {
       console.log(arg);
       done();
