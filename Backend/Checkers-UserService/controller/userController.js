@@ -106,7 +106,6 @@ exports.signup = async function (req, res) {
         mail,
         password: hashPsw,
         salt,
-        nationality: '',
       });
       await newUser.save();
       res.status(200).send({ message: 'Sign up completed successfully.' });
