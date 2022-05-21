@@ -54,7 +54,7 @@ const api = {
   },
 
   async registerUser(client, user) {
-    console.log(user)
+    console.log(user);
     user.then((res) => {
       client.emit('signup', res.mail, res.password, res.username, res.firstName, res.lastName);
     });

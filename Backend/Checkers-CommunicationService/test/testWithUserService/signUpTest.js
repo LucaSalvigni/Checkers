@@ -1,6 +1,5 @@
 const { assert } = require('chai');
 const api = require('../utils/api');
-const User = require('../../../Checkers-UserService/models/userModel');
 
 describe('Communication Service SignUp Tests', async () => {
   /* before(async () => {
