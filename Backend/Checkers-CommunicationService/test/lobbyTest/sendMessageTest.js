@@ -10,5 +10,10 @@ describe('Communication Service Send Message Tests', async () => {
       assert.equal(arg.message, 'Ciao mi chiamo Tordent');
       done();
     });
+    api.getClient().off('token_error');
+    api.getClient().on('token_error', (arg) => {
+      console.log(arg);
+      done();
+    });
   });
 });

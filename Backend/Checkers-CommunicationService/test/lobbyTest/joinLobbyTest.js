@@ -8,5 +8,20 @@ describe('Communication Service Join Lobby Tests', async () => {
       console.log(arg);
       done();
     });
+    api.getClient2().off('token_error');
+    api.getClient2().on('token_error', (arg) => {
+      console.log(arg);
+      done();
+    });
+    api.getClient2().off('server_error');
+    api.getClient2().on('server_error', (arg) => {
+      console.log(arg);
+      done();
+    });
+    api.getClient2().off('client_error');
+    api.getClient2().on('client_error', (arg) => {
+      console.log(arg);
+      done();
+    });
   });
 });

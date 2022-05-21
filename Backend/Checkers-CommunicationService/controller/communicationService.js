@@ -411,6 +411,8 @@ exports.socket = async function (server) {
           } else {
             client.emit('server_error', { message: 'There has been some problem with the process of deleting a lobby.' });
           }
+        } else {
+          client.emit('client_error', { message: "Can't find such lobby" });
         }
       } else {
         client.emit('token_error', { message: user[1] });

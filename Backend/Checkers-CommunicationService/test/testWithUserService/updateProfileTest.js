@@ -24,6 +24,16 @@ describe('Communication Service Update Tests', async () => {
       console.log(arg);
       done();
     });
+    api.getClient().off('client_error');
+    api.getClient().on('client_error', (arg) => {
+      console.log(arg);
+      done();
+    });
+    api.getClient().off('token_error');
+    api.getClient().on('token_error', (arg) => {
+      console.log(arg);
+      done();
+    });
   });
   it('update should fail', (done) => {
     api.updateUserProfile(api.getClient(), newWrongValues, api.getToken());

@@ -18,6 +18,25 @@ describe('Communication Service SignIn Tests', async () => {
       assert.equal(arg.message, 'Authentication successfull, welcome back filippo23!');
       done();
     });
+    api.getClient().off('login_error');
+    api.getClient().on('login_error', (arg) => {
+      console.log(arg);
+      done();
+    });
+  });
+  it('login should work for second user', (done) => {
+    api.loginUser(api.getClient2(), { mail: 'test2@test2.com', password: 'TestonE97?' });
+    api.getClient2().off('login_ok');
+    api.getClient2().on('login_ok', (arg) => {
+      api.setToken2(arg.token);
+      assert.equal(arg.message, 'Authentication successfull, welcome back Tordent97!');
+      done();
+    });
+    api.getClient().off('login_error');
+    api.getClient().on('login_error', (arg) => {
+      console.log(arg);
+      done();
+    });
   });
   it('login should fail', (done) => {
     api.loginUser(api.getClient2(), { mail: 'newtest@newtest.com', password: 'Miao*' });

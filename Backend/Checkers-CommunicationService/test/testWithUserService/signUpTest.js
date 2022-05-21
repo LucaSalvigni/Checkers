@@ -19,10 +19,21 @@ describe('Communication Service SignUp Tests', async () => {
     api.getClient().on('signup_success', (arg) => {
       assert.equal(arg.message, 'Sign up completed successfully.');
     });
+    api.getClient().off('signup_error');
+    api.getClient().on('signup_error', (arg) => {
+      console.log(arg);
+      done();
+    });
+
     api.registerUser(api.getClient2(), api.createUser('test2@test2.com', 'Tordent97', 'TestonE97?'));
     api.getClient2().off('signup_success');
     api.getClient2().on('signup_success', (arg) => {
       assert.equal(arg.message, 'Sign up completed successfully.');
+      done();
+    });
+    api.getClient2().off('signup_error');
+    api.getClient2().on('signup_error', (arg) => {
+      console.log(arg);
       done();
     });
   });
