@@ -3,7 +3,7 @@ const api = require('../utils/api');
 const User = require('../../../Checkers-UserService/models/userModel');
 
 describe('Communication Service SignUp Tests', async () => {
-  before(async () => {
+  /* before(async () => {
     const checkUser = await User.find({ mail: 'newtest@newtest.com' });
     if (checkUser.length > 0) {
       await User.deleteMany({ mail: 'newtest@newtest.com' });
@@ -12,7 +12,7 @@ describe('Communication Service SignUp Tests', async () => {
     if (checkUser2.length > 0) {
       await User.deleteMany({ mail: 'test2@test2.com' });
     }
-  });
+  }); */
   it('signUp should work', (done) => {
     api.registerUser(api.getClient(), api.createUser('newtest@newtest.com', 'filippo23', '1231AAcc*'));
     api.getClient().off('signup_success');

@@ -17,7 +17,11 @@ describe('Communication Service SignIn Tests', async () => {
 
     api.getClient().on('login_ok', (arg) => {
       api.setToken(arg.token);
-      assert.equal(arg.message, 'Authentication successfull, welcome back filippo23!');
+      if (arg.message.includes('filippo')) {
+        assert.equal(arg.message, 'Authentication successfull, welcome back filippo23!');
+      } else {
+        assert.equal(arg.message, 'Authentication successfull, welcome back pippo23!');
+      }
       done();
     });
     api.getClient().on('login_error', (arg) => {

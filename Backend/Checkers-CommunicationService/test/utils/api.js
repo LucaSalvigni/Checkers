@@ -45,8 +45,8 @@ const api = {
 
   async createUser(mail, username, password) {
     return {
-      first_name: 'Tests',
-      last_name: 'User',
+      firstName: 'Tests',
+      lastName: 'User',
       mail,
       username,
       password,
@@ -54,6 +54,7 @@ const api = {
   },
 
   async registerUser(client, user) {
+    console.log(user)
     user.then((res) => {
       client.emit('signup', res.mail, res.password, res.username, res.firstName, res.lastName);
     });
