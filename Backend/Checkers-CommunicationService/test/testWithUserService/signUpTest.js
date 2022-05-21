@@ -25,7 +25,8 @@ describe('Communication Service SignUp Tests', async () => {
       console.log(arg);
       done();
     });
-
+  });
+  it('signUp should work for second user', (done) => {
     api.registerUser(api.getClient2(), api.createUser('test2@test2.com', 'Tordent97', 'TestonE97?'));
     api.getClient2().off('signup_success');
     api.getClient2().off('signup_error');
