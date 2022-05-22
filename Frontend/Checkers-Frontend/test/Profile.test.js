@@ -8,19 +8,26 @@ import Profile from '../src/views/Profile.vue'
 import DataInfo from '../src/components/profileComponents/DataInfo.vue'
 import MatchInfo from '../src/components/profileComponents/MatchInfo.vue'
 import AudioPlayer from './utils/AudioPlayer'
+import store from '../src/store/index.js'
+import SocketIO from "socket.io-client"
+
+/*const wrapper = mount(Profile, {
+    data() {
+        return {
+            socket: SocketIO("http://localhost:3030")
+        }
+    },
+})*/
 
 describe('Profile Mount Test', () => {
     it('should mount Profile', () => {
-        console.log('Need to fix this tests')
-        /*const wrapper = mount(Profile)
-        expect(wrapper.exists()).toBeTruthy()*/
+        console.log('Ciao')
+       // expect(wrapper.exists()).toBeTruthy()
     })
 })
 
 /* describe('Profile Contain Test', ()=> {
     it('should contain', ()=> {
-        const wrapper = mount(Profile)
-        
         expect(wrapper.find('img').exists()).toBeTruthy()
 
         expect(wrapper.find('h2.username').exists()).toBeTruthy()
@@ -43,8 +50,6 @@ describe('Profile Mount Test', () => {
 
 describe('Profile data Test', () => {
     it('setData test', async () => {
-        const wrapper = mount(Profile)
-
         await wrapper.setData({
             avatar: "http://daisyui.com/tailwind-css-component-profile-1@40w.png",
             first_last_name: "First Last",

@@ -5,6 +5,7 @@ import CheckerBoard from '../src/components/boardComponents/CheckerBoard.vue'
 import Cell from '../src/components/boardComponents/Cell.vue'
 import Chat from '../src/components/boardComponents/Chat.vue'
 import Player from '../src/components/boardComponents/Player.vue'
+import SocketIO from "socket.io-client"
 
 describe('Game mount test', () => {
     it('should mount', () => {
@@ -40,10 +41,13 @@ describe('CheckerBoard mount test', () => {
     })
 })
 
-/*describe('Cell contain test', () => {
+describe('Cell contain test', () => {
     it('should not contain', () => {
         const cell = mount(Cell, {
-            cell: 0
+            props: {
+                cell: 0,
+                moves: {1:1, 2:2}
+            },
         })
         expect(cell.find('img').exists()).toBeFalsy()
     })
@@ -51,7 +55,13 @@ describe('CheckerBoard mount test', () => {
 
 describe('Chat Test', () => {
     it('should work', async () => {
-        const wrapper = mount(Chat)
+        const wrapper = mount(Chat, {
+            data() {
+                return {
+                    socket: SocketIO("http://localhost:3030")
+                }
+            },
+        })
 
         const message1 = {
             data: {
@@ -84,4 +94,4 @@ describe('Chat Test', () => {
         await wrapper.vm.sendMessage(message2)
         expect(wrapper.vm.newMessagesCount).toBe(0)
     })
-})*/
+})

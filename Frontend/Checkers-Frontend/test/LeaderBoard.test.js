@@ -4,53 +4,36 @@
 
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { routes } from '../src/router/index'
-import { createRouter, createWebHistory } from 'vue-router'
-import App from '../src/App.vue'
-// import LeaderBoard from '../src/views/LeaderBoard.vue'
+import LeaderBoard from '../src/views/LeaderBoard.vue'
+import SocketIO from "socket.io-client"
 
-var app = null
-const router = createRouter({
-    history: createWebHistory(),
-    routes: routes,
+const wrapper = mount(LeaderBoard, {
+    data() {
+        return {
+            socket: SocketIO("http://localhost:3030")
+        }
+    },
 })
 
 describe('LeaderBoard Mount Test', () => {
     it('Should mount LeaderBoard', async () => {
-        await router.push('/')
-
-        // After this line, router is ready
-        await router.isReady()
-
-        app = mount(App, {
-            global: {
-                plugins: [router]
-            }
-        })
-        //await app.find('.leaderboard').trigger('click')
-        //await flushPromises()
-        //expect(app.findComponent(LeaderBoard).exists()).toBeTruthy()
-        console.log(app.html())
-        expect(app.find('router-view').exists()).toBeTruthy()
+        expect(wrapper.exists()).toBeTruthy()
     })
 })
 
-/* describe('LeaderBoard Contain Test', ()=> {
+describe('LeaderBoard Contain Test', ()=> {
     it('should contain', ()=> {
+        expect(wrapper.find('h1').exists()).toBeTruthy()
 
-        expect(app.find('h1').exists()).toBeTruthy()
+        expect(wrapper.find('table').exists()).toBeTruthy()
 
-        expect(app.find('table').exists()).toBeTruthy()
+        expect(wrapper.find('thead').exists()).toBeTruthy()
 
-        expect(app.find('thead').exists()).toBeTruthy()
+        expect(wrapper.find('tbody').exists()).toBeTruthy()
 
-        expect(app.find('tbody').exists()).toBeTruthy()
+        expect(wrapper.find('tr').exists()).toBeTruthy()
 
-        expect(app.find('tr').exists()).toBeTruthy()
-
-        expect(app.find('th').exists()).toBeTruthy()
-
-        expect(app.find('td').exists()).toBeTruthy()
+        expect(wrapper.find('th').exists()).toBeTruthy()
     })
-}) */
+})
  

@@ -8,7 +8,7 @@ import router from './utils/router/router.js'
 import App from '../src/App.vue'
 import SideBar from '../src/components/sideBarComponents/SideBar.vue'
 import SideBarLink from '../src/components/sideBarComponents/SideBarLink.vue'
-import AudioPlayer from './utils/AudioPlayer';
+import AudioPlayer from './utils/AudioPlayer'
 
 
 describe('App Test', () => {
@@ -37,12 +37,12 @@ describe('SidebarLink Test', () => {
             }
         })
 
-        await wrapper.setProps({ to: "/profile" })
+        await wrapper.setProps({ to: "/login" })
 
         await wrapper.vm.buttonClick(mockAudio)
 
         const spy = vi.spyOn(wrapper.vm, 'buttonClick').mockImplementation(() => {})
-        await wrapper.find('router-link').trigger('click')
+        await wrapper.find('a').trigger('click')
         expect(spy).toHaveBeenCalled()
     })
 })

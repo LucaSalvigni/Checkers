@@ -5,14 +5,21 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import router from './utils/router/router.js'
+import store from '../src/store/index.js'
 import Home from '../src/views/Home.vue'
 import Lobbies from '../src/views/Lobbies.vue'
 import AudioPlayer from './utils/AudioPlayer'
+import SocketIO from "socket.io-client"
 
 const home = mount(Home, {
     global: {
-        plugins: [router]
-    }
+        plugins: [router, store]
+    },
+    data() {
+        return {
+            socket: SocketIO("http://localhost:3030")
+        }
+    },
 })
 
 const lobbies = mount(Lobbies)
@@ -41,14 +48,14 @@ describe('Home Click Test', ()=> {
     it('should trigger events', async ()=> {
         await home.setData({buttonSound: mockAudio})
 
-        //await home.vm.lobbyOpened(router)
-        //await router.isReady()
-        //expect(lobbies.exists()).toBeTruthy()
+        await home.vm.lobbyOpened(router)
+        await router.isReady()
+        expect(lobbies.exists()).toBeTruthy()
         
         await home.vm.buttonClick(mockAudio)
 
         const spy = vi.spyOn(home.vm, 'buttonClick').mockImplementation(() => {})
-        //const spyLobbies = vi.spyOn(home.vm, 'lobbyOpened').mockImplementation(() => {})
+        const spyLobbies = vi.spyOn(home.vm, 'lobbyOpened').mockImplementation(() => {})
 
         await home.find('label.create-lobby').trigger('click')
         expect(spy).toHaveBeenCalled()
@@ -86,12 +93,12 @@ describe('Home Click Test', ()=> {
         expect(spy).toHaveBeenCalled()
         spy.mockClear()
 
-        /*await home.find('label.check-lobbies').trigger('click')
+        await home.find('label.check-lobbies').trigger('click')
         expect(spyLobbies).toHaveBeenCalled()
         spyLobbies.mockClear()
 
         await home.find('label.drop-check-lobbies').trigger('click')
         expect(spyLobbies).toHaveBeenCalled()
-        spyLobbies.mockClear()*/
+        spyLobbies.mockClear()
     })
 })
