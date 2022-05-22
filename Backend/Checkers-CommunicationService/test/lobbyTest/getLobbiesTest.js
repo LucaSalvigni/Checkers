@@ -12,7 +12,7 @@ describe('Communication Service Get Lobbies Tests', async () => {
       done();
     });
     api.getClient2().on('token_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'Please login before request a lobby');
       done();
     });
   });

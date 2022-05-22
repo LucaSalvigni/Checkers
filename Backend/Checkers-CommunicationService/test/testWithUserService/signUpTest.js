@@ -21,7 +21,7 @@ describe('Communication Service SignUp Tests', async () => {
       assert.equal(arg.message, 'Sign up completed successfully.');
     });
     api.getClient().on('signup_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message.message, 'An existing account has already been associated with this email.');
       done();
     });
   });
@@ -35,7 +35,7 @@ describe('Communication Service SignUp Tests', async () => {
       done();
     });
     api.getClient2().on('signup_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message.message, 'An existing account has already been associated with this email.');
       done();
     });
   });

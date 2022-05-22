@@ -13,7 +13,7 @@ describe('Communication Service Send Message Tests', async () => {
       done();
     });
     api.getClient().on('token_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'User not authenticated');
       done();
     });
   });

@@ -25,7 +25,7 @@ describe('Communication Service SignIn Tests', async () => {
       done();
     });
     api.getClient().on('login_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'Someone is already logged in with such email');
       done();
     });
   });
@@ -48,7 +48,7 @@ describe('Communication Service SignIn Tests', async () => {
       done();
     });
     api.getClient2().on('login_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'Someone is already logged in with such email');
       done();
     });
   });

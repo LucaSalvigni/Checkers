@@ -32,7 +32,7 @@ describe('Communication Service Update Tests', async () => {
       done();
     });
     api.getClient().on('token_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'You are not authenticated, please login before update');
       done();
     });
   });

@@ -415,7 +415,7 @@ exports.socket = async function (server) {
           client.emit('client_error', { message: "Can't find such lobby" });
         }
       } else {
-        client.emit('token_error', { message: user[1] });
+        client.emit('token_error', { message: 'User not authenticated' });
       }
     });
     /**
@@ -455,7 +455,7 @@ exports.socket = async function (server) {
         }
       } else {
         log(`error4 in join lobby for lobby ${lobbyId}`);
-        client.emit('token_error', { message: user[1] });
+        client.emit('token_error', { message: 'User not authenticated' });
       }
     });
     /**
@@ -536,10 +536,10 @@ exports.socket = async function (server) {
             client.emit('client_error', { message: "It's not your turn or you're not in this lobby, you tell me" });
           }
         } else {
-          client.emit('client_error', { message: "Hey pal I don't know who you are nor the lobby you're referring to" });
+          client.emit('client_error', { message: "I don't know who you are or the lobby you're referring to" });
         }
       } else {
-        client.emit('token_error', { message: user[1] });
+        client.emit('token_error', { message: 'User not authenticated' });
       }
     });
     /**
@@ -581,7 +581,7 @@ exports.socket = async function (server) {
           client.emit('client_error', { message: "I don't know which lobby you're referring to and even if I knew you're not in it" });
         }
       } else {
-        client.emit('token_error', { message: user[1] });
+        client.emit('token_error', { message: 'User not authenticated' });
       }
     });
 
@@ -662,7 +662,7 @@ exports.socket = async function (server) {
           }
         }
       } else {
-        client.emit('token_error', { message: user[1] });
+        client.emit('token_error', { message: 'User not authenticated' });
       }
     });
 
@@ -687,7 +687,7 @@ exports.socket = async function (server) {
           }
         }
       } else {
-        client.emit('token_error', { message: user[1] });
+        client.emit('token_error', { message: 'User not authenticated' });
       }
     });
 
@@ -746,7 +746,7 @@ exports.socket = async function (server) {
           client.emit('client_error', { message: updatedUser.response_data });
         }
       } else {
-        // client.emit('token_error', { message: user[1] });
+        // client.emit('token_error', { message: 'User not authenticated' });
         client.emit('token_error', { message: 'You are not authenticated, please login before update' });
       }
     });
@@ -765,7 +765,7 @@ exports.socket = async function (server) {
         log(`${userMail} just sent a global-msg`);
         io.emit('global_msg', { sender: userMail, message: msg });
       } else {
-        client.emit('token_error', { message: user[1] });
+        client.emit('token_error', { message: 'User not authenticated' });
       }
     });
 
@@ -782,16 +782,19 @@ exports.socket = async function (server) {
           io.to(lobbyId).emit('game_msg', { sender: onlineUsers.get(client.id), message: msg });
         }
       } else {
-        client.emit('token_error', { message: user[1] });
+        client.emit('token_error', { message: 'User not authenticated' });
       }
     });
 
-    client.on('get_history', async (mail, token) => {
+    client.on('get_history', async (token) => {
       const user = await isAuthenticated(token, client.id);
       if (user[0]) {
-        log(`${mail} just want to see all games he did`);
-        const history = await network.askService('get', `${gameService}/game/getGamesByUser`, { user: mail });
+        const userMail = onlineUsers.get(client.id);
+        log(`${userMail} just want to see all games he did`);
+        const history = await network.askService('get', `${gameService}/game/getGamesByUser`, { user: userMail });
         client.emit('user_history', history.response);
+      } else {
+        client.emit('token_error', { message: 'You are not authenticated, please login before request history' });
       }
     });
   });

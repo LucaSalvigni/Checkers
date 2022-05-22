@@ -24,15 +24,15 @@ describe('Communication Service Delete Specific Lobby Test', async () => {
       done();
     });
     api.getClient().on('server_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'There has been some problem with the process of deleting a lobby.');
       done();
     });
     api.getClient().on('token_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'User not authenticated');
       done();
     });
     api.getClient().on('client_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, "Can't find such lobby");
       done();
     });
   });

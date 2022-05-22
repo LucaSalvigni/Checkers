@@ -13,7 +13,7 @@ describe('Communication Service getLeaderboard Tests', async () => {
       done();
     });
     api.getClient().on('token_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'Please login before request leaderboard');
       done();
     });
     api.getClient().on('client_error', (arg) => {
