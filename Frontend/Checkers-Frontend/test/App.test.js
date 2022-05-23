@@ -54,6 +54,29 @@ describe('App trigger Test', () => {
 describe('SidebarLink Test', () => {
     const mockAudio = new AudioPlayer('ciao.mp3')
     it('should work', async () => {
+        const sideBar = mount(SideBar, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                invites: ["test@test.com"]
+            },
+            data() {
+                return {
+                    buttonSound: mockAudio,
+                }
+            },
+        })
+
+        expect(sideBar.exists()).toBeTruthy()
+
+        await sideBar.vm.checkInvite("test@test.com", 0)
+    })
+})
+
+describe('SidebarLink Test', () => {
+    const mockAudio = new AudioPlayer('ciao.mp3')
+    it('should work', async () => {
         const link = mount(SideBarLink, {
             props: {
                 to: ""

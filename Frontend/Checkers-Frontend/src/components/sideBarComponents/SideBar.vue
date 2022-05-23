@@ -110,13 +110,18 @@ export default {
     SideBarLink,
   },
   props: {
-    invites: { type: Array, default: () => [] },
+    invites: { type: Array, default: [] },
   },
   emits: ["check-invite"],
+  data() {
+    return {
+      buttonSound: this.$BUTTON_CLICK,
+    };
+  },
   methods: {
     // Check invites sent by another players
     checkInvite(invite, i) {
-      this.$BUTTON_CLICK.play();
+      this.buttonSound.play();
       this.$emit("check-invite", invite, i);
     },
   },
