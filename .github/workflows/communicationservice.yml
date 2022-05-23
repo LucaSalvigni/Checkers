@@ -8,7 +8,7 @@ on:
   workflow_call:
 
 env:
-  COMM_PORT: 3030
+  CommunicationService_PORT: 3030
   UserService_PORT: 3031
   GameService_PORT: 3032
   TURN_TIMEOUT: 120000
