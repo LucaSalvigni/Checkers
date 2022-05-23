@@ -752,24 +752,6 @@ exports.socket = async function (server) {
     });
 
     /**
-   *  * * * * * *
-   * CHAT HANDLING
-   *  * * * * * *
-
-   * A client is sending a global msg
-   */
-    client.on('global_msg', async (msg, token) => {
-      const user = await isAuthenticated(token, client.id);
-      if (user[0]) {
-        const userMail = onlineUsers.get(client.id);
-        log(`${userMail} just sent a global-msg`);
-        io.emit('global_msg', { sender: userMail, message: msg });
-      } else {
-        client.emit('token_error', { message: 'User not authenticated' });
-      }
-    });
-
-    /**
    * A client is sending a msg in his game chat
    */
     client.on('game_msg', async (lobbyId, msg, token) => {
