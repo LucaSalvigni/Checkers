@@ -14,11 +14,11 @@ describe('Communication Service Build Lobby Tests', async () => {
       done();
     });
     api.getClient().on('client_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'Player is either not online or is already in some lobby.');
       done();
     });
     api.getClient().on('token_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'Please login before build a lobby');
       done();
     });
   });

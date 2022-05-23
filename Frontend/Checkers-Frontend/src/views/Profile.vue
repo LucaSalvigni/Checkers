@@ -84,8 +84,6 @@ export default {
     MatchInfo,
   },
   data() {
-    // Request user info to backend
-    api.get_profile(this.$socket);
     return {
       avatar: "http://daisyui.com/tailwind-css-component-profile-1@40w.png",
       first_last_name: "Name Surname",
@@ -94,7 +92,12 @@ export default {
       stars: "Stars",
       mail: "Email",
       buttonSound: this.$BUTTON_CLICK,
+      socket: this.$socket,
     };
+  },
+  mounted() {
+    // Request user info to backend
+    api.get_profile(this.socket);
   },
   methods: {
     // Show user info when data info tab is active
@@ -104,8 +107,8 @@ export default {
         this.tabName = "User Info";
         this.$refs.dataInfo.setAttribute("class", "tab tab-lg tab-active");
         this.$refs.matchInfo.setAttribute("class", "tab tab-lg");
+        api.get_profile(this.socket);
       }
-      api.get_profile(this.$socket);
     },
     // Show match history info when match info tab is active
     matchInfo() {
@@ -115,7 +118,7 @@ export default {
         this.$refs.matchInfo.setAttribute("class", "tab tab-lg tab-active");
         this.$refs.dataInfo.setAttribute("class", "tab tab-lg");
         console.log(this.$store.getters.user);
-        api.get_history(this.mail, this.$socket);
+        api.get_history(this.socket);
       }
     },
     buttonClick(sound) {

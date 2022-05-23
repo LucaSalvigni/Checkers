@@ -2,55 +2,82 @@
  * @vitest-enviroment
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { routes } from '../src/router/index'
-import { createRouter, createWebHistory } from 'vue-router'
-import App from '../src/App.vue'
-// import LeaderBoard from '../src/views/LeaderBoard.vue'
+import LeaderBoard from '../src/views/LeaderBoard.vue'
+import SocketIO from "socket.io-client"
+import AudioPlayer from './utils/AudioPlayer'
 
-var app = null
-const router = createRouter({
-    history: createWebHistory(),
-    routes: routes,
+const wrapper = mount(LeaderBoard, {
+    data() {
+        return {
+            socket: SocketIO("http://localhost:3030")
+        }
+    },
 })
 
 describe('LeaderBoard Mount Test', () => {
+    const mockAudio = new AudioPlayer('ciao.mp3')
     it('Should mount LeaderBoard', async () => {
-        await router.push('/')
-
-        // After this line, router is ready
-        await router.isReady()
-
-        app = mount(App, {
-            global: {
-                plugins: [router]
-            }
-        })
-        //await app.find('.leaderboard').trigger('click')
-        //await flushPromises()
-        //expect(app.findComponent(LeaderBoard).exists()).toBeTruthy()
-        console.log(app.html())
-        expect(app.find('router-view').exists()).toBeTruthy()
+        await wrapper.setData({ buttonSound: mockAudio })
+        expect(wrapper.exists()).toBeTruthy()
     })
 })
 
-/* describe('LeaderBoard Contain Test', ()=> {
+describe('LeaderBoard Contain Test', ()=> {
     it('should contain', ()=> {
+        expect(wrapper.find('h1').exists()).toBeTruthy()
 
-        expect(app.find('h1').exists()).toBeTruthy()
+        expect(wrapper.find('table').exists()).toBeTruthy()
 
-        expect(app.find('table').exists()).toBeTruthy()
+        expect(wrapper.find('thead').exists()).toBeTruthy()
 
-        expect(app.find('thead').exists()).toBeTruthy()
+        expect(wrapper.find('tbody').exists()).toBeTruthy()
 
-        expect(app.find('tbody').exists()).toBeTruthy()
+        expect(wrapper.find('tr').exists()).toBeTruthy()
 
-        expect(app.find('tr').exists()).toBeTruthy()
-
-        expect(app.find('th').exists()).toBeTruthy()
-
-        expect(app.find('td').exists()).toBeTruthy()
+        expect(wrapper.find('th').exists()).toBeTruthy()
     })
-}) */
+})
  
+describe('LeaderBoard trigger Test', () => {
+    it('should work', async () => {
+        await wrapper.find('button').trigger('click')
+
+        const spy = vi.spyOn(wrapper.vm, 'nextPage').mockImplementation(() => {})
+        const spyPrevious = vi.spyOn(wrapper.vm, 'previousPage').mockImplementation(() => {})
+
+        await wrapper.setData({ leaderboard: [{
+            username: 'Tordent97',
+            stars: 15200,
+            wins: 152,
+            losses: 0,
+            ties: 0,
+            avatar: 'https://picsum.photos/id/1005/400/250'
+          },
+          {
+            username: 'Mosgheo',
+            stars: 710,
+            wins: 20,
+            losses: 18,
+            avatar: 'https://picsum.photos/id/1005/400/250'
+          },
+          {
+            username: 'test',
+            stars: 0,
+            wins: 0,
+            losses: 0,
+            avatar: 'https://picsum.photos/id/1005/400/250'
+          }],
+          perPage: 2
+        })
+        
+        await wrapper.find('.previous').trigger('click')
+        expect(spyPrevious).toHaveBeenCalled()
+        spyPrevious.mockClear()
+
+        await wrapper.find('.next').trigger('click')
+        expect(spy).toHaveBeenCalled()
+        spy.mockClear()
+    })
+})

@@ -47,16 +47,24 @@
       </table>
 
       <div v-if="leaderboard.length > perPage" class="flex mt-3 justify-center">
-        <button class="btn mr-5 btn-disabled" @click="previousPage($event)">
+        <button
+          class="btn mr-5 btn-disabled previous"
+          @click="previousPage($event)"
+        >
           Previous
         </button>
-        <button class="btn" @click="nextPage($event)">Next</button>
+        <button class="btn next" @click="nextPage($event)">Next</button>
       </div>
       <div v-else class="btn-group mt-4">
-        <button class="btn mr-5 btn-disabled" @click="previousPage($event)">
+        <button
+          class="btn mr-5 btn-disabled previous"
+          @click="previousPage($event)"
+        >
           Previous
         </button>
-        <button class="btn btn-disabled" @click="nextPage($event)">Next</button>
+        <button class="btn btn-disabled next" @click="nextPage($event)">
+          Next
+        </button>
       </div>
     </div>
   </div>
@@ -68,15 +76,18 @@ import api from "../../api.js";
 export default {
   name: "LeaderBoard",
   data() {
-    // Request leaderboard to backend
-    api.get_leaderboard(this.$socket);
     return {
       leaderboard: [], // All leaderboard infos
       currentPage: [], // Current page ingos
       perPage: 15, // Maximum infos per page
       page: 1, // Indicator of the current page
       buttonSound: this.$BUTTON_CLICK,
+      socket: this.$socket,
     };
+  },
+  mounted() {
+    // Request leaderboard to backend
+    api.get_leaderboard(this.socket);
   },
   methods: {
     // Go ahead with leaderboard infos and update the current page

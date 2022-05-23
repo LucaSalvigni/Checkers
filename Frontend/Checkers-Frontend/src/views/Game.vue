@@ -9,8 +9,12 @@
         <img alt="Modal Logo" class="w-40 h-28" src="../assets/msg_image.png" />
         <p id="exit-game-msg" class="text-base font-semibold"></p>
         <div class="modal-action">
-          <label for="my-modal-2" class="btn" @click="exitGame">Accept</label>
-          <label for="my-modal-2" class="btn" @click="closeModal">Close</label>
+          <label for="my-modal-2" class="btn exit" @click="exitGame"
+            >Accept</label
+          >
+          <label for="my-modal-2" class="btn close" @click="closeModal"
+            >Close</label
+          >
         </div>
       </div>
     </div>

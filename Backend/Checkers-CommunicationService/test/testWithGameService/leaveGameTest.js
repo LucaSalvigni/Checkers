@@ -1,3 +1,4 @@
+const { assert } = require('chai');
 const api = require('../utils/api');
 
 describe('Communication Service Leave Game Test', async () => {
@@ -13,16 +14,19 @@ describe('Communication Service Leave Game Test', async () => {
       done();
     });
     api.getClient().on('server_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'Something went wrong while leaving game, please try again');
       done();
     });
-    api.getClient().off('token_error');
     api.getClient().on('token_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'User not authenticated');
       done();
     });
     api.getClient().on('client_error', (arg) => {
-      console.log(arg);
+      if (arg.message.includes('referring')) {
+        assert.equal(arg.message, "I don't know which lobby you're referring to and even if I knew you're not in it");
+      } else {
+        console.log(arg);
+      }
       done();
     });
   });

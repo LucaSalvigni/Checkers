@@ -1,3 +1,4 @@
+const { assert } = require('chai');
 const api = require('../utils/api');
 
 describe('Communication Service Join Lobby Tests', async () => {
@@ -13,15 +14,21 @@ describe('Communication Service Join Lobby Tests', async () => {
       done();
     });
     api.getClient2().on('token_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'User not authenticated');
       done();
     });
     api.getClient2().on('server_error', (arg) => {
-      console.log(arg);
+      if (arg.message.includes('creating')) {
+        assert.equal(arg.message, 'Server error while creating a game, please try again');
+      } else if (arg.message.includes('joining')) {
+        assert.equal(arg.message, 'Server error while joining lobby, please try again');
+      } else {
+        assert.equal(arg.message, 'Something went wrong while processing your game');
+      }
       done();
     });
     api.getClient2().on('client_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'Player is not online or is already in a lobby');
       done();
     });
   });

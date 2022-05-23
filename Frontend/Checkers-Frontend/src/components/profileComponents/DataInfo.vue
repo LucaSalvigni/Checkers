@@ -95,8 +95,6 @@ var avatar = "";
 export default {
   name: "UserInfo",
   data() {
-    // Request user's info to backend
-    api.get_profile(this.$socket);
     return {
       firstName: "Name",
       lastName: "LastName",

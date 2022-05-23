@@ -4,62 +4,83 @@
 
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
+import router from './utils/router/router.js'
 import SignUp from '../src/views/SignUp.vue'
+import AudioPlayer from './utils/AudioPlayer'
 
-const wrapper = mount(SignUp)
+const mockAudio = new AudioPlayer('ciao.mp3')
+const signUp = mount(SignUp, {
+    global: {
+        plugins: [router]
+    },
+    attachTo: document.body,
+    data() {
+        return {
+            buttonSound: mockAudio
+        }
+    },
+})
 
 describe('SignUp Mount Test', ()=> {
     it('should mount', () => {
-        const wrapper = mount(SignUp)
+        expect(signUp.exists()).toBeTruthy()
     })
 })
 
 describe('SignUp Contain Test', ()=> {
     it('should contain', ()=> {
 
-        expect(wrapper.find('h1').exists()).toBeTruthy()
+        expect(signUp.find('h1').exists()).toBeTruthy()
 
-        expect(wrapper.find('.username').exists()).toBeTruthy()
+        expect(signUp.find('.username').exists()).toBeTruthy()
 
-        expect(wrapper.find('.firstName').exists()).toBeTruthy()
+        expect(signUp.find('.firstName').exists()).toBeTruthy()
 
-        expect(wrapper.find('.lastName').exists()).toBeTruthy()
+        expect(signUp.find('.lastName').exists()).toBeTruthy()
 
-        expect(wrapper.find('.mail').exists()).toBeTruthy()
+        expect(signUp.find('.mail').exists()).toBeTruthy()
 
-        expect(wrapper.find('.password').exists()).toBeTruthy()
+        expect(signUp.find('.password').exists()).toBeTruthy()
 
-        expect(wrapper.find('.confirmPassword').exists()).toBeTruthy()
+        expect(signUp.find('.confirmPassword').exists()).toBeTruthy()
 
-        expect(wrapper.find('.signup-btn').exists()).toBeTruthy()
+        expect(signUp.find('.signup-btn').exists()).toBeTruthy()
     })
 })
  
 describe('SignUp Inputs Test', ()=> {
     it('value checks', async ()=> {
 
-        const usernameInput = wrapper.find('.username')
+        const usernameInput = signUp.find('.username')
         await usernameInput.setValue('username')
-        expect(wrapper.find('.username').element.value).toBe('username')
+        expect(signUp.find('.username').element.value).toBe('username')
 
-        const firstNameInput = wrapper.find('.firstName')
+        const firstNameInput = signUp.find('.firstName')
         await firstNameInput.setValue('firstName')
-        expect(wrapper.find('.firstName').element.value).toBe('firstName')
+        expect(signUp.find('.firstName').element.value).toBe('firstName')
 
-        const lastNameInput = wrapper.find('.lastName')
+        const lastNameInput = signUp.find('.lastName')
         await lastNameInput.setValue('lastName')
-        expect(wrapper.find('.lastName').element.value).toBe('lastName')
+        expect(signUp.find('.lastName').element.value).toBe('lastName')
 
-        const mailInput = wrapper.find('.mail')
+        const mailInput = signUp.find('.mail')
         await mailInput.setValue('value')
-        expect(wrapper.find('.mail').element.value).toBe('value')
+        expect(signUp.find('.mail').element.value).toBe('value')
 
-        const passwordInput = wrapper.find('.password')
+        const passwordInput = signUp.find('.password')
         await passwordInput.setValue('pass')
-        expect(wrapper.find('.password').element.value).toBe('pass')
+        expect(signUp.find('.password').element.value).toBe('pass')
 
-        const confirmPasswordInput = wrapper.find('.confirmPassword')
+        const confirmPasswordInput = signUp.find('.confirmPassword')
         await confirmPasswordInput.setValue('confPass')
-        expect(wrapper.find('.confirmPassword').element.value).toBe('confPass')
+        expect(signUp.find('.confirmPassword').element.value).toBe('confPass')
+    })
+})
+
+describe('SignUp trigger Test', () => {
+    it('should work', async () => {
+        await signUp.vm.signup()
+
+        await signUp.vm.close()
     })
 })

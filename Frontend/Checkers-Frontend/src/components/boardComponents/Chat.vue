@@ -73,6 +73,7 @@ export default {
       }, // Specifies the color scheme for the component
       alwaysScrollToBottom: false,
       messageStyling: true,
+      socket: this.$socket,
     };
   },
   methods: {
@@ -82,7 +83,7 @@ export default {
         this.newMessagesCount = this.isChatOpen
           ? this.newMessagesCount
           : this.newMessagesCount + 1;
-        api.game_msg(this.$socket, this.lobbyId, message.data.text);
+        api.game_msg(this.socket, this.lobbyId, message.data.text);
         this.onMessageWasSent(message);
       }
     },

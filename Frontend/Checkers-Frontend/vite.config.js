@@ -1,7 +1,7 @@
 import vue from "@vitejs/plugin-vue";
 
 export default {
-  plugins: [
+  /* plugins: [
     vue({
       template: {
         compilerOptions: {
@@ -10,5 +10,6 @@ export default {
         },
       },
     }),
-  ],
+  ], */
+  plugins: [vue()],
 };

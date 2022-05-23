@@ -3,7 +3,6 @@ const api = require('../utils/api');
 
 describe('Communication Service getProfile Tests', async () => {
   it('getProfile should work', (done) => {
-    console.log(api.getToken());
     api.getProfile(api.getClient(), api.getToken());
     api.getClient().off('user_profile');
     api.getClient().off('token_error');
@@ -14,7 +13,7 @@ describe('Communication Service getProfile Tests', async () => {
       done();
     });
     api.getClient().on('token_error', (arg) => {
-      console.log(arg);
+      assert.equal(arg.message, 'Please login before request profile');
       done();
     });
     api.getClient().on('client_error', (arg) => {

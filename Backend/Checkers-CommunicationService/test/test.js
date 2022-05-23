@@ -2,6 +2,7 @@ require('./testWithUserService/signUpTest');
 require('./testWithUserService/loginTest');
 require('./testWithUserService/getProfileTest');
 require('./testWithUserService/getLeaderBoardTest');
+require('./testWithUserService/getHistoryTest');
 require('./testWithUserService/updateProfileTest');
 require('./lobbyTest/deleteLobbyTest');
 require('./lobbyTest/buildLobbyTest');

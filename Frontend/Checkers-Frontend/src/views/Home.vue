@@ -258,6 +258,7 @@ export default {
   data() {
     return {
       buttonSound: this.$BUTTON_CLICK,
+      socket: this.$socket,
     };
   },
   methods: {
@@ -265,7 +266,7 @@ export default {
       this.buttonClick(this.buttonSound);
       console.log(sessionStorage.token);
       if (this.$store.getters.token !== "" || sessionStorage.token !== "") {
-        api.build_lobby(this.$socket, lobbyName[0].value, starTextBox[0].value);
+        api.build_lobby(this.socket, lobbyName[0].value, starTextBox[0].value);
         this.$router.push("/game");
       } else {
         this.$router.push("/404");
@@ -274,7 +275,7 @@ export default {
     lobbyOpened(router) {
       this.buttonClick(this.buttonSound);
       if (this.$store.getters.token !== "" || sessionStorage.token !== "") {
-        api.get_lobbies(this.$socket, this.$store.getters.user.stars);
+        api.get_lobbies(this.socket, this.$store.getters.user.stars);
         router.push("/lobbies");
       } else {
         router.push("/404");
@@ -283,7 +284,7 @@ export default {
     invitePlayer() {
       this.buttonClick(this.buttonSound);
       if (this.$store.getters.token !== "" || sessionStorage.token !== "") {
-        api.invite_opponent(this.$socket, opponent[0].value);
+        api.invite_opponent(this.socket, opponent[0].value);
       } else {
         this.$router.push("/404");
       }
