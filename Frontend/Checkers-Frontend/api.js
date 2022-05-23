@@ -59,20 +59,8 @@ var api = {
     socket.emit("leave_game", lobbyId, getToken());
   },
 
-  tie_game(socket, lobbyId) {
-    socket.emit("tie_game", lobbyId, getToken());
-  },
-
-  game_history(socket, lobbyId) {
-    socket.emit("game_history", lobbyId, getToken());
-  },
-
   move_piece(socket, lobbyId, from, to) {
     socket.emit("move_piece", lobbyId, from, to, getToken());
-  },
-
-  global_msg(socket, msg) {
-    socket.emit("global_msg", msg, getToken());
   },
 
   game_msg(socket, lobbyId, msg) {

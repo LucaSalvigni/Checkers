@@ -4,29 +4,31 @@
 
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import SocketIO from "socket.io-client"
 import Profile from '../src/views/Profile.vue'
+import store from '../src/store/index.js'
 import DataInfo from '../src/components/profileComponents/DataInfo.vue'
 import MatchInfo from '../src/components/profileComponents/MatchInfo.vue'
 import AudioPlayer from './utils/AudioPlayer'
-import store from '../src/store/index.js'
-import SocketIO from "socket.io-client"
 
-/*const wrapper = mount(Profile, {
+const wrapper = mount(Profile, {
+    global: {
+        plugins: [store]
+    },
     data() {
         return {
             socket: SocketIO("http://localhost:3030")
         }
     },
-})*/
+})
 
 describe('Profile Mount Test', () => {
     it('should mount Profile', () => {
-        console.log('Ciao')
-       // expect(wrapper.exists()).toBeTruthy()
+       expect(wrapper.exists()).toBeTruthy()
     })
 })
 
-/* describe('Profile Contain Test', ()=> {
+describe('Profile Contain Test', ()=> {
     it('should contain', ()=> {
         expect(wrapper.find('img').exists()).toBeTruthy()
 
@@ -77,7 +79,11 @@ describe('Profile data Test', () => {
 
 describe('DataInfo set Data Test', () => {
     it('should set', async () => {
-        const wrapper = mount(DataInfo)
+        const wrapper = mount(DataInfo, {
+            global: {
+                plugins: [store]
+            }
+        })
 
         await wrapper.setData({
             first_name: "Luca",
@@ -98,19 +104,14 @@ describe('DataInfo set Data Test', () => {
 
 
 
-describe('Profile trigger test', () => {
+describe('Profile trigger test', async () => {
     const mockAudio = new AudioPlayer('ciao.mp3')
-    const wrapper = mount(Profile, {
-        data() {
-            return {
-                buttonSound: mockAudio
-            }
-        },
-    })
+    await wrapper.setData({ buttonSound: mockAudio })
+
     it('should trigger', async () => {
         await wrapper.vm.buttonClick(mockAudio)
-
-        expect(wrapper.vm.tabName).toBe('User Info')
+        
+        expect(wrapper.vm.tabName).toBe('Info')
         
         await wrapper.vm.matchInfo()
         expect(wrapper.vm.tabName).toBe('Match History')
@@ -134,4 +135,4 @@ describe('Profile trigger test', () => {
         expect(spyMatch).toHaveBeenCalled()
         expect(spySound).toHaveBeenCalled()
     })
-}) */
+})
