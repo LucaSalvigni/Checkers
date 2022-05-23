@@ -54,7 +54,7 @@
       </label>
       <input
         id="load-image"
-        ref="file-input"
+        ref="fileInput"
         type="file"
         accept="image/png, image/gif, image/jpeg"
         @input="uploadImage"
@@ -133,7 +133,8 @@ export default {
     close() {
       this.buttonSound.play();
       update_modal[0].setAttribute("class", "update-modal modal");
-      this.$forceUpdate();
+      this.$router.go("/profile");
+      //this.$forceUpdate();
     },
     // Allow user to upload a profile image
     uploadImage() {
@@ -165,10 +166,8 @@ export default {
           );
           var dataurl = canvas.toDataURL(image.type);
           avatar = dataurl;
-          console.log(avatar);
         };
         reader.onload = (e) => {
-          console.log(e.target.result);
           image.src = e.target.result;
         };
         reader.readAsDataURL(file[0]);
