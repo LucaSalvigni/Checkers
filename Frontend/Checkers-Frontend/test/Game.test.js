@@ -41,10 +41,16 @@ describe('Game Contain Test', ()=> {
 describe('Game Trigger Test', ()=> {
     const mockAudio = new AudioPlayer('ciao.mp3')
     it('should work', async ()=> {
-        await wrapper.setData({ buttonSound: mockAudio })
+        await wrapper.setData({
+            buttonSound: mockAudio,
+            opponent: "Test",
+            lobbyId: 1, 
+        })
 
         const spy = vi.spyOn(wrapper.vm, 'closeModal').mockImplementation(() => {})
         const spyExit = vi.spyOn(wrapper.vm, 'exitGame').mockImplementation(() => {})
+
+        await wrapper.vm.exitGame()
 
         await wrapper.find('.exit').trigger('click')
         expect(spyExit).toHaveBeenCalled()

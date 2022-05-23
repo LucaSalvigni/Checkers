@@ -115,8 +115,8 @@ export default {
   emits: ["check-invite"],
   data() {
     return {
-      buttonSound: this.$BUTTON_CLICK
-    }
+      buttonSound: this.$BUTTON_CLICK,
+    };
   },
   methods: {
     // Check invites sent by another players
