@@ -20,8 +20,8 @@
         />
         <p class="text-base font-semibold invites-msg"></p>
         <div class="modal-action">
-          <label class="btn" @click="accept">Accept</label>
-          <label class="btn" @click="decline">Refuse</label>
+          <label class="btn accept" @click="accept">Accept</label>
+          <label class="btn decline" @click="decline">Refuse</label>
         </div>
       </div>
     </div>
@@ -35,7 +35,7 @@
         />
         <p class="text-base font-semibold notification-msg"></p>
         <div class="modal-action">
-          <label class="btn" @click="close">Accept</label>
+          <label class="btn close" @click="close">Accept</label>
         </div>
       </div>
     </div>
@@ -62,12 +62,13 @@ export default {
       invites: [], // all invites to this player
       inviteId: null, // inviteId
       invitation_expired: false, // use to check when an invitation has expired
+      buttonSound: this.$BUTTON_CLICK,
     };
   },
   methods: {
     // Used to accept an invite from another player
     accept() {
-      this.$BUTTON_CLICK.play();
+      this.buttonSound.play();
       if (!this.$store.getters.is_in_game) {
         api.accept_invite(this.$socket, this.opponent_mail);
         this.invites.splice(this.inviteId, 1);
@@ -86,7 +87,7 @@ export default {
     },
     // Used to refuse an invite from another player
     decline() {
-      this.$BUTTON_CLICK.play();
+      this.buttonSound.play();
       api.decline_invite(this.$socket, this.opponent_mail);
       this.invites.splice(this.inviteId, 1);
       modal[0].className = "modal modal-invites";
@@ -104,7 +105,7 @@ export default {
     },
     // Close modal
     close() {
-      this.$BUTTON_CLICK.play();
+      this.buttonSound.play();
       modalNotification[0].className = "modal modal-notification";
     },
   },

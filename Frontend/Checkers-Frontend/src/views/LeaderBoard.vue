@@ -47,16 +47,24 @@
       </table>
 
       <div v-if="leaderboard.length > perPage" class="flex mt-3 justify-center">
-        <button class="btn mr-5 btn-disabled" @click="previousPage($event)">
+        <button
+          class="btn mr-5 btn-disabled previous"
+          @click="previousPage($event)"
+        >
           Previous
         </button>
-        <button class="btn" @click="nextPage($event)">Next</button>
+        <button class="btn next" @click="nextPage($event)">Next</button>
       </div>
       <div v-else class="btn-group mt-4">
-        <button class="btn mr-5 btn-disabled" @click="previousPage($event)">
+        <button
+          class="btn mr-5 btn-disabled previous"
+          @click="previousPage($event)"
+        >
           Previous
         </button>
-        <button class="btn btn-disabled" @click="nextPage($event)">Next</button>
+        <button class="btn btn-disabled next" @click="nextPage($event)">
+          Next
+        </button>
       </div>
     </div>
   </div>

@@ -2,10 +2,11 @@
  * @vitest-enviroment
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import LeaderBoard from '../src/views/LeaderBoard.vue'
 import SocketIO from "socket.io-client"
+import AudioPlayer from './utils/AudioPlayer'
 
 const wrapper = mount(LeaderBoard, {
     data() {
@@ -16,7 +17,9 @@ const wrapper = mount(LeaderBoard, {
 })
 
 describe('LeaderBoard Mount Test', () => {
+    const mockAudio = new AudioPlayer('ciao.mp3')
     it('Should mount LeaderBoard', async () => {
+        await wrapper.setData({ buttonSound: mockAudio })
         expect(wrapper.exists()).toBeTruthy()
     })
 })
@@ -37,3 +40,44 @@ describe('LeaderBoard Contain Test', ()=> {
     })
 })
  
+describe('LeaderBoard trigger Test', () => {
+    it('should work', async () => {
+        await wrapper.find('button').trigger('click')
+
+        const spy = vi.spyOn(wrapper.vm, 'nextPage').mockImplementation(() => {})
+        const spyPrevious = vi.spyOn(wrapper.vm, 'previousPage').mockImplementation(() => {})
+
+        await wrapper.setData({ leaderboard: [{
+            username: 'Tordent97',
+            stars: 15200,
+            wins: 152,
+            losses: 0,
+            ties: 0,
+            avatar: 'https://picsum.photos/id/1005/400/250'
+          },
+          {
+            username: 'Mosgheo',
+            stars: 710,
+            wins: 20,
+            losses: 18,
+            avatar: 'https://picsum.photos/id/1005/400/250'
+          },
+          {
+            username: 'test',
+            stars: 0,
+            wins: 0,
+            losses: 0,
+            avatar: 'https://picsum.photos/id/1005/400/250'
+          }],
+          perPage: 2
+        })
+        
+        await wrapper.find('.previous').trigger('click')
+        expect(spyPrevious).toHaveBeenCalled()
+        spyPrevious.mockClear()
+
+        await wrapper.find('.next').trigger('click')
+        expect(spy).toHaveBeenCalled()
+        spy.mockClear()
+    })
+})
