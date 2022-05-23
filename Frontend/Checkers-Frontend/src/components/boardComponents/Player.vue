@@ -28,7 +28,7 @@
 export default {
   name: "PlayerComponent",
   props: {
-    player: { type: Object, default: () => {} },
+    player: { type: Object, default: {} },
   },
 };
 </script>

@@ -11,6 +11,7 @@ import DataInfo from '../src/components/profileComponents/DataInfo.vue'
 import MatchInfo from '../src/components/profileComponents/MatchInfo.vue'
 import AudioPlayer from './utils/AudioPlayer'
 
+const mockAudio = new AudioPlayer('ciao.mp3')
 const wrapper = mount(Profile, {
     global: {
         plugins: [store]
@@ -82,7 +83,12 @@ describe('DataInfo set Data Test', () => {
         const wrapper = mount(DataInfo, {
             global: {
                 plugins: [store]
-            }
+            },
+            data() {
+                return {
+                    buttonSound: mockAudio,      
+                }
+            },
         })
 
         await wrapper.setData({
@@ -92,6 +98,12 @@ describe('DataInfo set Data Test', () => {
             username: "User",
         })
 
+        expect(wrapper.find('.username').exists()).toBeTruthy()
+        expect(wrapper.find('.first_name').exists()).toBeTruthy()
+        expect(wrapper.find('.last_name').exists()).toBeTruthy()
+        expect(wrapper.find('.mail').exists()).toBeTruthy()
+        expect(wrapper.find('#load-image').exists()).toBeTruthy()
+
         expect(wrapper.vm.first_name).toBe('Luca')
 
         expect(wrapper.vm.last_name).toBe('Rossi')
@@ -99,13 +111,56 @@ describe('DataInfo set Data Test', () => {
         expect(wrapper.vm.mail).toBe('info@site.com')
 
         expect(wrapper.vm.username).toBe('User')
+
+        const spyUpload = vi.spyOn(wrapper.vm, 'uploadImage').mockImplementation(() => {})
+        await wrapper.find('#load-image').trigger('input')
+        expect(spyUpload).toHaveBeenCalled()
+
+        await wrapper.find('.save').trigger('click')
+
+        const spyClose = vi.spyOn(wrapper.vm, 'close').mockImplementation(() => {})
+        await wrapper.find('.close').trigger('click')
+        expect(spyClose).toHaveBeenCalled()
     })
 })
 
+describe('MathInfo Test', () => {
+    it('should work', async () => {
+        const wrapper = mount(MatchInfo, {
+            data() {
+                return {
+                    buttonSound: mockAudio,
+                    perPage: 1,
+                    history: [
+                        {
+                            white: 'newtest@newtest.com',
+                            black: 'test2@test2.com',
+                            winner: 'newtest@newtest.com'
+                        },
+                        {
+                            white: 'newtest@newtest.com',
+                            black: 'test2@test2.com',
+                            winner: 'newtest@newtest.com'
+                        },
+                    ]
+                }
+            },
+        })
 
+        expect(wrapper.vm.perPage).toBe(1)
+
+        expect(wrapper.find('table').exists()).toBeTruthy()
+        expect(wrapper.find('thead').exists()).toBeTruthy()
+        expect(wrapper.find('tbody').exists()).toBeTruthy()
+        expect(wrapper.find('tr').exists()).toBeTruthy()
+        expect(wrapper.find('th').exists()).toBeTruthy()
+
+        await wrapper.find('.previous').trigger('click')
+        await wrapper.find('.next').trigger('click')
+    })
+})
 
 describe('Profile trigger test', async () => {
-    const mockAudio = new AudioPlayer('ciao.mp3')
     await wrapper.setData({ buttonSound: mockAudio })
 
     it('should trigger', async () => {

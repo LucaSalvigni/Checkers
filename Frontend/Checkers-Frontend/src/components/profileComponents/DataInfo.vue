@@ -62,7 +62,9 @@
     </div>
 
     <div class="object-center space-x-2 mt-10">
-      <label class="btn font-semibold text-base" @click.prevent="save_profile"
+      <label
+        class="btn save font-semibold text-base"
+        @click.prevent="save_profile"
         >Save</label
       >
     </div>
@@ -78,7 +80,7 @@
           <p class="font-semibold text-base msg">Ciao</p>
         </div>
         <div class="modal-action justify-center">
-          <label class="btn" @click="close">Accept</label>
+          <label class="btn close" @click="close">Accept</label>
         </div>
       </div>
     </div>
