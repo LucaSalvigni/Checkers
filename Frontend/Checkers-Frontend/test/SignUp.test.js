@@ -5,18 +5,21 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import router from './utils/router/router.js'
+import SocketIO from "socket.io-client"
+import store from '../src/store/index.js'
 import SignUp from '../src/views/SignUp.vue'
 import AudioPlayer from './utils/AudioPlayer'
 
 const mockAudio = new AudioPlayer('ciao.mp3')
 const signUp = mount(SignUp, {
     global: {
-        plugins: [router]
+        plugins: [router, store]
     },
     attachTo: document.body,
     data() {
         return {
-            buttonSound: mockAudio
+            buttonSound: mockAudio,
+            socket: SocketIO("http://localhost:3030"),
         }
     },
 })
@@ -80,6 +83,16 @@ describe('SignUp Inputs Test', ()=> {
 describe('SignUp trigger Test', () => {
     it('should work', async () => {
         await signUp.vm.signup()
+
+        await signUp.vm.close()
+
+        await signUp.find('.mail').setValue("test2@test2.com")
+        await signUp.find('.password').setValue("TestonE97!")
+        await signUp.find('.confirmPassword').setValue("TestonE97!")
+
+        await signUp.vm.signup()
+
+        await signUp.setData({ successfull: true})
 
         await signUp.vm.close()
     })

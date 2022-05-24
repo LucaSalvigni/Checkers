@@ -26,8 +26,6 @@ import CheckerBoard from "../components/boardComponents/CheckerBoard.vue";
 import Chat from "../components/boardComponents/Chat.vue";
 import api from "../../api.js";
 
-var changeLocation = false;
-var path = null;
 var modal = document.getElementsByClassName("modal-change-location");
 
 export default {
@@ -37,28 +35,31 @@ export default {
     Chat,
   },
   // Guards used to give info to a player when he want to exit from a game lobby
-  beforeRouteLeave(to, from, next) {
-    if (changeLocation) {
+  beforeRouteLeave(to, _from, next) {
+    if (this.changeLocation) {
       this.$store.commit("setInGame", false);
-      changeLocation = false;
+      this.changeLocation = false;
       next();
     } else {
-      if (this.$store.getters.is_in_game && changeLocation === false) {
+      if (this.$store.getters.is_in_game && this.changeLocation === false) {
         document.getElementById("exit-game-msg").innerHTML =
           "Are you sure to leave the game?";
-      } else if (changeLocation === false) {
+      } else if (this.changeLocation === false) {
         document.getElementById("exit-game-msg").innerHTML =
           "The lobby will be deleted, confirm to exit";
       }
       modal[0].className = "modal modal-change-location modal-open";
-      path = to.path;
+      this.path = to.path;
     }
   },
   data() {
     return {
+      changeLocation: false,
+      path: null,
       lobbyId: null,
       opponent: null,
       buttonSound: this.$BUTTON_CLICK,
+      socket: this.$socket,
     };
   },
   methods: {
@@ -71,24 +72,25 @@ export default {
     exitGame() {
       this.buttonSound.play();
       if (this.lobbyId === null || this.lobbyId === undefined) {
-        api.get_lobbies(this.$socket, this.$store.getters.user.stars);
+        api.get_lobbies(this.socket, this.$store.getters.user.stars);
       }
-      if (this.$store.getters.is_in_game && changeLocation === false) {
-        api.leave_game(this.$socket, this.lobbyId);
+      if (this.$store.getters.is_in_game && this.changeLocation === false) {
+        api.leave_game(this.socket, this.lobbyId);
         document.getElementById("exit-game-msg").innerHTML =
           "Are you sure to leave the game?";
-        changeLocation = true;
-      } else if (changeLocation === false) {
-        api.delete_lobby(this.$socket, this.lobbyId);
+        this.changeLocation = true;
+      } else if (this.changeLocation === false) {
+        api.delete_lobby(this.socket, this.lobbyId);
         document.getElementById("exit-game-msg").innerHTML =
           "The lobby will be deleted, confirm to exit";
-        changeLocation = true;
+        this.changeLocation = true;
       }
-      this.$router.push(path);
+      this.$router.push(this.path);
     },
   },
   sockets: {
     // Give lobby info
+    /* c8 ignore start */
     lobbies(res) {
       if (this.lobbyId === null || this.lobbyId === undefined) {
         this.lobbyId = res.lobbyId;
@@ -100,16 +102,16 @@ export default {
     },
     // Message sent when opponent left a game
     opponent_left() {
-      changeLocation = true;
-      path = "/";
+      this.changeLocation = true;
+      this.path = "/";
       document.getElementById("exit-game-msg").innerHTML =
         "Your opponent left the game, you got a free win";
       modal[0].className = "modal modal-change-location modal-open";
     },
     // Message sent when the game is finished
     game_ended(msg) {
-      changeLocation = true;
-      path = "/";
+      this.changeLocation = true;
+      this.path = "/";
       var gameEndModal = document.getElementsByClassName("modal")[0];
       document.getElementById("exit-game-msg").innerHTML = msg.message;
       gameEndModal.setAttribute(
@@ -126,6 +128,7 @@ export default {
       this.lobbyId = res[3];
       this.$store.commit("setInGame", true);
     },
+    /* c8 ignore end */
   },
 };
 </script>

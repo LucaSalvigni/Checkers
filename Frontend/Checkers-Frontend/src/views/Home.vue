@@ -75,7 +75,7 @@
         id="btn-menu"
         for="join-lobby-modal"
         class="check-lobbies btn text-sm"
-        @click="lobbyOpened($router)"
+        @click="lobbyOpened()"
         >Join a lobby</label
       >
 
@@ -195,7 +195,7 @@
             id="btn-menu"
             for="join-lobby-modal"
             class="drop-check-lobbies btn text-sm"
-            @click="lobbyOpened($router)"
+            @click="lobbyOpened()"
             >Join a lobby</label
           >
         </li>
@@ -264,26 +264,25 @@ export default {
   methods: {
     startingMatch() {
       this.buttonClick(this.buttonSound);
-      console.log(sessionStorage.token);
-      if (this.$store.getters.token !== "" || sessionStorage.token !== "") {
+      if (this.$store.getters.token !== "") {
         api.build_lobby(this.socket, lobbyName[0].value, starTextBox[0].value);
         this.$router.push("/game");
       } else {
         this.$router.push("/404");
       }
     },
-    lobbyOpened(router) {
+    lobbyOpened() {
       this.buttonClick(this.buttonSound);
-      if (this.$store.getters.token !== "" || sessionStorage.token !== "") {
+      if (this.$store.getters.token !== "") {
         api.get_lobbies(this.socket, this.$store.getters.user.stars);
-        router.push("/lobbies");
+        this.$router.push("/lobbies");
       } else {
-        router.push("/404");
+        this.$router.push("/404");
       }
     },
     invitePlayer() {
       this.buttonClick(this.buttonSound);
-      if (this.$store.getters.token !== "" || sessionStorage.token !== "") {
+      if (this.$store.getters.token !== "") {
         api.invite_opponent(this.socket, opponent[0].value);
       } else {
         this.$router.push("/404");

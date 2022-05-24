@@ -37,22 +37,26 @@ export default {
   data() {
     return {
       lobbies: [], //all open lobbies
+      buttonSound: this.$BUTTON_CLICK,
+      socket: this.$socket,
     };
   },
   methods: {
     // Join a specific lobby
     joinLobby(id) {
-      this.$BUTTON_CLICK.play();
+      this.buttonSound.play();
       if (this.lobbies.length > 0) {
-        api.join_lobby(this.$socket, id);
+        api.join_lobby(this.socket, id);
       }
     },
   },
   sockets: {
     // Response from backend that give all open lobbies that player can join
+    /* c8 ignore start */
     lobbies(res) {
       this.lobbies = res;
     },
+    /* c8 ignore end */
   },
 };
 </script>

@@ -137,6 +137,7 @@ export default {
   },
   sockets: {
     // Response from backend to give all leaderboard infos
+    /* c8 ignore start */
     leaderboard(res) {
       this.leaderboard = res;
       for (let i = 0; i < this.perPage; i++) {
@@ -146,6 +147,7 @@ export default {
         this.currentPage.push(this.leaderboard[i]);
       }
     },
+    /* c8 ignore end */
   },
 };
 </script>

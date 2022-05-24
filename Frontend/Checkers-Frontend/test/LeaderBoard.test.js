@@ -8,18 +8,18 @@ import LeaderBoard from '../src/views/LeaderBoard.vue'
 import SocketIO from "socket.io-client"
 import AudioPlayer from './utils/AudioPlayer'
 
+const mockAudio = new AudioPlayer('ciao.mp3')
 const wrapper = mount(LeaderBoard, {
     data() {
         return {
-            socket: SocketIO("http://localhost:3030")
+            buttonSound: mockAudio,
+            socket: SocketIO("http://localhost:3030"),
         }
     },
 })
 
 describe('LeaderBoard Mount Test', () => {
-    const mockAudio = new AudioPlayer('ciao.mp3')
     it('Should mount LeaderBoard', async () => {
-        await wrapper.setData({ buttonSound: mockAudio })
         expect(wrapper.exists()).toBeTruthy()
     })
 })

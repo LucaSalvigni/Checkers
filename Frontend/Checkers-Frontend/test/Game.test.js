@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import SocketIO from "socket.io-client"
 import store from '../src/store/index.js'
 import router from './utils/router/router.js'
@@ -10,10 +10,19 @@ import Chat from '../src/components/boardComponents/Chat.vue'
 import Player from '../src/components/boardComponents/Player.vue'
 import AudioPlayer from './utils/AudioPlayer'
 
+
+const mockAudio = new AudioPlayer('ciao.mp3')
 const wrapper = mount(Game, {
     global: {
         plugins: [store, router]
-    }
+    },
+    attachTo: document.body,
+    data() {
+        return {
+            buttonSound: mockAudio,
+            socket: SocketIO("http://localhost:3030"),
+        }
+    },
 })
 
 describe('Game mount test', () => {
@@ -39,18 +48,19 @@ describe('Game Contain Test', ()=> {
 })
 
 describe('Game Trigger Test', ()=> {
-    const mockAudio = new AudioPlayer('ciao.mp3')
     it('should work', async ()=> {
-        await wrapper.setData({
-            buttonSound: mockAudio,
-            opponent: "Test",
-            lobbyId: 1, 
-        })
+        store.commit("setInGame", true);
+        await flushPromises()
+        router.push("/")
+        await router.isReady()
+        await flushPromises()
+        await wrapper.vm.closeModal()
+        await flushPromises()
+        await wrapper.setData({ path: "/"})
+        await wrapper.vm.exitGame()
 
         const spy = vi.spyOn(wrapper.vm, 'closeModal').mockImplementation(() => {})
         const spyExit = vi.spyOn(wrapper.vm, 'exitGame').mockImplementation(() => {})
-
-        await wrapper.vm.exitGame()
 
         await wrapper.find('.exit').trigger('click')
         expect(spyExit).toHaveBeenCalled()
@@ -63,7 +73,6 @@ describe('Game Trigger Test', ()=> {
 })
 
 describe('CheckerBoard mount test', () => {
-    const mockAudio = new AudioPlayer('ciao.mp3')
     it('should mount', async () => {
         const checkerboard = mount(CheckerBoard, {
             global: {

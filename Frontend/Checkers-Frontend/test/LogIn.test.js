@@ -4,18 +4,33 @@
 
 import { describe, it, expect, vi, beforeAll } from 'vitest'
 import { mount } from '@vue/test-utils'
+import SocketIO from "socket.io-client"
+import router from './utils/router/router'
+import store from '../src/store/'
 import Login from '../src/views/LogIn.vue'
 import AudioPlayer from './utils/AudioPlayer'
+
+const mockAudio = new AudioPlayer('ciao.mp3')
+const wrapper = mount(Login, {
+    global: {
+        plugins: [router, store]
+    },
+    attachTo: document.body,
+    data() {
+        return {
+            buttonSound: mockAudio,
+            socket: SocketIO("http://localhost:3030"),
+        }
+    },
+})
  
 describe('Login Mount Test', ()=> {
-    const wrapper = mount(Login)
     it('should mount', () => {
         expect(wrapper.exists()).toBeTruthy()
     })
 })
 
 describe('Login Contain Test', ()=> {
-    const wrapper = mount(Login)
     it('should contain', () => {
         expect(wrapper.find('h1').exists()).toBeTruthy()
 
@@ -30,7 +45,6 @@ describe('Login Contain Test', ()=> {
 })
 
 describe('Login Inputs Test', ()=> {
-    const wrapper = mount(Login)
     it('value checks', async () => {
         const mailInput = wrapper.find('.mail')
         await mailInput.setValue('value')
@@ -43,13 +57,21 @@ describe('Login Inputs Test', ()=> {
 })
 
 describe('Login check trigger', () => {
-    const wrapper = mount(Login)
-    const mockAudio = new AudioPlayer('ciao.mp3')
     it('should trigger', async () => {
         await wrapper.vm.buttonClick(mockAudio)
 
         const spy = vi.spyOn(wrapper.vm, 'buttonClick').mockImplementation(() => {})
         await wrapper.find('button').trigger('click')
         expect(spy).toHaveBeenCalledOnce()
+
+        await wrapper.find('.mail').setValue("")
+        await wrapper.find('.password').setValue("")
+        await wrapper.vm.login()
+
+        await wrapper.find('.mail').setValue("test2@test2.com")
+        await wrapper.find('.password').setValue("TestonE97!")
+        await wrapper.vm.login()
+
+        await wrapper.vm.close()
     })
 })

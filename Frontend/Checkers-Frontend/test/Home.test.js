@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import router from './utils/router/router.js'
 import store from '../src/store/index.js'
 import Home from '../src/views/Home.vue'
@@ -11,18 +11,29 @@ import Lobbies from '../src/views/Lobbies.vue'
 import AudioPlayer from './utils/AudioPlayer'
 import SocketIO from "socket.io-client"
 
+const mockAudio = new AudioPlayer('ciao.mp3')
 const home = mount(Home, {
     global: {
         plugins: [router, store]
     },
+    attachTo: document.body,
     data() {
         return {
+            buttonSound: mockAudio,
             socket: SocketIO("http://localhost:3030")
         }
     },
 })
 
-const lobbies = mount(Lobbies)
+const lobbies = mount(Lobbies, {
+    attachTo: document.body,
+    data() {
+        return {
+            buttonSound: mockAudio,
+            socket: SocketIO("http://localhost:3030"),
+        }
+    },
+})
 
 describe('Home mount test', ()=> {
     it('should mount', () => {
@@ -44,10 +55,7 @@ describe('Home Contain Test', ()=> {
 })
 
 describe('Home Click Test', ()=> {
-    const mockAudio = new AudioPlayer('ciao.mp3')
     it('should trigger events', async ()=> {
-        await home.setData({buttonSound: mockAudio})
-
         await home.vm.lobbyOpened(router)
         await router.isReady()
         expect(lobbies.exists()).toBeTruthy()
@@ -100,5 +108,34 @@ describe('Home Click Test', ()=> {
         await home.find('label.drop-check-lobbies').trigger('click')
         expect(spyLobbies).toHaveBeenCalled()
         spyLobbies.mockClear()
+
+        await home.vm.invitePlayer()
+        router.push("/")
+        await router.isReady()
+        await home.vm.lobbyOpened()
+        router.push("/")
+        await router.isReady()
+        await home.vm.startingMatch()
+        router.push("/")
+        await router.isReady()
+
+        store.commit("setToken", "token");
+        await home.vm.invitePlayer()
+        await flushPromises()
+        await home.vm.lobbyOpened()
+        await flushPromises()
+        router.push("/")
+        await router.isReady()
+        await home.vm.startingMatch()
+    })
+})
+
+describe('Lobbies Trigger Test', () => {
+    it('should work', async () => {
+        await lobbies.vm.joinLobby(1)
+
+        await lobbies.setData({ lobbies: ["Mario"] })
+
+        await lobbies.vm.joinLobby(1)
     })
 })

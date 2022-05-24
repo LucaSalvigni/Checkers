@@ -107,13 +107,14 @@ import api from "../../api.js";
 
 var signupModal = document.getElementsByClassName("signup-modal");
 var msg = document.getElementsByClassName("msg");
-var signup = false;
 
 export default {
   name: "SignUp",
   data() {
     return {
+      successfull: false,
       buttonSound: this.$BUTTON_CLICK,
+      socket: this.$socket,
     };
   },
   methods: {
@@ -133,7 +134,7 @@ export default {
         console.log(
           "" + firstName + " " + lastName + " " + username + " " + mail
         );
-        api.signup(this.$socket, mail, pw, username, firstName, lastName);
+        api.signup(this.socket, mail, pw, username, firstName, lastName);
       } else {
         msg[0].textContent =
           "Insert a valid email and/or check that the passwords are the same";
@@ -144,15 +145,16 @@ export default {
     close() {
       this.buttonSound.play();
       signupModal[0].setAttribute("class", "signup-modal modal modal-close");
-      if (signup) {
+      if (this.successfull) {
         this.$router.push("/login");
       }
     },
   },
   sockets: {
     // Success response from backend to the user when he try to signup
+    /* c8 ignore start */
     signup_success(res) {
-      signup = true;
+      this.successfull = true;
       msg[0].textContent = res.message;
       signupModal[0].setAttribute("class", "signup-modal modal modal-open");
     },
@@ -165,6 +167,7 @@ export default {
       msg[0].textContent = res[0].message;
       signupModal[0].setAttribute("class", "signup-modal modal modal-open");
     },
+    /* c8 ignore end */
   },
 };
 </script>

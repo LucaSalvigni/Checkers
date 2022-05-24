@@ -81,6 +81,7 @@ export default {
   data() {
     return {
       buttonSound: this.$BUTTON_CLICK,
+      socket: this.$socket,
     };
   },
   methods: {
@@ -90,7 +91,7 @@ export default {
         msg[0].textContent = "Insert a valid email and/or password";
         loginFail[0].setAttribute("class", "login-fail modal modal-open");
       } else {
-        api.login(this.$socket, mail[0].value, password[0].value);
+        api.login(this.socket, mail[0].value, password[0].value);
       }
     },
     // Close modal
@@ -106,6 +107,7 @@ export default {
   },
   sockets: {
     // Response from backend that confirm the authentication
+    /* c8 ignore start */
     login_ok(res) {
       //EXAMPLE ON HOW TO USE STORE
       this.$store.commit("setToken", res.token);
@@ -117,6 +119,7 @@ export default {
       msg[0].textContent = err.message.message;
       loginFail[0].setAttribute("class", "login-fail modal modal-open");
     },
+    /* c8 ignore end */
   },
 };
 </script>

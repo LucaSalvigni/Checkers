@@ -127,6 +127,7 @@ export default {
   },
   sockets: {
     // Response from backend that contains user's info
+    /* c8 ignore start */
     user_profile(res) {
       this.avatar = res.avatar;
       this.first_last_name = res.firstName + " " + res.lastName;
@@ -134,6 +135,7 @@ export default {
       this.stars = res.stars;
       this.mail = res.mail;
     },
+    /* c8 ignore end */
   },
 };
 </script>

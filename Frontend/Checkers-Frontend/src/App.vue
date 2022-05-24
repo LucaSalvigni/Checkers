@@ -111,6 +111,7 @@ export default {
   },
   sockets: {
     // Response from backend that confirm user authentication
+    /* c8 ignore start */
     token_ok(res) {
       this.$store.commit("setToken", res.token);
       sessionStorage.token = res.token;
@@ -197,11 +198,12 @@ export default {
         this.invites = this.invites.filter((el) => el !== res);
       }
     },
-    // Notification error from backend when a player try to invite a player that is not online or doesn't exist
+    // Notification error from backend when a player try to invite a player that is not online or doesn't exist.
     invite_error(msg) {
       messageNotification[0].innerHTML = msg.message;
       modalNotification[0].className = "modal modal-notification modal-open";
     },
+    /* c8 ignore end */
   },
 };
 </script>
