@@ -1,6 +1,7 @@
 require('./signUpTest');
 require('./loginTest');
 require('./updateProfileTest');
+require('./updatePointsTest');
 require('./refreshTokenTest');
 require('./verifyTokenTest');
 require('./getLeaderBoardTest');

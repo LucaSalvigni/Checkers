@@ -102,6 +102,25 @@ const api = {
       .send({ mail, params: user }); */
   },
 
+  async updateUserPoints(params) {
+    let response = null;
+    try {
+      response = await axios.put('https://:3031/profile/updatePoints', params, { httpsAgent });
+      return {
+        status: response.status,
+        response: response.data,
+      };
+    } catch (err) {
+      return {
+        status: err.response.status,
+        response: err.response.data,
+      };
+    }
+    /* return chai.request(userService)
+      .put('/profile/updateProfile')
+      .send({ mail, params: user }); */
+  },
+
   async refreshTokenUser(mail, token) {
     let response = null;
     try {

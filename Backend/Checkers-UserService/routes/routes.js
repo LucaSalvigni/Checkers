@@ -7,6 +7,7 @@ router
 // Certificate verification
   .all('*', (req, res, next) => {
     const cert = req.socket.getPeerCertificate();
+    /* istanbul ignore else */
     if (req.client.authorized) {
       next();
     } else if (cert.subject) {
