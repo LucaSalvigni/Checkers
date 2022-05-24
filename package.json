@@ -13,6 +13,6 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "turbo": "^1.2.11"
+        "turbo": "^1.2.12"
     }
 }
