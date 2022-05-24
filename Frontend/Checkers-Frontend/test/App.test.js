@@ -3,18 +3,27 @@
  */
 
 import { describe, it, expect, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import router from './utils/router/router.js'
 import store from '../src/store/index.js'
 import App from '../src/App.vue'
 import SideBar from '../src/components/sideBarComponents/SideBar.vue'
 import SideBarLink from '../src/components/sideBarComponents/SideBarLink.vue'
 import AudioPlayer from './utils/AudioPlayer'
+import SocketIO from "socket.io-client"
 
+const mockAudio = new AudioPlayer('ciao.mp3')
 const wrapper = mount(App, {
     global: {
         plugins: [router, store]
-    }
+    },
+    attachTo: document.body,
+    data() {
+        return {
+            buttonSound: mockAudio,
+            socket: SocketIO("http://localhost:3030"),
+        }
+    },
 })
 
 describe('App Test', () => {
@@ -28,6 +37,19 @@ describe('App Test', () => {
 describe('App trigger Test', () => {
 
     it('should work', async () => {
+        await wrapper.vm.checkInvite("test2@test2.com", 1)
+        store.commit("setInGame", true);
+        await flushPromises()
+        await wrapper.vm.checkInvite("test2@test2.com", 1)
+
+        await wrapper.vm.decline()
+
+        store.commit("setInGame", false);
+        await flushPromises()
+        await wrapper.vm.accept()
+
+        await wrapper.vm.close()
+
         const spyAccept = vi.spyOn(wrapper.vm, 'accept').mockImplementation(() => {})
         const spyDecline = vi.spyOn(wrapper.vm, 'decline').mockImplementation(() => {})
         const spyClose = vi.spyOn(wrapper.vm, 'close').mockImplementation(() => {})
@@ -52,7 +74,6 @@ describe('App trigger Test', () => {
 })
 
 describe('SidebarLink Test', () => {
-    const mockAudio = new AudioPlayer('ciao.mp3')
     it('should work', async () => {
         const sideBar = mount(SideBar, {
             global: {

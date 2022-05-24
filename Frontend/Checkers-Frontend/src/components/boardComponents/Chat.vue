@@ -108,6 +108,7 @@ export default {
     },
   },
   sockets: {
+    /* c8 ignore start */
     // When there is a message from backend, add it to the chat if is not mine
     game_msg(msg) {
       if (this.participants[0].id === "") {
@@ -124,6 +125,7 @@ export default {
         });
       }
     },
+    /* c8 ignore end */
   },
 };
 </script>

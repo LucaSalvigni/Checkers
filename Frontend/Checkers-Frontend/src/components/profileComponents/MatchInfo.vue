@@ -135,6 +135,7 @@ export default {
   },
   sockets: {
     // Response sent by backend that contains all matches done by a specific user
+    /* c8 ignore start */
     user_history(res) {
       if (!Object.prototype.hasOwnProperty.call(res, "error")) {
         this.history = res[0];
@@ -146,6 +147,7 @@ export default {
         }
       }
     },
+    /* c8 ignore end */
   },
 };
 </script>

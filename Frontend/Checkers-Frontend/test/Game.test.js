@@ -49,16 +49,13 @@ describe('Game Contain Test', ()=> {
 
 describe('Game Trigger Test', ()=> {
     it('should work', async ()=> {
-        store.commit("setInGame", true);
-        await flushPromises()
-        router.push("/")
-        await router.isReady()
-        await flushPromises()
         await wrapper.vm.closeModal()
-        await flushPromises()
         await wrapper.setData({ path: "/"})
         await wrapper.vm.exitGame()
-
+        store.commit("setInGame", true);
+        await flushPromises()
+        await wrapper.vm.exitGame()
+        
         const spy = vi.spyOn(wrapper.vm, 'closeModal').mockImplementation(() => {})
         const spyExit = vi.spyOn(wrapper.vm, 'exitGame').mockImplementation(() => {})
 
@@ -142,6 +139,10 @@ describe('Cell contain test', () => {
 
         expect(cell.find('img').exists()).toBeTruthy()
 
+        await cell.find('.cell').trigger('click')
+        await cell.find('.cell').trigger('mouseover')
+        await cell.find('.cell').trigger('mouseleave')
+
         const spy = vi.spyOn(cell.vm, 'selectCell').mockImplementation(() => {})
         await cell.find('.cell').trigger('click')
         expect(spy).toHaveBeenCalledOnce()
@@ -196,5 +197,7 @@ describe('Chat Test', () => {
         await chat.vm.openChat()
         await chat.vm.sendMessage(message2)
         expect(chat.vm.newMessagesCount).toBe(0)
+
+        await chat.vm.editMessage(message2)
     })
 })

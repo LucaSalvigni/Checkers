@@ -63,6 +63,7 @@ export default {
       inviteId: null, // inviteId
       invitation_expired: false, // use to check when an invitation has expired
       buttonSound: this.$BUTTON_CLICK,
+      socket: this.$socket,
     };
   },
   methods: {
@@ -70,7 +71,7 @@ export default {
     accept() {
       this.buttonSound.play();
       if (!this.$store.getters.is_in_game) {
-        api.accept_invite(this.$socket, this.opponent_mail);
+        api.accept_invite(this.socket, this.opponent_mail);
         this.invites.splice(this.inviteId, 1);
         var component = this;
         setTimeout(function () {
@@ -88,7 +89,7 @@ export default {
     // Used to refuse an invite from another player
     decline() {
       this.buttonSound.play();
-      api.decline_invite(this.$socket, this.opponent_mail);
+      api.decline_invite(this.socket, this.opponent_mail);
       this.invites.splice(this.inviteId, 1);
       modal[0].className = "modal modal-invites";
     },

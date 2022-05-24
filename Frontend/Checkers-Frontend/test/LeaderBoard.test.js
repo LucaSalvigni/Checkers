@@ -10,6 +10,7 @@ import AudioPlayer from './utils/AudioPlayer'
 
 const mockAudio = new AudioPlayer('ciao.mp3')
 const wrapper = mount(LeaderBoard, {
+    attachTo: document.body,
     data() {
         return {
             buttonSound: mockAudio,
@@ -42,11 +43,6 @@ describe('LeaderBoard Contain Test', ()=> {
  
 describe('LeaderBoard trigger Test', () => {
     it('should work', async () => {
-        await wrapper.find('button').trigger('click')
-
-        const spy = vi.spyOn(wrapper.vm, 'nextPage').mockImplementation(() => {})
-        const spyPrevious = vi.spyOn(wrapper.vm, 'previousPage').mockImplementation(() => {})
-
         await wrapper.setData({ leaderboard: [{
             username: 'Tordent97',
             stars: 15200,
@@ -71,6 +67,11 @@ describe('LeaderBoard trigger Test', () => {
           }],
           perPage: 2
         })
+        await wrapper.find('.next').trigger('click')
+        await wrapper.find('.previous').trigger('click')
+
+        const spy = vi.spyOn(wrapper.vm, 'nextPage').mockImplementation(() => {})
+        const spyPrevious = vi.spyOn(wrapper.vm, 'previousPage').mockImplementation(() => {})
         
         await wrapper.find('.previous').trigger('click')
         expect(spyPrevious).toHaveBeenCalled()

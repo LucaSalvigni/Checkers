@@ -289,6 +289,7 @@ export default {
     },
   },
   sockets: {
+    /* c8 ignore start */
     // Message sented by the backend that allow to initialize all parameters to start a game
     game_started(res) {
       console.log(res);
@@ -342,6 +343,7 @@ export default {
       this.playerTurn = res.next_player;
       this.colorCells();
     },
+    /* c8 ignore end */
   },
 };
 </script>

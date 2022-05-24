@@ -175,6 +175,7 @@ export default {
     },
   },
   sockets: {
+    /* c8 ignore start */
     // Sent by backend to give user an update succesfull or if there is an error
     updated_user(user) {
       msg[0].textContent = "Update successful";
@@ -188,6 +189,7 @@ export default {
       this.mail = res.mail;
       this.username = res.username;
     },
+    /* c8 ignore end */
   },
 };
 </script>

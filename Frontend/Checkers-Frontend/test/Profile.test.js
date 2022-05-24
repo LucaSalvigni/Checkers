@@ -10,12 +10,14 @@ import store from '../src/store/index.js'
 import DataInfo from '../src/components/profileComponents/DataInfo.vue'
 import MatchInfo from '../src/components/profileComponents/MatchInfo.vue'
 import AudioPlayer from './utils/AudioPlayer'
+import router from './utils/router/router'
 
 const mockAudio = new AudioPlayer('ciao.mp3')
 const wrapper = mount(Profile, {
     global: {
         plugins: [store]
     },
+    attachTo: document.body,
     data() {
         return {
             socket: SocketIO("http://localhost:3030")
@@ -82,8 +84,9 @@ describe('DataInfo set Data Test', () => {
     it('should set', async () => {
         const wrapper = mount(DataInfo, {
             global: {
-                plugins: [store]
+                plugins: [router, store]
             },
+            attachTo: document.body,
             data() {
                 return {
                     buttonSound: mockAudio,      
@@ -94,7 +97,7 @@ describe('DataInfo set Data Test', () => {
         await wrapper.setData({
             first_name: "Luca",
             last_name: "Rossi",
-            mail: "info@site.com",
+            mail: "test2@test2.com",
             username: "User",
         })
 
@@ -105,12 +108,13 @@ describe('DataInfo set Data Test', () => {
         expect(wrapper.find('#load-image').exists()).toBeTruthy()
 
         expect(wrapper.vm.first_name).toBe('Luca')
-
         expect(wrapper.vm.last_name).toBe('Rossi')
-
-        expect(wrapper.vm.mail).toBe('info@site.com')
-
+        expect(wrapper.vm.mail).toBe('test2@test2.com')
         expect(wrapper.vm.username).toBe('User')
+
+        await wrapper.vm.close()
+        await wrapper.vm.save_profile()
+        await wrapper.find('#load-image').trigger('input')
 
         const spyUpload = vi.spyOn(wrapper.vm, 'uploadImage').mockImplementation(() => {})
         await wrapper.find('#load-image').trigger('input')
@@ -127,6 +131,7 @@ describe('DataInfo set Data Test', () => {
 describe('MathInfo Test', () => {
     it('should work', async () => {
         const wrapper = mount(MatchInfo, {
+            attachTo: document.body,
             data() {
                 return {
                     buttonSound: mockAudio,
@@ -155,8 +160,17 @@ describe('MathInfo Test', () => {
         expect(wrapper.find('tr').exists()).toBeTruthy()
         expect(wrapper.find('th').exists()).toBeTruthy()
 
-        await wrapper.find('.previous').trigger('click')
         await wrapper.find('.next').trigger('click')
+        await wrapper.find('.previous').trigger('click')
+
+        const spyNext = vi.spyOn(wrapper.vm, 'nextPage').mockImplementation(() => {})
+        const spyPrevious = vi.spyOn(wrapper.vm, 'previousPage').mockImplementation(() => {})
+
+        await wrapper.find('.next').trigger('click')
+        expect(spyNext).toHaveBeenCalled()
+        
+        await wrapper.find('.previous').trigger('click')
+        expect(spyPrevious).toHaveBeenCalled()
     })
 })
 
