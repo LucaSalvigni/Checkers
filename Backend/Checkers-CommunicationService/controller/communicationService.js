@@ -86,7 +86,7 @@ function buildLobby(roomName, client, maxStars) {
  * @returns user username
  */
 async function getUsername(mail) {
-  const profile = network.askService('get', `${userService}/profile/getProfile`, { mail });
+  const profile = await network.askService('get', `${userService}/profile/getProfile`, { mail });
   /* istanbul ignore next */
   if (profile.status) {
     return profile.response.username;
