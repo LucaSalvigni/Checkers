@@ -16,7 +16,7 @@ const player = 'ciao@ciao.com';
 const opponent = 'ciao2@ciao.com';
 
 async function createGame(game) {
-  return axiosPostRequest('/game/lobbies/createGame', { hostId: game.hostId, opponent: game.opponentId });
+  return axiosPostRequest('/lobbies/createGame', { hostId: game.hostId, opponent: game.opponentId });
 }
 
 async function leaveGame(gameToQuit) {
@@ -36,7 +36,7 @@ async function changeTurn(gameId) {
 }
 
 async function getGames(user) {
-  return axiosGetRequest('/game/getGamesByUser', { user });
+  return axiosGetRequest('/lobbies/getGamesByUser', { user });
 }
 
 // Util functions
