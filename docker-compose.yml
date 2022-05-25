@@ -43,3 +43,12 @@ services:
     restart: always
     ports:
       - 3030:3030
+
+  frontend:
+    container_name: frontend
+    image: registry.digitalocean.com/checkers-cr/checkers:frontend
+    build: 
+      context: ./Frontend/Checkers-Frontend
+    restart: always
+    ports:
+      - 8080:80

@@ -19,17 +19,17 @@ router
     }
   })
 // Profile routes
-  .get('/authenticate', userController.verify_token)
-  .get('/refresh_token', userController.refresh_token)
+  .get('/access/authenticate', userController.verify_token)
+  .get('/access/refresh_token', userController.refresh_token)
 
-  .get('/getLeaderboard', userController.getLeaderboard)
+  .get('/users/getLeaderboard', userController.getLeaderboard)
   .get('/profile/getProfile', userController.getProfile)
   .get('/profile/getHistory', userController.getHistory)
 
   .put('/profile/updateProfile', userController.updateProfile)
   .put('/profile/updatePoints', userController.updatePoints)
 
-  .post('/login', userController.login)
-  .post('/signup', userController.signup);
+  .post('/access/login', userController.login)
+  .post('/access/signup', userController.signup);
 
 module.exports = router;

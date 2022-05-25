@@ -6,9 +6,9 @@ const log = require("fancy-log");
 const exec = require("child_process").exec;
 
 const paths = {
-  prod_build: "./frontend-build",
+  prod_build: "./build",
   vue_src: "./dist/**/*",
-  vue_dist: "./frontend-build/dist",
+  vue_dist: "./build/dist",
   zipped_file_name: "frontend-nodejs.zip",
 };
 
