@@ -50,12 +50,6 @@ jobs:
           node-version: '16'
       - uses: actions/checkout@v2
 
-      - name: Build Frontend
-        run: |
-          cd Frontend/Checkers-Frontend
-          npm ci
-          npm run gulp build
-
       - name: Build GameService
         run: |
           cd Backend/Checkers-GameService
@@ -93,6 +87,7 @@ jobs:
           docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
           docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
           docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):communicationservice
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):frontend
         
   deploy:
     runs-on: ubuntu-latest
@@ -128,6 +123,7 @@ jobs:
             docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
             docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
             docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):communicationservice
+            docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):frontend
             docker compose up -d
 
   release:
