@@ -1,8 +1,8 @@
 <!-- This is the Signup component -->
 
 <template>
-  <div class="flex flex-col justify-center">
-    <div class="pt-20">
+  <div class="main-div flex flex-col justify-center">
+    <div class="pt-18">
       <h1 class="font-bold text-3xl">Sign up into Checkers</h1>
     </div>
     <div class="card">
@@ -83,7 +83,7 @@
               >Sign up</label
             >
             <div class="signup-modal modal modal-close">
-              <div class="modal-box">
+              <div class="flex flex-col items-center modal-box">
                 <img
                   alt="Modal Logo Image"
                   class="w-40 h-28"
@@ -206,5 +206,13 @@ input {
 }
 .modal-box {
   background-color: #343232;
+}
+
+@media only screen and (max-width: 900px) {
+  .main-div {
+    width: 100vw;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
 }
 </style>

@@ -1,6 +1,6 @@
 <!-- This is the Lobbies component -->
 <template>
-  <div class="lobbies overflow-x-auto py-8 px-5">
+  <div class="lobbies overflow-x-auto w-full py-5 px-2">
     <table class="table w-full">
       <thead>
         <tr>

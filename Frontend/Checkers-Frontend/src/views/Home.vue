@@ -117,7 +117,7 @@
       </div>
     </div>
 
-    <div class="dropdown mt-10">
+    <div class="dropdown mt-10 px-5">
       <div
         tabindex="0"
         class="drop-div flex flex-nowrap flex-column btn h-24"
@@ -310,8 +310,6 @@ export default {
 .rightMenu #btn-menu {
   margin-top: 4em;
   width: 200px;
-  margin-left: 1.5em;
-  margin-right: 1.5em;
 }
 .modal-box {
   background-color: #343232;
@@ -334,10 +332,7 @@ export default {
   }
   .main-logo {
     padding: 0;
-    margin-top: 5rem;
-  }
-  .play-checkers {
-    margin-left: 0.8rem;
+    margin-top: 4rem;
   }
   .checkers-img {
     min-width: 5rem;
@@ -347,8 +342,23 @@ export default {
 
 @media only screen and (max-width: 785px) {
   .main-logo {
-    min-width: 27rem;
-    min-height: 27rem;
+    min-width: 20rem;
+    min-height: 20rem;
+  }
+  .main-div {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+@media only screen and (max-width: 300px) {
+  .main-logo {
+    min-width: 15rem;
+    min-height: 15rem;
+  }
+  .main-div {
+    padding-left: 0rem;
+    padding-right: 0rem;
   }
 }
 </style>

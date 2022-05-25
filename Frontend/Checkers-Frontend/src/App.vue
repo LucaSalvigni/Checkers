@@ -234,7 +234,7 @@ export default {
 }
 .middle {
   overflow-y: scroll;
-  overflow-x: hidden;
+  overflow-x: scroll;
 }
 @media only screen and (max-width: 785px) {
   #main {

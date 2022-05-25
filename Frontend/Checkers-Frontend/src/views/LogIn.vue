@@ -1,8 +1,8 @@
 <!-- This is the Login component -->
 
 <template>
-  <div class="flex flex-col justify-center">
-    <div class="pt-20 font-bold text-3xl">
+  <div class="main-div flex flex-col justify-center">
+    <div class="pt-18 font-bold text-3xl">
       <h1>Sign in into Checkers</h1>
     </div>
     <div class="card">
@@ -37,7 +37,7 @@
               >Sign in</label
             >
             <div class="login-fail modal">
-              <div class="modal-box">
+              <div class="flex flex-col items-center modal-box">
                 <img
                   alt="Modal Logo Image"
                   class="w-40 h-28"
@@ -154,5 +154,13 @@ input {
 }
 .modal-box {
   background-color: #343232;
+}
+
+@media only screen and (max-width: 900px) {
+  .main-div {
+    width: 100vw;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
 }
 </style>
