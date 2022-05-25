@@ -369,7 +369,7 @@ export default {
 }
 
 .grid {
-  max-width: 65em;
+  max-width: 60em;
   min-width: 450px;
 }
 
