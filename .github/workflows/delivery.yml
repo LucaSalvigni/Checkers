@@ -116,9 +116,9 @@ jobs:
             # Login to registry
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             # Stop running containers
-            docker stop userservice gameservice communicationservice
+            docker stop userservice gameservice communicationservice frontend
             # Remove old containers
-            docker rm userservice gameservice communicationservice
+            docker rm userservice gameservice communicationservice frontend
             # Run new containers from new images
             docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
             docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
