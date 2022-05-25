@@ -123,18 +123,27 @@ export default {
       this.buttonSound.play();
       var mailformat =
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-      var username = document.getElementsByClassName("username")[0].value;
-      var firstName = document.getElementsByClassName("firstName")[0].value;
-      var lastName = document.getElementsByClassName("lastName")[0].value;
-      var mail = document.getElementsByClassName("mail")[0].value;
-      var pw = document.getElementsByClassName("password")[0].value;
-      var confirmPw =
-        document.getElementsByClassName("confirmPassword")[0].value;
-      if (mail.match(mailformat) && pw === confirmPw) {
-        console.log(
-          "" + firstName + " " + lastName + " " + username + " " + mail
+      var username = document.getElementsByClassName("username")[0];
+      var firstName = document.getElementsByClassName("firstName")[0];
+      var lastName = document.getElementsByClassName("lastName")[0];
+      var mail = document.getElementsByClassName("mail")[0];
+      var pw = document.getElementsByClassName("password")[0];
+      var confirmPw = document.getElementsByClassName("confirmPassword")[0];
+      if (mail.value.match(mailformat) && pw.value === confirmPw.value) {
+        api.signup(
+          this.socket,
+          mail.value,
+          pw.value,
+          username.value,
+          firstName.value,
+          lastName.value
         );
-        api.signup(this.socket, mail, pw, username, firstName, lastName);
+        username.value = "";
+        firstName.value = "";
+        lastName.value = "";
+        mail.value = "";
+        pw.value = "";
+        confirmPw.value = "";
       } else {
         msg[0].textContent =
           "Insert a valid email and/or check that the passwords are the same";

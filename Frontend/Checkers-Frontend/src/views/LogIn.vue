@@ -31,7 +31,9 @@
           </div>
 
           <div class="object-center space-x-2 mt-10">
-            <label class="btn login-btn text-base font-semibold" @click="login"
+            <label
+              class="btn login-btn text-base font-semibold"
+              @click.prevent="login"
               >Sign in</label
             >
             <div class="login-fail modal">
@@ -92,6 +94,8 @@ export default {
         loginFail[0].setAttribute("class", "login-fail modal modal-open");
       } else {
         api.login(this.socket, mail[0].value, password[0].value);
+        mail[0].value = "";
+        password[0].value = "";
       }
     },
     // Close modal
