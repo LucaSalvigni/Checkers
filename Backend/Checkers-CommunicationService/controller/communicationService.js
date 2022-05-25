@@ -39,7 +39,7 @@ async function isAuthenticated(token, clientId) {
   try {
     const authenticated = await network.askService(
       'get',
-      `${userService}/authenticate`,
+      `${userService}/access/authenticate`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -160,7 +160,7 @@ async function setupGame(gameId, hostMail, opponentMail) {
   const hostSpecs = await network.askService('get', `${userService}/profile/getProfile`, { mail: hostMail });
   const opponentSpecs = await network.askService('get', `${userService}/profile/getProfile`, { mail: opponentMail });
   if (hostSpecs.status && opponentSpecs.status) {
-    const board = await network.askService('post', `${gameService}/game/lobbies/createGame`, { gameId, hostId: hostSpecs.response.mail, opponent: opponentSpecs.response.mail });
+    const board = await network.askService('post', `${gameService}/lobbies/createGame`, { gameId, hostId: hostSpecs.response.mail, opponent: opponentSpecs.response.mail });
     if (board.status) {
       game.push(hostSpecs.response);
       game.push(opponentSpecs.response);
@@ -333,7 +333,7 @@ exports.socket = async function (server) {
       if (onlineUsers.hasValue(mail)) {
         client.emit('login_error', { message: 'Someone is already logged in with such email' });
       } else {
-        const user = await network.askService('post', `${userService}/login`, {
+        const user = await network.askService('post', `${userService}/access/login`, {
           mail,
           password,
         });
@@ -348,7 +348,7 @@ exports.socket = async function (server) {
 
     client.on('signup', async (mail, password, username, firstName, lastName) => {
       log('a user is trying to sign up');
-      const newUser = await network.askService('post', `${userService}/signup`, {
+      const newUser = await network.askService('post', `${userService}/access/signup`, {
         firstName,
         lastName,
         mail,
@@ -362,6 +362,28 @@ exports.socket = async function (server) {
       }
     });
 
+    /**
+     * Token refreshing procedure
+     */
+    client.on('refresh_token', async (token) => {
+      const user = await isAuthenticated(token, client.id);
+      if (user[0]) {
+        const newToken = await network.askService('get', `${userService}/access/refresh_token`, {
+          mail: onlineUsers.get(client.id),
+          token,
+        });
+        if (newToken.status) {
+          client.emit('token_ok', newToken.response);
+        } else if (newToken.response_status === 500) {
+          client.emit('token_error', { message: newToken.response_data });
+        } else {
+          console.log(newToken.response_data);
+          client.emit('token_error', { message: 'Your token expired, please log-in again' });
+        }
+      } else {
+        client.emit('client_error', { message: user[1] });
+      }
+    });
     /**
      *  * * * * * *
      * LOBBY HANDLING
@@ -742,7 +764,7 @@ exports.socket = async function (server) {
       if (user[0]) {
         const userMail = onlineUsers.get(client.id);
         log(`${userMail} just asked for a leaderboard`);
-        const leaderboard = await network.askService('get', `${userService}/getLeaderboard`, '');
+        const leaderboard = await network.askService('get', `${userService}/users/getLeaderboard`, '');
         if (leaderboard.status) {
           client.emit('leaderboard', leaderboard.response);
         } /* else {
@@ -795,7 +817,7 @@ exports.socket = async function (server) {
       if (user[0]) {
         const userMail = onlineUsers.get(client.id);
         log(`${userMail} just want to see all games he did`);
-        const history = await network.askService('get', `${gameService}/game/getGamesByUser`, { user: userMail });
+        const history = await network.askService('get', `${gameService}/lobbies/getGamesByUser`, { user: userMail });
         client.emit('user_history', history.response);
       } else {
         client.emit('token_error', { message: 'You are not authenticated, please login before request history' });
