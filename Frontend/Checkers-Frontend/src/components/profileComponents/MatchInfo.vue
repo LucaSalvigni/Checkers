@@ -1,57 +1,63 @@
 <!-- Component of user match history -->
 
 <template>
-  <div class="overflow-hidden">
-    <div class="overflow-scroll">
-      <table class="table table-compact w-full">
-        <thead>
-          <tr>
-            <th>Game</th>
-            <th>Black</th>
-            <th>White</th>
-            <th>Winner</th>
-          </tr>
-        </thead>
+  <div class="grid">
+    <div class="relative overflow-x-auto">
+      <div
+        class="preview flex items-center justify-center gap-2 overflow-x-hidden undefined"
+        style="background-size: 5px 5px"
+      >
+        <div class="overflow-x-auto w-full">
+          <table class="table w-full">
+            <thead>
+              <tr>
+                <th>Game</th>
+                <th>Black</th>
+                <th>White</th>
+                <th>Winner</th>
+              </tr>
+            </thead>
 
-        <tbody>
-          <template v-for="(user, i) in currentPage" :key="i">
-            <tr>
-              <th
-                :textContent="'#' + (history.indexOf(currentPage[i]) + 1)"
-              ></th>
-              <td>
-                <div class="flex items-center space-x-3">
-                  <div>
-                    <div class="font-bold">
-                      {{ user.black }}
+            <tbody>
+              <template v-for="(user, i) in currentPage" :key="i">
+                <tr>
+                  <th
+                    :textContent="'#' + (history.indexOf(currentPage[i]) + 1)"
+                  ></th>
+                  <td>
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div class="font-bold">
+                          {{ user.black }}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="flex items-center space-x-3">
-                  <div>
-                    <div class="font-bold">
-                      {{ user.white }}
+                  </td>
+                  <td>
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div class="font-bold">
+                          {{ user.white }}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="flex items-center space-x-3">
-                  <div>
-                    <div class="font-bold">
-                      {{ user.winner }}
+                  </td>
+                  <td>
+                    <div class="flex items-center space-x-3">
+                      <div>
+                        <div class="font-bold">
+                          {{ user.winner }}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-
     <div v-if="history.length > perPage" class="flex mt-3 justify-center">
       <button
         class="btn previous mr-5 btn-disabled"

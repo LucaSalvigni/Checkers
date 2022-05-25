@@ -1,71 +1,78 @@
 <!-- This is leaderboard component -->
 
 <template>
-  <div class="main-div flex flex-col justify-center px-32 py-14">
-    <div class="mb-10">
-      <h1 class="font-bold text-3xl">Global leaderboard</h1>
-    </div>
-    <div class="leaderboard overflow-x-auto">
-      <table class="table table-compact w-full shadow">
-        <!-- head -->
-        <thead>
-          <tr>
-            <th>Position</th>
-            <th>Name</th>
-            <th>Stars</th>
-            <th>Games</th>
-            <th>Wins</th>
-            <th>Defeats</th>
-          </tr>
-        </thead>
-        <!-- body -->
-        <tbody>
-          <template v-for="(user, i) in currentPage" :key="i">
-            <tr>
-              <th
-                :textContent="'#' + (leaderboard.indexOf(currentPage[i]) + 1)"
-              ></th>
-              <td>
-                <div class="flex items-center space-x-3">
-                  <div class="avatar">
-                    <div class="w-12 h-12 mask mask-squircle">
-                      <img :src="user.avatar" alt="User's Avatar" />
+  <div class="grid">
+    <div class="relative overflow-x-auto">
+      <div
+        class="preview flex flex-wrap items-center justify-center gap-2 overflow-x-hidden p-4 undefined"
+        style="background-size: 5px 5px"
+      >
+        <div class="mb-10">
+          <h1 class="font-bold text-3xl">Global leaderboard</h1>
+        </div>
+        <div class="overflow-x-auto w-full">
+          <table class="table w-full">
+            <thead>
+              <tr>
+                <th>Position</th>
+                <th>Name</th>
+                <th>Stars</th>
+                <th>Games</th>
+                <th>Wins</th>
+                <th>Defeats</th>
+              </tr>
+            </thead>
+            <!-- body -->
+            <tbody>
+              <template v-for="(user, i) in currentPage" :key="i">
+                <tr>
+                  <th
+                    :textContent="
+                      '#' + (leaderboard.indexOf(currentPage[i]) + 1)
+                    "
+                  ></th>
+                  <td>
+                    <div class="flex items-center space-x-3">
+                      <div class="avatar">
+                        <div class="w-12 h-12 mask mask-squircle">
+                          <img :src="user.avatar" alt="User's Avatar" />
+                        </div>
+                      </div>
+                      <div>
+                        <div class="font-bold">{{ user.username }}</div>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <div class="font-bold">{{ user.username }}</div>
-                  </div>
-                </div>
-              </td>
-              <td>{{ user.stars }}</td>
-              <td>{{ user.losses + user.wins }}</td>
-              <td>{{ user.wins }}</td>
-              <td>{{ user.losses }}</td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
-
-      <div v-if="leaderboard.length > perPage" class="flex mt-3 justify-center">
-        <button
-          class="btn mr-5 btn-disabled previous"
-          @click="previousPage($event)"
-        >
-          Previous
-        </button>
-        <button class="btn next" @click="nextPage($event)">Next</button>
+                  </td>
+                  <td>{{ user.stars }}</td>
+                  <td>{{ user.losses + user.wins }}</td>
+                  <td>{{ user.wins }}</td>
+                  <td>{{ user.losses }}</td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div v-else class="btn-group mt-4">
-        <button
-          class="btn mr-5 btn-disabled previous"
-          @click="previousPage($event)"
-        >
-          Previous
-        </button>
-        <button class="btn btn-disabled next" @click="nextPage($event)">
-          Next
-        </button>
-      </div>
+    </div>
+    <div v-if="leaderboard.length > perPage" class="flex mt-3 justify-center">
+      <button
+        class="btn mr-5 btn-disabled previous"
+        @click="previousPage($event)"
+      >
+        Previous
+      </button>
+      <button class="btn next" @click="nextPage($event)">Next</button>
+    </div>
+    <div v-else class="btn-group mt-4">
+      <button
+        class="btn mr-5 btn-disabled previous"
+        @click="previousPage($event)"
+      >
+        Previous
+      </button>
+      <button class="btn btn-disabled next" @click="nextPage($event)">
+        Next
+      </button>
     </div>
   </div>
 </template>

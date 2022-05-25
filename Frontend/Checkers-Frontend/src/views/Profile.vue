@@ -2,30 +2,41 @@
 
 <template>
   <div class="profile flex flex-col justify-center items-center py-5">
-    <div class="basic-info card lg:card-side flex flex-row w-9/12">
-      <img
-        :src="avatar"
-        alt="User's Avatar"
-        class="mask mask-square w-60 h-60 p-5"
-      />
-      <div class="p-1">
-        <div class="flex mt-2.5 ml-2">
-          <h2
-            :innerText="username"
-            class="username font-semibold text-2xl card-title"
-          ></h2>
-        </div>
-        <div class="flex flex-row ml-2 font-semibold text-xl">
-          <p>Stars</p>
-          <i class="fas fa-star ml-1 mt-1" />
-          <p :innerText="stars" class="stars ml-3"></p>
-        </div>
-        <p
-          :innerText="first_last_name"
-          class="first_last text-xl text-left ml-2 mt-2"
+    <div class="grid">
+      <div class="overflow-x-auto">
+        <div
+          class="preview flex flex-wrap items-center justify-center gap-2 overflow-x-hidden p-1 undefined"
+          style="background-size: 5px 5px"
         >
-          FirstName LastName
-        </p>
+          <div
+            class="basic-info card lg:card-side flex flex-row w-full items-center justify-center"
+          >
+            <img
+              :src="avatar"
+              alt="User's Avatar"
+              class="mask mask-square w-60 h-60 p-5"
+            />
+            <div class="p-1">
+              <div class="flex mt-2 ml-2">
+                <h2
+                  :innerText="username"
+                  class="username font-semibold text-2xl card-title"
+                ></h2>
+              </div>
+              <div class="flex flex-row ml-2 font-semibold text-xl">
+                <p>Stars</p>
+                <i class="fas fa-star ml-1 mt-1" />
+                <p :innerText="stars" class="stars ml-3"></p>
+              </div>
+              <p
+                :innerText="first_last_name"
+                class="first_last text-xl text-left ml-2 mt-2"
+              >
+                FirstName LastName
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -53,7 +64,7 @@
               id="tabName"
               :innerText="tabName"
               refs="tabName"
-              class="card-title"
+              class="card-title pb-5 justify-center"
             ></h2>
             <DataInfo class="info"></DataInfo>
           </div>
@@ -62,7 +73,7 @@
               id="tabName"
               :innerText="tabName"
               refs="tabName"
-              class="card-title"
+              class="card-title pb-5 justify-center"
             ></h2>
             <MatchInfo class="info"></MatchInfo>
           </div>
@@ -158,11 +169,11 @@ img {
 
 @media only screen and (max-width: 850px) {
   img {
-    width: 9rem;
-    height: 9rem;
+    width: 7rem;
+    height: 7rem;
   }
-}
-
-@media only screen and (max-width: 700px) {
+  .profile {
+    font-size: 15px;
+  }
 }
 </style>

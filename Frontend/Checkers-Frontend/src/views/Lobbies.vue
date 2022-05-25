@@ -1,31 +1,40 @@
 <!-- This is the Lobbies component -->
 <template>
-  <div class="lobbies overflow-x-auto w-full py-5 px-2">
-    <table class="table w-full">
-      <thead>
-        <tr>
-          <th>Lobby Owner</th>
-          <th>Lobby Name</th>
-          <th>Max Stars</th>
-          <th>Join</th>
-        </tr>
-      </thead>
-      <tbody v-for="(lobby, index) in lobbies" :key="index">
-        <tr>
-          <td :textContent="lobby.host"></td>
-          <td :textContent="lobby.name"></td>
-          <td :textContent="lobby.max_stars"></td>
-          <td>
-            <router-link
-              class="join-lobby btn"
-              to="/game"
-              @click="joinLobby(lobby.lobbyId)"
-              >Join Lobby</router-link
-            >
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="grid">
+    <div class="relative overflow-x-auto">
+      <div
+        class="preview flex flex-wrap items-center justify-center gap-2 overflow-x-hidden p-4 undefined"
+        style="background-size: 5px 5px"
+      >
+        <div class="overflow-x-auto w-full">
+          <table class="table w-full">
+            <thead>
+              <tr>
+                <th>Lobby Owner</th>
+                <th>Lobby Name</th>
+                <th>Max Stars</th>
+                <th>Join</th>
+              </tr>
+            </thead>
+            <tbody v-for="(lobby, index) in lobbies" :key="index">
+              <tr>
+                <td :textContent="lobby.host"></td>
+                <td :textContent="lobby.name"></td>
+                <td :textContent="lobby.max_stars"></td>
+                <td>
+                  <router-link
+                    class="join-lobby btn"
+                    to="/game"
+                    @click="joinLobby(lobby.lobbyId)"
+                    >Join Lobby</router-link
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

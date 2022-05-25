@@ -1,11 +1,11 @@
 <template>
   <div
-    class="main-div flex flex-row items-center justify-center centralSpace px-28 py-5"
+    class="main-div flex flex-row items-center justify-center centralSpace px-28 py-5 h-3/4"
   >
     <img
       src="../assets/checkers.png"
       alt="Main Logo"
-      class="main-logo self-center mask min-w-fit min-h-fit w-7/12 h-7/12 mask-square"
+      class="main-logo self-center"
     />
 
     <div
@@ -296,10 +296,6 @@ export default {
 </script>
 
 <style scoped>
-.main-logo {
-  min-width: 35rem;
-  min-height: 35rem;
-}
 .rightMenu {
   min-width: 250px;
   background-color: #1f1e1e;
@@ -317,7 +313,9 @@ export default {
 .dropdown {
   visibility: hidden;
 }
-
+.main-logo {
+  height: 80%;
+}
 @media only screen and (max-width: 1200px) {
   .main-div {
     flex-direction: column;
@@ -332,7 +330,9 @@ export default {
   }
   .main-logo {
     padding: 0;
-    margin-top: 4rem;
+    margin-top: 5rem;
+    width: 30rem;
+    height: 30rem;
   }
   .checkers-img {
     min-width: 5rem;
@@ -341,10 +341,6 @@ export default {
 }
 
 @media only screen and (max-width: 785px) {
-  .main-logo {
-    min-width: 20rem;
-    min-height: 20rem;
-  }
   .main-div {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
@@ -353,8 +349,8 @@ export default {
 
 @media only screen and (max-width: 300px) {
   .main-logo {
-    min-width: 15rem;
-    min-height: 15rem;
+    max-width: 15rem;
+    max-height: 15rem;
   }
   .main-div {
     padding-left: 0rem;

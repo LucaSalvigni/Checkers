@@ -9,7 +9,7 @@
         />
       </router-link>
 
-      <div class="dropdown mt-5">
+      <div class="dropdown mt-4">
         <SideBarLink
           class="barMenu pl-1.5"
           to=""
@@ -197,7 +197,7 @@ export default {
     visibility: visible;
     width: 3rem;
     height: 3rem;
-    padding-left: 0.9rem;
+    padding-left: 0.72rem;
   }
   .login {
     width: auto;

@@ -2,7 +2,7 @@
 
 <template>
   <div class="main-div flex flex-col justify-center">
-    <div class="pt-18 font-bold text-3xl">
+    <div class="pt-8 font-bold text-3xl">
       <h1>Sign in into Checkers</h1>
     </div>
     <div class="card">
