@@ -130,18 +130,20 @@ async function getLobbies(userStars) {
 * @returns
 */
 function joinLobby(lobbyId, client, player) {
-  /* istanbul ignore else */
   if (lobbies.has(lobbyId)) {
     const toJoin = lobbies.get(lobbyId);
-    /* istanbul ignore else */
     if (toJoin.isFree()) {
       client.join(lobbyId);
       return toJoin.addPlayer(player);
     }
+    /* istanbul ignore next */
     log('lobby not free');
+    /* istanbul ignore next */
     return false;
   }
+  /* istanbul ignore next */
   log('No such lobby');
+  /* istanbul ignore next */
   return false;
 }
 
@@ -243,6 +245,7 @@ exports.socket = async function (server) {
     return [];
   }
 
+  /* istanbul ignore next */
   /**
    * Handle disconnections, 3 cases:
    *  - player is not in a lobby
@@ -317,6 +320,7 @@ exports.socket = async function (server) {
     log('a user connected');
     onlineUsers.set(client.id, getId());
 
+    /* istanbul ignore next */
     client.on('disconnect', async () => {
       // Remove player from active players
       const player = onlineUsers.get(client.id);
