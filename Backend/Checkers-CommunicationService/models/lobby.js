@@ -9,18 +9,12 @@ module.exports = class Lobby {
   }
 
   addPlayer(id) {
+    /* istanbul ignore next */
     if (this.players.length >= 2 && this.players[0] === id) {
       return false;
     }
     this.players.push(id);
     return true;
-  }
-
-  removePlayer(id) {
-    if (this.players.length > 0) {
-      return this.players.splice(id, 1);
-    }
-    return null;
   }
 
   getStars() {
@@ -29,12 +23,6 @@ module.exports = class Lobby {
 
   getName() {
     return this.roomName;
-  }
-
-  tieProposal(userId) {
-    if (this.players.includes(userId) && !this.tie_requests.includes(userId)) {
-      this.tie_requests.push(userId);
-    }
   }
 
   hasPlayer(player) {
@@ -50,9 +38,5 @@ module.exports = class Lobby {
       return this.players[index];
     }
     return this.players;
-  }
-
-  tie() {
-    return this.tie_requests.length >= 2;
   }
 };

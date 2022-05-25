@@ -7,8 +7,8 @@ describe('Communication Service Get History Tests', async () => {
     api.getClient().off('user_history');
     api.getClient().off('token_error');
 
-    api.getClient().on('user_history', (arg) => {
-      console.log(arg);
+    api.getClient().on('user_history', () => {
+      // console.log(arg);
       done();
     });
     api.getClient().on('token_error', (arg) => {

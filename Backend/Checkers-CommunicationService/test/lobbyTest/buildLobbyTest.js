@@ -22,7 +22,7 @@ describe('Communication Service Build Lobby Tests', async () => {
       done();
     });
   });
-  it('build lobby should faiul for token', (done) => {
+  it('build lobby should fail because you are already in a lobby', (done) => {
     api.buildLobby(api.getClient(), 'BestLobby', '500', api.getToken());
     api.getClient().off('client_error');
     api.getClient().on('client_error', (arg) => {
@@ -30,7 +30,7 @@ describe('Communication Service Build Lobby Tests', async () => {
       done();
     });
   });
-  it('build lobby should faiul for token', (done) => {
+  it('build lobby should fail for token', (done) => {
     api.buildLobby(api.getClient2(), 'BestLobby', '500', '');
     api.getClient2().off('token_error');
     api.getClient2().on('token_error', (arg) => {

@@ -8,8 +8,8 @@ describe('Communication Service getLeaderboard Tests', async () => {
     api.getClient().off('token_error');
     api.getClient().off('client_error');
 
-    api.getClient().on('leaderboard', (arg) => {
-      console.log(arg);
+    api.getClient().on('leaderboard', () => {
+      // console.log(arg);
       done();
     });
     api.getClient().on('token_error', (arg) => {

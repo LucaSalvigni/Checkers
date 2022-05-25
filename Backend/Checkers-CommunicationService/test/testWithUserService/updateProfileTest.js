@@ -52,4 +52,13 @@ describe('Communication Service Update Tests', async () => {
       done();
     });
   });
+  /* it('update should fail for not give new values', (done) => {
+    api.updateUserProfile(api.getClient(), undefined, api.getToken());
+    api.getClient().off('client_error');
+    api.getClient().on('client_error', (arg) => {
+      console.log(arg)
+      //assert.equal(arg.message.message, "You can't change the email associated to an account.");
+      done();
+    });
+  }); */
 });

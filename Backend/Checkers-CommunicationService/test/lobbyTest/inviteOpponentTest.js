@@ -2,6 +2,16 @@ const { assert } = require('chai');
 const api = require('../utils/api');
 
 describe('Communication Service invite Opponent Tests', async () => {
+  it('invite opponent should give an error', (done) => {
+    api.inviteOpponent(api.getClient(), api.getToken(), 'banana@ban.com');
+    api.getClient().off('invite_error');
+
+    api.getClient().on('invite_error', (arg) => {
+      assert.equal(arg.message, "Can't invite player banana@ban.com");
+      done();
+    });
+  });
+
   it('invite opponent should work', (done) => {
     api.inviteOpponent(api.getClient(), api.getToken(), 'test2@test2.com');
     api.getClient2().off('lobby_invitation');
@@ -23,12 +33,38 @@ describe('Communication Service invite Opponent Tests', async () => {
     });
   });
 
-  it('invite opponent should give an error', (done) => {
-    api.inviteOpponent(api.getClient(), api.getToken(), 'banana@ban.com');
-    api.getClient().off('invite_error');
+  it('accept invite should fail for token', (done) => {
+    api.acceptInvite(api.getClient2(), '', 'newtest@newtest.com');
+    api.getClient2().off('token_error');
+    api.getClient2().on('token_error', (arg) => {
+      assert.equal(arg.message, 'User not authenticated');
+      done();
+    });
+  });
 
-    api.getClient().on('invite_error', (arg) => {
-      assert.equal(arg.message, "Can't invite player banana@ban.com");
+  it('accept invite should fail for wrong mail invite', (done) => {
+    api.acceptInvite(api.getClient2(), api.getToken2(), 'c@c.com');
+    api.getClient2().off('invitation_expired');
+    api.getClient2().on('invitation_expired', (arg) => {
+      assert.equal(arg.message, 'Your invitation for this lobby has expired');
+      done();
+    });
+  });
+
+  it('decline invite should fail for token', (done) => {
+    api.declineInvite(api.getClient2(), '', 'newtest@newtest.com');
+    api.getClient2().off('token_error');
+    api.getClient2().on('token_error', (arg) => {
+      assert.equal(arg.message, 'User not authenticated');
+      done();
+    });
+  });
+
+  it('decline invite should fail for wrong mail invite', (done) => {
+    api.declineInvite(api.getClient2(), api.getToken2(), 'c@c.com');
+    api.getClient2().off('invitation_expired');
+    api.getClient2().on('invitation_expired', (arg) => {
+      assert.equal(arg.message, 'Your invitation for this lobby has expired');
       done();
     });
   });

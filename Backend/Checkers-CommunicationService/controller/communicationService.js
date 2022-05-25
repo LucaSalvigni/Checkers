@@ -52,6 +52,7 @@ async function isAuthenticated(token, clientId) {
     }
     return [false, ''];
   } catch (err) {
+    /* istanbul ignore next */
     return [false, err.response.data];
   }
 }
@@ -61,8 +62,6 @@ async function isAuthenticated(token, clientId) {
  * @param {*} playerMail
  * @returns whether a player is in a lobby or not
  */
-
-// TODO: CHECK THIS
 function isInLobby(playerMail) {
   return Array.from(lobbies.values()).filter((lobby) => lobby.hasPlayer(playerMail)).length;
 }
@@ -88,6 +87,7 @@ function buildLobby(roomName, client, maxStars) {
  */
 async function getUsername(mail) {
   const profile = network.askService('get', `${userService}/profile/getProfile`, { mail });
+  /* istanbul ignore next */
   if (profile.status) {
     return profile.response.username;
   }
@@ -108,6 +108,7 @@ async function getLobbies(userStars) {
   for (const i in validLobbies) {
     const lobby = validLobbies[i];
     const username = await getUsername(lobby[1].getPlayers(0));
+    /* istanbul ignore next */
     if (username === null) {
       log('something wrong with username');
     } else {
@@ -129,8 +130,10 @@ async function getLobbies(userStars) {
 * @returns
 */
 function joinLobby(lobbyId, client, player) {
+  /* istanbul ignore else */
   if (lobbies.has(lobbyId)) {
     const toJoin = lobbies.get(lobbyId);
+    /* istanbul ignore else */
     if (toJoin.isFree()) {
       client.join(lobbyId);
       return toJoin.addPlayer(player);
@@ -188,6 +191,7 @@ exports.socket = async function (server) {
 
   // Setup a turn timeout for a given lobby
   async function setupGameTurnTimeout(lobbyId) {
+    /* istanbul ignore next */
     turnTimeouts.set(lobbyId, setTimeout(async () => {
       await changeTurn(lobbyId);
       await network.askService('put', `${gameService}/game/turnChange`, { game_id: lobbyId });
@@ -235,8 +239,10 @@ exports.socket = async function (server) {
     if (updatedOne.status && updatedTwo.status) {
       return [updatedOne.response, updatedTwo.response];
     }
+    /* istanbul ignore next */
     return [];
   }
+
   /**
    * Handle disconnections, 3 cases:
    *  - player is not in a lobby
@@ -402,6 +408,7 @@ exports.socket = async function (server) {
         if (lobbies.has(lobbyId)) {
           const lobby = lobbies.get(lobbyId);
           // can delete a lobby only if it's free and if he's in it => he's the host
+          /* istanbul ignore else */
           if (lobby.hasPlayer(userMail)
           && lobby.isFree) {
             deleteLobby(lobbyId);
@@ -428,13 +435,16 @@ exports.socket = async function (server) {
         if (!isInLobby(userMail)) {
           if (lobbies.has(lobbyId)) {
             const host = lobbies.get(lobbyId).getPlayers()[0];
+            /* istanbul ignore else */
             if (joinLobby(lobbyId, client, userMail)) {
               const game = await setupGame(lobbyId, host, userMail);
+              /* istanbul ignore else */
               if (game.length > 0) {
                 io.to(lobbyId).emit('game_started', game);
                 try {
                   await setupGameTurnTimeout(lobbyId);
                 } catch (err) {
+                  /* istanbul ignore next */
                   io.to(lobbyId).emit('server_error', { message: 'Something went wrong while processing your game' });
                 }
               } else {
@@ -476,6 +486,7 @@ exports.socket = async function (server) {
               const loser = lobby.getPlayers().filter((p) => p !== winner).shift();
               if (moveResult.winner === undefined || moveResult.winner === '') {
                 // If the game tied
+                /* istanbul ignore next */
                 if ('tie' in moveResult && moveResult.tie === true) {
                   // eslint-disable-next-line max-len
                   const updatedUsers = await updatePoints(winner, process.env.TIE_STARS, loser, process.env.TIE_STARS, true);
@@ -502,12 +513,12 @@ exports.socket = async function (server) {
                 }
               } else {
                 // we have a winner!
+                /* istanbul ignore next */
                 // eslint-disable-next-line max-len
                 const updatedUsers = await updatePoints(winner, process.env.WIN_STARS, loser, process.env.LOSS_STARS);
+                /* istanbul ignore next */
                 if (updatedUsers.length !== 0) {
                   io.to(lobbyId).emit('update_board', moveResult.board);
-                  // const winner = onlineUsers.getKey(moveResult.winner);
-                  // const loser = onlineUsers.getKey(moveResult.loser);
                   // Inform winner
                   io.to(onlineUsers.getKey(winner)).emit('game_ended', {
                     // eslint-disable-next-line max-len
@@ -530,6 +541,7 @@ exports.socket = async function (server) {
             } else if (moveResult.response_status === 400) {
               client.emit('client_error', moveResult.response_data);
             } else {
+              /* istanbul ignore next */
               client.emit('server_error', { message: 'Something went wrong while making your move, please try again' });
             }
           } else {
@@ -555,6 +567,7 @@ exports.socket = async function (server) {
           const lobby = lobbies.get(lobbyId);
           const winner = lobby.getPlayers().filter((p) => p !== player).shift();
           result = await network.askService('delete', `${gameService}/game/leaveGame`, { gameId: lobbyId, playerId: player });
+          /* istanbul ignore else */
           if (result.status) {
             result = result.response;
             // eslint-disable-next-line max-len
@@ -608,6 +621,7 @@ exports.socket = async function (server) {
         if (!invitationTimeouts.has(userMail)) {
           invitationTimeouts.set(userMail, new Map());
         }
+        /* istanbul ignore next */
         invitationTimeouts.get(userMail).set(opponentMail, setTimeout(() => {
           // Inform both players that the invite has timed out
           if (invitationTimeouts.has(userMail)) {
@@ -639,6 +653,7 @@ exports.socket = async function (server) {
           const lobbyId = buildLobby(`${opponentMail}-${userMail}`, opponent, Number.MAX_VALUE);
           if (joinLobby(lobbyId, client, userMail)) {
             const game = await setupGame(lobbyId, opponentMail, userMail);
+            /* istanbul ignore else */
             if (game.length !== 0) {
               io.to(onlineUsers.getKey(opponentMail)).emit('invite_accepted');
               // Waiting a few ms before sending game_started
@@ -647,6 +662,7 @@ exports.socket = async function (server) {
               }, 700);
               log(`${opponentMail}(host) and ${userMail} just started a game through invitations`);
               log(invitationTimeouts);
+              /* istanbul ignore next */
               if (invitationTimeouts.has(userMail)) {
                 // eslint-disable-next-line max-len
                 Object.values(invitationTimeouts.get(userMail)).forEach((timeout) => clearTimeout(timeout));
@@ -678,6 +694,7 @@ exports.socket = async function (server) {
           client.emit('invitation_expired', { message: 'Your invitation for this lobby has expired' });
         } else {
           io.to(onlineUsers.getKey(opponentMail)).emit('invitation_declined', { message: `${opponentMail} has just refused your invite, we're so sry. ` });
+          /* istanbul ignore else */
           // eslint-disable-next-line max-len
           if (invitationTimeouts.has(opponentMail) && invitationTimeouts.get(opponentMail).has(userMail)) {
             clearTimeout(invitationTimeouts.get(opponentMail).get(userMail));
@@ -701,6 +718,7 @@ exports.socket = async function (server) {
         const userProfile = await network.askService('get', `${userService}/profile/getProfile`, {
           mail: userMail,
         });
+        /* istanbul ignore else */
         if (userProfile.status) {
           client.emit('user_profile', userProfile.response);
         } else {
@@ -723,9 +741,9 @@ exports.socket = async function (server) {
         const leaderboard = await network.askService('get', `${userService}/getLeaderboard`, '');
         if (leaderboard.status) {
           client.emit('leaderboard', leaderboard.response);
-        } else {
+        } /* else {
           client.emit('client_error', { message: leaderboard.response_data });
-        }
+        } */
       } else {
         client.emit('token_error', { message: 'Please login before request leaderboard' });
       }
