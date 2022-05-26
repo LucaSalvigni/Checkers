@@ -56,6 +56,12 @@ jobs:
           cd Backend/Checkers-GameService
           npm ci
           npm run gulp build
+        env:
+          GameService_PORT: 3032
+          DB_PSW: ${{ secrets.DB_PSW }}
+          GAME_KEY: ${{ secrets.GAME_KEY }}
+          GAME_CERT: ${{ secrets.GAME_CERT }}
+          CERTIFICATE: ${{ secrets.CERTIFICATE }}
 
       - name: Build UserService
         run: |
