@@ -1,8 +1,8 @@
 <!-- This is the Game component with Chat and Checkerboard-->
 <template>
-  <div class="centralSpace flex flex-row justify-center px-20 py-10">
-    <CheckerBoard class="board flex flex-col" />
-    <Chat :opponent="opponent" :lobby-id="lobbyId" class="chat mt-28" />
+  <div class="centralSpace px-20 py-10">
+    <CheckerBoard class="board" />
+    <Chat :opponent="opponent" :lobby-id="lobbyId" class="chat" />
 
     <div class="modal modal-change-location">
       <div class="flex flex-col items-center modal-box">

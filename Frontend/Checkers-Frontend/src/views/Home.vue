@@ -1,6 +1,6 @@
 <template>
   <div
-    class="main-div flex flex-row items-center justify-center centralSpace px-28 py-5 h-3/4"
+    class="main-div flex flex-row justify-center centralSpace px-28 py-5 h-3/4"
   >
     <img
       src="../assets/checkers.png"
@@ -330,9 +330,9 @@ export default {
   }
   .main-logo {
     padding: 0;
-    margin-top: 5rem;
-    width: 30rem;
-    height: 30rem;
+    margin-top: 6rem;
+    width: 25rem;
+    height: 25rem;
   }
   .checkers-img {
     min-width: 5rem;

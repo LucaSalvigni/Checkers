@@ -140,4 +140,13 @@ export default {
 .sc-message--avatar {
   padding: 1rem;
 }
+
+@media (max-width: 450px) {
+  div.sc-chat-window.opened {
+    height: 80%;
+    max-height: 100%;
+    bottom: 90px;
+    background: none;
+  }
+}
 </style>

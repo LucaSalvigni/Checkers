@@ -1,11 +1,11 @@
 <!-- This is the Profile component -->
 
 <template>
-  <div class="profile flex flex-col justify-center items-center py-5">
+  <div class="profile flex flex-col items-center py-5">
     <div class="grid">
       <div class="overflow-x-auto">
         <div
-          class="preview flex flex-wrap items-center justify-center gap-2 overflow-x-hidden p-1 undefined"
+          class="preview flex flex-wrap gap-2 overflow-x-hidden p-1 undefined"
           style="background-size: 5px 5px"
         >
           <div
@@ -14,9 +14,9 @@
             <img
               :src="avatar"
               alt="User's Avatar"
-              class="mask mask-square w-60 h-60 p-5"
+              class="mask mask-square w-60 h-60 p-4"
             />
-            <div class="p-1">
+            <div class="p-3">
               <div class="flex mt-2 ml-2">
                 <h2
                   :innerText="username"
@@ -174,6 +174,12 @@ img {
   }
   .profile {
     font-size: 15px;
+  }
+}
+
+@media only screen and (max-width: 660px) {
+  .profile-info {
+    width: 90%;
   }
 }
 </style>

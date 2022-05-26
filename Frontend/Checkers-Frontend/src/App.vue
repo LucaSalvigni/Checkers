@@ -1,12 +1,12 @@
 <template>
   <div id="app">
-    <div id="main" class="flex flex-row min-h-screen min-w-screen">
+    <div id="main" class="flex flex-row h-screen w-screen">
       <SideBar
         class="sidebar h-screen"
         :invites="invites"
         @check-invite="checkInvite"
       />
-      <div class="middle w-screen min-w-fit h-screen">
+      <div class="middle w-screen min-w-fit h-screen min-h-fit">
         <router-view />
       </div>
     </div>

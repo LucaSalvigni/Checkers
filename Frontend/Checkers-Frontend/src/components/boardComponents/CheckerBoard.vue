@@ -1,7 +1,7 @@
 <!-- This is the Checkerboard component -->
 
 <template>
-  <div class="content flex flex-col flex-grow w-full">
+  <div class="content flex flex-col w-full">
     <appPlayer1 :player="player2" />
     <div class="wrapper">
       <div class="subwrapper">
