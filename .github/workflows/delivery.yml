@@ -75,7 +75,7 @@ jobs:
         run: |
           cd Backend/Checkers-GameService
           npm ci
-          npm run gulp build
+          npm run build
 
       - name: Build UserService
         run: |
