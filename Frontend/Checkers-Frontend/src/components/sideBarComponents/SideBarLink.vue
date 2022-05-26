@@ -92,12 +92,14 @@ button:hover {
     width: auto;
   }
   .login button,
+  .profile button,
+  .leaderboard button,
   .indicator button {
     display: none;
   }
   .icon {
-    width: 2rem;
-    height: 2rem;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 }
 </style>

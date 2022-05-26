@@ -9,34 +9,6 @@
         />
       </router-link>
 
-      <div class="dropdown mt-4">
-        <SideBarLink
-          class="barMenu pl-1.5"
-          to=""
-          icon="fas fa-bars"
-        ></SideBarLink>
-        <ul
-          tabindex="0"
-          class="block p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52"
-        >
-          <li class="inline-block">
-            <SideBarLink
-              class="w-44 profile-drop mb-3 pl-0.5"
-              to="/profile"
-              icon="fas fa-user-cog"
-              >Profile</SideBarLink
-            >
-          </li>
-          <li class="inline-block">
-            <SideBarLink
-              class="leaderboard-drop w-44 mb-3 pl-0.5"
-              to="/leaderboard"
-              icon="fas fa-chart-bar"
-              >Leaderboard</SideBarLink
-            >
-          </li>
-        </ul>
-      </div>
       <SideBarLink class="w-44 home mb-3 pl-0.5" to="/" icon="fas fa-home"
         >Home</SideBarLink
       >
@@ -60,7 +32,7 @@
         ></div>
         <div v-else></div>
         <div v-if="invites.length > 0" class="dropdown">
-          <SideBarLink class="notifications w-44 p-0.5" icon="fas fa-bell"
+          <SideBarLink class="notifications w-44 p-0.5 mt-1" icon="fas fa-bell"
             >Notifications</SideBarLink
           >
           <ul
@@ -200,21 +172,16 @@ export default {
     padding-left: 0.72rem;
   }
   .login {
-    width: auto;
-    margin-top: 0rem;
+    margin-top: 0.4rem;
   }
-  .home,
-  .profile,
-  .leaderboard {
+  .home {
     display: none;
   }
   .notifications,
   .indicator {
-    width: auto;
-    margin-top: 0.7rem;
-  }
-  .login button {
-    display: none;
+    margin-top: 0.95rem;
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 </style>

@@ -14,7 +14,7 @@
             <img
               :src="avatar"
               alt="User's Avatar"
-              class="mask mask-square w-60 h-60 p-4"
+              class="mask mask-square w-80 h-80 p-4 object-cover"
             />
             <div class="p-3">
               <div class="flex mt-2 ml-2">
