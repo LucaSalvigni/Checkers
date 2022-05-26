@@ -44,27 +44,7 @@ jobs:
   build_and_push:
     runs-on: ubuntu-latest
     needs: [ getVersion ]
-    env:
-      CommunicationService_PORT: 3030
-      UserService_PORT: 3031
-      GameService_PORT: 3032
-      TURN_TIMEOUT: 120000
-      INVITE_TIMEOUT: 240000
-      TIE_STARS: 20
-      WIN_STARS: 100
-      LOSS_STARS: -70
-      NODE_ENV: production
-      USER_SERVICE: https://134.209.205.242:3031
-      GAME_SERVICE: https://134.209.205.242:3032
-      COMMUNICATION_SERVICE: http://134.209.205.242:3030
-      DB_PSW: ${{ secrets.DB_PSW }}
-      COMM_KEY: ${{ secrets.COMM_KEY }}
-      COMM_CERT: ${{ secrets.COMM_CERT }}
-      USER_KEY: ${{ secrets.USER_KEY }}
-      USER_CERT: ${{ secrets.USER_CERT }}
-      GAME_KEY: ${{ secrets.GAME_KEY }}
-      GAME_CERT: ${{ secrets.GAME_CERT }}
-      CERTIFICATE: ${{ secrets.CERTIFICATE }}
+
     steps:
       - uses: actions/setup-node@v3
         with:
@@ -75,7 +55,7 @@ jobs:
         run: |
           cd Backend/Checkers-GameService
           npm ci
-          npm run build
+          npm run gulp build
 
       - name: Build UserService
         run: |
