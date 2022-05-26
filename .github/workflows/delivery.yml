@@ -89,7 +89,6 @@ jobs:
           TIE_STARS: 20
           WIN_STARS: 100
           LOSS_STARS: -70
-          NODE_ENV: production
           USER_SERVICE: https://134.209.205.242:3031
           GAME_SERVICE: https://134.209.205.242:3032
           DB_PSW: ${{ secrets.DB_PSW }}
