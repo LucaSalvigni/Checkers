@@ -8,8 +8,8 @@ services:
         - SERVICENAME=GameService
         - SERVICEDIR=Checkers-GameService
         - ARG_PORT=3032
-    environment:
-      - DB_PSW=${DB_PSW}
+    env_file:
+      .env
     restart: always
     ports:
       - 3032:3032
@@ -23,8 +23,8 @@ services:
         - SERVICENAME=UserService
         - SERVICEDIR=Checkers-UserService
         - ARG_PORT=3031
-    environment:
-      - DB_PSW=${DB_PSW}
+    env_file:
+      .env
     restart: always
     ports:
       - 3031:3031
@@ -38,8 +38,8 @@ services:
         - SERVICENAME=CommunicationService
         - SERVICEDIR=Checkers-CommunicationService
         - ARG_PORT=3030
-    environment:
-      - DB_PSW=${DB_PSW}
+    env_file:
+      .env
     restart: always
     ports:
       - 3030:3030
@@ -49,6 +49,8 @@ services:
     image: registry.digitalocean.com/checkers-cr/checkers:frontend
     build: 
       context: ./Frontend/Checkers-Frontend
+      args:
+        - ARG_COMMUNICATION_SERVICE=CommunicationService
     restart: always
     ports:
       - 8080:80

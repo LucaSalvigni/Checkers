@@ -1,10 +1,14 @@
 # build stage
 FROM node:lts-alpine as build-stage
+
+ARG ARG_COMMUNICATION_SERVICE
+ENV COMMUNICATION_SERVICE=$ARG_COMMUNICATION_SERVICE
+
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run lint
+CMD ["ls"]
 RUN npm run gulp build
 
 # production stage

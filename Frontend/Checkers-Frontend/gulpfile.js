@@ -14,7 +14,7 @@ const paths = {
 
 function cleanPreviousBuild() {
   log("removing the old files in the directory");
-  return del("./frontend-build/**", { force: true });
+  return del(`${paths.prod_build}/**`, { force: true });
 }
 
 function qualityAssurance(cb) {
@@ -86,6 +86,7 @@ exports.test = series(qualityAssurance, doTest, testQualityAssurance);
 exports.build = series(
   cleanPreviousBuild,
   createProdBuildFolder,
+  qualityAssurance,
   buildVueCodeTask,
   copyVueCodeTask,
   zippingTask,
