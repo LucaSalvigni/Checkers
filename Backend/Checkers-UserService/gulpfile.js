@@ -77,6 +77,7 @@ exports.test = series(
 );
 
 exports.build = series(
+  clean,
   createProdBuildFolder,
   copyNodeJSCodeTask,
   copyPackage,

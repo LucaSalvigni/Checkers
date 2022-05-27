@@ -19,8 +19,8 @@ const key = process.env.COMM_KEY;
 const tieStars = 20;
 const winStars = 100;
 const lossStars = -70;
-const turnTimeout = 120000
-const inviteTimeout = 240000
+const turnTimeout = 120000;
+const inviteTimeout = 240000;
 
 // Utils
 function log(msg) {
