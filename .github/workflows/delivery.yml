@@ -99,6 +99,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: build_and_push   
     steps:
+      - uses: actions/checkout@v2
+      - name: Copy file via scp
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USERNAME }}
+          key: ${{ secrets.DO_SSHKEY }}
+          passphrase: ${{ secrets.DO_PASSPHRASE }}
+          source: "docker-compose.yml"
+          target: "."
+          
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.3
         with:
