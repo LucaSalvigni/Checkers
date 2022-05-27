@@ -9,7 +9,7 @@ import api from "../api";
 import "./index.css";
 import "@fortawesome/fontawesome-free/js/all";
 
-const communicationServiceAddress = process.env.COMMUNICATION_SERVICE;
+const communicationServiceAddress = process.env.VUE_APP_COMMUNICATION_SERVICE;
 const connection = SocketIO(communicationServiceAddress);
 const token_time = 86400000;
 
