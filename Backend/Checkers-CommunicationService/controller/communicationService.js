@@ -16,6 +16,12 @@ const userService = process.env.USER_SERVICE;
 const cert = process.env.COMM_CERT;
 const key = process.env.COMM_KEY;
 
+const tieStars = 20;
+const winStars = 100;
+const lossStars = -70;
+const turnTimeout = 120000
+const inviteTimeout = 240000
+
 // Utils
 function log(msg) {
   if (process.env.NODE_ENV === 'development') {
@@ -198,7 +204,7 @@ exports.socket = async function (server) {
       await changeTurn(lobbyId);
       await network.askService('put', `${gameService}/game/turnChange`, { game_id: lobbyId });
       log(`Turn timeout for game ${lobbyId}`);
-    }, process.env.TURN_TIMEOUT));
+    }, turnTimeout));
     log(`Timeout set for game${lobbyId}`);
   }
 
@@ -295,7 +301,7 @@ exports.socket = async function (server) {
         if (gameEnd.status) {
           io.to(lobbyId).emit('player_left', gameEnd.response);
           /* eslint-disable-next-line max-len */
-          const updatedUsers = await updatePoints(winner, process.env.WIN_STARS, loser, process.env.LOSS_STARS);
+          const updatedUsers = await updatePoints(winner, winStars, loser, lossStars);
           if (updatedUsers) {
             io.to(onlineUsers.getKey(winner)).emit('user_update', updatedUsers[0]);
             io.to(onlineUsers.getKey(loser)).emit('user_update', updatedUsers[1]);
@@ -493,15 +499,15 @@ exports.socket = async function (server) {
                 /* istanbul ignore next */
                 if ('tie' in moveResult && moveResult.tie === true) {
                   // eslint-disable-next-line max-len
-                  const updatedUsers = await updatePoints(winner, process.env.TIE_STARS, loser, process.env.TIE_STARS, true);
+                  const updatedUsers = await updatePoints(winner, tieStars, loser, tieStars, true);
                   io.to(lobbyId).emit('update_board', moveResult.board);
                   io.to(onlineUsers.getKey(updatedUsers[0].mail)).emit('game_ended', {
                     user: onlineUsers[0],
-                    message: `The game ended in a tie, both players received ${process.env.TIE_STARS} stars`,
+                    message: `The game ended in a tie, both players received ${tieStars} stars`,
                   });
                   io.to(onlineUsers.getKey(updatedUsers[1].mail)).emit('game_ended', {
                     user: onlineUsers[1],
-                    message: `The game ended in a tie, both players received ${process.env.TIE_STARS} stars`,
+                    message: `The game ended in a tie, both players received ${tieStars} stars`,
                   });
                   log(`Wow game ${lobbyId} tied, you just witnessed such a rare event!`);
                   deleteLobby(lobbyId);
@@ -519,7 +525,7 @@ exports.socket = async function (server) {
                 // we have a winner!
                 /* istanbul ignore next */
                 // eslint-disable-next-line max-len
-                const updatedUsers = await updatePoints(winner, process.env.WIN_STARS, loser, process.env.LOSS_STARS);
+                const updatedUsers = await updatePoints(winner, winStars, loser, lossStars);
                 /* istanbul ignore next */
                 if (updatedUsers.length !== 0) {
                   io.to(lobbyId).emit('update_board', moveResult.board);
@@ -527,13 +533,13 @@ exports.socket = async function (server) {
                   io.to(onlineUsers.getKey(winner)).emit('game_ended', {
                     // eslint-disable-next-line max-len
                     user: (winner === updatedUsers[0].mail ? updatedUsers[0] : updatedUsers[1]),
-                    message: `Congratulations, you just have won this match, enjoy the ${process.env.WIN_STARS} stars one of our elves just put under your christmas tree!`,
+                    message: `Congratulations, you just have won this match, enjoy the ${winStars} stars one of our elves just put under your christmas tree!`,
                   });
                   // Inform loser
                   io.to(onlineUsers.getKey(loser)).emit('game_ended', {
                     // eslint-disable-next-line max-len
                     user: (loser === updatedUsers[0].mail ? updatedUsers[0] : updatedUsers[1]),
-                    message: `I'm afraid I'll have to tell you you lost this game, ${process.env.LOSS_STARS} stars have been removed from your profile but if you ask me that was just opponent's luck, don't give up yet`,
+                    message: `I'm afraid I'll have to tell you you lost this game, ${lossStars} stars have been removed from your profile but if you ask me that was just opponent's luck, don't give up yet`,
                   });
                   log(`Successfully sent end_game for  game ${lobbyId}`);
                   deleteLobby(lobbyId);
@@ -575,7 +581,7 @@ exports.socket = async function (server) {
           if (result.status) {
             result = result.response;
             // eslint-disable-next-line max-len
-            const updatedUsers = await updatePoints(winner, process.env.WIN_STARS, player, process.env.LOSS_STARS);
+            const updatedUsers = await updatePoints(winner, winStars, player, lossStars);
             if (updatedUsers.length > 0) {
               client.emit('left_game', {
                 message: result[0],
@@ -635,7 +641,7 @@ exports.socket = async function (server) {
             clearTimeout(invitationTimeouts.get(userMail).get(opponentMail));
             invitationTimeouts.get(userMail).delete(opponentMail);
           }
-        }, process.env.INVITE_TIMEOUT));
+        }, inviteTimeout));
       } else {
         client.emit('invite_error', { message: `Can't invite player ${opponentMail}` });
       }

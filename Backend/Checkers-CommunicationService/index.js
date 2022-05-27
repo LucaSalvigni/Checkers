@@ -19,6 +19,5 @@ communicationService.socket(server);
 
 const PORT = process.env.CommunicationService_PORT;
 server.listen(PORT, () => {
-  console.log("stars = " + process.env.WIN_STARS);
   console.log(`CommunicationService started on port ${PORT}`);
 });

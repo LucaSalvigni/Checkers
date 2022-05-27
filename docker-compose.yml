@@ -3,46 +3,62 @@ services:
     container_name: gameservice
     image: registry.digitalocean.com/checkers-cr/checkers:gameservice
     build: 
-      context: ./Backend
+      context: ./Backend/Checkers-GameService
       args:
-        - SERVICENAME=GameService
-        - SERVICEDIR=Checkers-GameService
-        - ARG_PORT=3032
+        - ARG_PORT=${GameService_PORT}
+        - ARG_DB_PSW=${DB_PSW}
+        - ARG_GAME_KEY=${GAME_KEY}
+        - ARG_GAME_CERT=${GAME_CERT}
+        - ARG_CERTIFICATE=${CERTIFICATE}
     restart: always
     ports:
-      - 3032:3032
+      - ${GameService_PORT}:${GameService_PORT}
       
   userservice:
     container_name: userservice
     image: registry.digitalocean.com/checkers-cr/checkers:userservice
     build: 
-      context: ./Backend
+      context: ./Backend/Checkers-UserService
       args:
-        - SERVICENAME=UserService
-        - SERVICEDIR=Checkers-UserService
-        - ARG_PORT=3031
+        - ARG_PORT=${UserService_PORT}
+        - ARG_DB_PSW=${DB_PSW}
+        - ARG_USER_KEY=${USER_KEY}
+        - ARG_USER_CERT=${USER_CERT}
+        - ARG_CERTIFICATE=${CERTIFICATE}
     restart: always
     ports:
-      - 3031:3031
+      - ${UserService_PORT}:${UserService_PORT}
   
   communicationservice:
     container_name: communicationservice
     image: registry.digitalocean.com/checkers-cr/checkers:communicationservice
     build: 
-      context: ./Backend
+      context: ./Backend/Checkers-CommunicationService
       args:
-        - SERVICENAME=CommunicationService
-        - SERVICEDIR=Checkers-CommunicationService
-        - ARG_PORT=3030
+        - ARG_PORT=${CommunicationService_PORT}
+        - ARG_USERSERVICE_PORT=${UserService_PORT}
+        - ARG_GAMESERVICE_PORT=${GameService_PORT}
+        - ARG_DB_PSW=${DB_PSW}
+        - ARG_COMM_KEY=${COMM_KEY}
+        - ARG_COMM_CERT=${COMM_CERT}
+        - ARG_GAME_KEY=${GAME_KEY}
+        - ARG_GAME_CERT=${GAME_CERT}
+        - ARG_USER_KEY=${USER_KEY}
+        - ARG_USER_CERT=${USER_CERT}
+        - ARG_CERTIFICATE=${CERTIFICATE}
+        - ARG_USER_SERVICE=${USER_SERVICE}
+        - ARG_GAME_SERVICE=${GAME_SERVICE}
     restart: always
     ports:
-      - 3030:3030
+      - ${CommunicationService_PORT}:${CommunicationService_PORT}
 
   frontend:
     container_name: frontend
     image: registry.digitalocean.com/checkers-cr/checkers:frontend
     build: 
       context: ./Frontend/Checkers-Frontend
+      args:
+        - ARG_COMMUNICATION_SERVICE=${COMMUNICATION_SERVICE}
     restart: always
     ports:
       - 8080:80

@@ -11,8 +11,5 @@
     ],
     "keywords": [],
     "author": "",
-    "license": "ISC",
-    "devDependencies": {
-        "turbo": "^1.2.12"
-    }
+    "license": "ISC"
 }
