@@ -143,13 +143,15 @@ export default {
     // Response sent by backend that contains all matches done by a specific user
     /* c8 ignore start */
     user_history(res) {
-      if (!Object.prototype.hasOwnProperty.call(res, "error")) {
-        this.history = res[0];
-        for (let i = 0; i < this.perPage; i++) {
-          if (this.history[i] === undefined) {
-            break;
+      if (res !== null) {
+        if (!Object.prototype.hasOwnProperty.call(res, "error")) {
+          this.history = res[0];
+          for (let i = 0; i < this.perPage; i++) {
+            if (this.history[i] === undefined) {
+              break;
+            }
+            this.currentPage.push(this.history[i]);
           }
-          this.currentPage.push(this.history[i]);
         }
       }
     },
