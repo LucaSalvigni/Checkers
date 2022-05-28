@@ -170,10 +170,14 @@ export default {
     // Error response from backend to the user when he try to signup
     signup_error(res) {
       msg[0].textContent = "";
-      res.forEach((elem) => {
-        msg[0].textContent = elem.message + "\n";
-      });
-      msg[0].textContent = res[0].message;
+      if (res.message.length === undefined) {
+        msg[0].textContent = res.message.message;
+      } else {
+        msg[0].textContent = "Password rules: ";
+        res.message.forEach((elem) => {
+          msg[0].textContent += elem.message + "\n";
+        });
+      }
       signupModal[0].setAttribute("class", "signup-modal modal modal-open");
     },
     /* c8 ignore end */
