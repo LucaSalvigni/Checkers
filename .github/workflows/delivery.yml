@@ -80,11 +80,6 @@ jobs:
           CommunicationService_PORT: 3030
           UserService_PORT: 3031
           GameService_PORT: 3032
-          TURN_TIMEOUT: 120000
-          INVITE_TIMEOUT: 240000
-          TIE_STARS: 20
-          WIN_STARS: 100
-          LOSS_STARS: -70
           USER_SERVICE: https://134.209.205.242:3031
           GAME_SERVICE: https://134.209.205.242:3032
           COMMUNICATION_SERVICE: http://134.209.205.242:3030
