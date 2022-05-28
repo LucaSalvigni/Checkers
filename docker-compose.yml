@@ -57,8 +57,6 @@ services:
     image: registry.digitalocean.com/checkers-cr/checkers:frontend
     build: 
       context: ./Frontend/Checkers-Frontend
-      args:
-        - ARG_COMMUNICATION_SERVICE=${COMMUNICATION_SERVICE}
     restart: always
     ports:
       - 8080:80

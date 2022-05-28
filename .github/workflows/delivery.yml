@@ -73,6 +73,8 @@ jobs:
           cd Frontend/Checkers-Frontend
           npm ci
           npm run gulp build
+        env:
+          VUE_APP_COMMUNICATION_SERVICE: http://134.209.205.242:3030
 
       - name: Build container images
         run: docker-compose build
