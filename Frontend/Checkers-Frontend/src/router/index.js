@@ -33,27 +33,54 @@ const routes = [
     path: "/leaderboard",
     name: "LeaderBoard",
     component: LeaderBoard,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/profile",
     name: "Profile",
     component: Profile,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/lobbies",
     name: "Lobbies",
     component: Lobbies,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/game",
     name: "Game",
     component: Game,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, _, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (!sessionStorage.token) {
+      next({
+        path: "/login",
+        query: { needLogin: true },
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 });
 
 export { routes };

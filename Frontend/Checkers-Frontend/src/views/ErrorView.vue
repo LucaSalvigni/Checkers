@@ -5,7 +5,7 @@
         <h1>4<span>0</span>4</h1>
       </div>
       <p>
-        The page you are looking is temporarily unavailable. Make sure tou are
+        The page you are looking is temporarily unavailable. Make sure you are
         logged in before do something
       </p>
       <router-link to="/login" @click="buttonClick(buttonSound)"
