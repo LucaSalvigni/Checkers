@@ -73,7 +73,6 @@ router.beforeEach((to, _, next) => {
     if (!sessionStorage.token) {
       next({
         path: "/login",
-        query: { needLogin: true },
       });
     } else {
       next();

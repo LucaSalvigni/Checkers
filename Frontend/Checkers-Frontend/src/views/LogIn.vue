@@ -86,12 +86,6 @@ export default {
       socket: this.$socket,
     };
   },
-  mounted() {
-    if (this.$route.query.needLogin) {
-      msg[0].textContent = "You need to login first!";
-      loginFail[0].setAttribute("class", "login-fail modal modal-open");
-    }
-  },
   methods: {
     login() {
       this.buttonClick(this.buttonSound);

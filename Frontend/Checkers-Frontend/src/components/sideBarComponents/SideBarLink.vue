@@ -20,7 +20,9 @@ export default {
     to: { type: String, default: "" },
     icon: { type: String, default: "" },
     click: { type: String, default: "" },
+    needslogin: { type: Boolean, default: false },
   },
+  emits: ["needs-login"],
   setup(props) {
     const route = useRoute();
     const isActive = computed(() => route.path === props.to);
@@ -34,6 +36,9 @@ export default {
   methods: {
     buttonClick(sound) {
       sound.play();
+      if (!sessionStorage.token && this.needslogin) {
+        this.$emit("needs-login");
+      }
     },
   },
 };

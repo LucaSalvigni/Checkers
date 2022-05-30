@@ -5,9 +5,10 @@
         class="sidebar h-screen"
         :invites="invites"
         @check-invite="checkInvite"
+        @needs-login="show"
       />
       <div class="middle w-screen min-w-fit h-screen min-h-fit">
-        <router-view />
+        <router-view @needs-login="show" />
       </div>
     </div>
 
@@ -35,7 +36,25 @@
         />
         <p class="text-base font-semibold notification-msg"></p>
         <div class="modal-action">
-          <label class="btn close" @click="close">Accept</label>
+          <label class="btn close" @click="close('modal-notification')">
+            Accept
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal alert-modal">
+      <div class="flex flex-col items-center modal-box">
+        <img
+          alt="Modal Logo Image"
+          class="w-40 h-28"
+          src="./assets/msg_image.png"
+        />
+        <p class="text-base font-semibold alert-msg">Ciao</p>
+        <div class="modal-action">
+          <label class="btn text-base" @click="close('alert-modal')">
+            Accept
+          </label>
         </div>
       </div>
     </div>
@@ -50,6 +69,8 @@ var message = document.getElementsByClassName("invites-msg");
 var modal = document.getElementsByClassName("modal-invites");
 var modalNotification = document.getElementsByClassName("modal-notification");
 var messageNotification = document.getElementsByClassName("notification-msg");
+var modalAlert = document.getElementsByClassName("alert-modal");
+var messageAlert = document.getElementsByClassName("alert-msg");
 
 export default {
   name: "App",
@@ -105,9 +126,15 @@ export default {
       modal[0].className = "modal modal-invites modal-open";
     },
     // Close modal
-    close() {
+    close(el) {
       this.buttonSound.play();
-      modalNotification[0].className = "modal modal-notification";
+      document.getElementsByClassName(el)[0].className =
+        `modal ` + el.toString();
+    },
+    // Show modal
+    show() {
+      messageAlert[0].innerHTML = "You need to login first!";
+      modalAlert[0].className = "modal alert-modal modal-open";
     },
   },
   sockets: {

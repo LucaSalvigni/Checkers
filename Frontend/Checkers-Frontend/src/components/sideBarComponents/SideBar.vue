@@ -16,12 +16,16 @@
         class="w-44 profile mb-3 pl-0.5"
         to="/profile"
         icon="fas fa-user-cog"
+        needslogin
+        @needs-login="$emit('needs-login')"
         >Profile</SideBarLink
       >
       <SideBarLink
         class="leaderboard w-44 mb-3 pl-0.5"
         to="/leaderboard"
         icon="fas fa-chart-bar"
+        needslogin
+        @needs-login="$emit('needs-login')"
         >Leaderboard</SideBarLink
       >
 
@@ -84,7 +88,7 @@ export default {
   props: {
     invites: { type: Array, default: [] },
   },
-  emits: ["check-invite"],
+  emits: ["check-invite", "needs-login"],
   data() {
     return {
       buttonSound: this.$BUTTON_CLICK,

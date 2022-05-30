@@ -255,6 +255,7 @@ var opponent = document.getElementsByClassName("opponent-mail");
 
 export default {
   name: "HomeView",
+  emits: ["needs-login"],
   data() {
     return {
       buttonSound: this.$BUTTON_CLICK,
@@ -268,7 +269,8 @@ export default {
         api.build_lobby(this.socket, lobbyName[0].value, starTextBox[0].value);
         this.$router.push("/game");
       } else {
-        this.$router.push("/404");
+        this.$emit("needs-login");
+        this.$router.push("/login");
       }
     },
     lobbyOpened() {
@@ -277,7 +279,8 @@ export default {
         api.get_lobbies(this.socket, this.$store.getters.user.stars);
         this.$router.push("/lobbies");
       } else {
-        this.$router.push("/404");
+        this.$emit("needs-login");
+        this.$router.push("/login");
       }
     },
     invitePlayer() {
@@ -285,7 +288,8 @@ export default {
       if (this.$store.getters.token !== "") {
         api.invite_opponent(this.socket, opponent[0].value);
       } else {
-        this.$router.push("/404");
+        this.$emit("needs-login");
+        this.$router.push("/login");
       }
     },
     buttonClick(sound) {
