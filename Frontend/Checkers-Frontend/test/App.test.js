@@ -48,7 +48,7 @@ describe('App trigger Test', () => {
         await flushPromises()
         await wrapper.vm.accept()
 
-        await wrapper.vm.close()
+        await wrapper.vm.close('modal-notification')
 
         const spyAccept = vi.spyOn(wrapper.vm, 'accept').mockImplementation(() => {})
         const spyDecline = vi.spyOn(wrapper.vm, 'decline').mockImplementation(() => {})
