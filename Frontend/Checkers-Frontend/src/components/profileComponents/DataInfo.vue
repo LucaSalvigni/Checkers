@@ -133,7 +133,7 @@ export default {
     close() {
       this.buttonSound.play();
       update_modal[0].setAttribute("class", "update-modal modal");
-      this.$router.go("/profile");
+      //this.$router.go("/profile");
       //this.$forceUpdate();
     },
     // Allow user to upload a profile image
@@ -180,6 +180,10 @@ export default {
     updated_user(user) {
       msg[0].textContent = "Update successful";
       update_modal[0].setAttribute("class", "update-modal modal modal-open");
+      this.firstName = user.firstName;
+      this.lastName = user.lastName;
+      this.mail = user.mail;
+      this.username = user.username;
       this.$store.commit("setUser", user);
     },
     // Response by backend when user request info

@@ -8,7 +8,6 @@ const store = createStore({
       username: "",
       mail: "",
       stars: 0,
-      nationality: "",
       wins: 0,
       losses: 0,
       first_name: "",

@@ -87,7 +87,6 @@
 import DataInfo from "../components/profileComponents/DataInfo.vue";
 import MatchInfo from "../components/profileComponents/MatchInfo.vue";
 import api from "../api.js";
-
 export default {
   name: "UserProfile",
   components: {
@@ -139,6 +138,14 @@ export default {
   sockets: {
     // Response from backend that contains user's info
     /* c8 ignore start */
+    updated_user(user) {
+      this.avatar = user.avatar;
+      this.first_last_name = user.firstName + " " + user.lastName;
+      this.mail = user.mail;
+      this.username = user.username;
+      this.stars = user.stars;
+      this.$forceUpdate();
+    },
     user_profile(res) {
       this.avatar = res.avatar;
       this.first_last_name = res.firstName + " " + res.lastName;

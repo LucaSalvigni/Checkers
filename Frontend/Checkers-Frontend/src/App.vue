@@ -132,7 +132,7 @@ export default {
     // Response from backend that confirm user authentication
     /* c8 ignore start */
     token_ok(res) {
-      this.$store.commit("setToken", res.token);
+      this.$store.commit("setToken", res.checkToken);
       this.$store.commit("setUser", res.user);
       console.log("got a fresh new token for ya");
     },
