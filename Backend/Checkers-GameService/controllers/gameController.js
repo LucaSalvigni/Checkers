@@ -101,7 +101,7 @@ function parseFEN(game) {
   return data;
 }
 
-// Exports
+// Exports 
 exports.createGame = async function createGame(req, res) {
   try {
     const { gameId } = req.body;
@@ -131,6 +131,7 @@ exports.createGame = async function createGame(req, res) {
   }
 };
 
+// Tie game
 exports.tieGame = async function tieGame(req, res) {
   const { gameId } = req.body;
 
