@@ -11,11 +11,6 @@ env:
   CommunicationService_PORT: 3030
   UserService_PORT: 3031
   GameService_PORT: 3032
-  TURN_TIMEOUT: 120000
-  INVITE_TIMEOUT: 240000
-  TIE_STARS: 20
-  WIN_STARS: 100
-  LOSS_STARS: -70
   NODE_ENV: development
   USER_SERVICE: https://:3031
   GAME_SERVICE: https://:3032

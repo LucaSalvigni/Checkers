@@ -193,7 +193,7 @@ export default {
     padding-left: 0.72rem;
   }
   .login {
-    margin-top: 0.4rem;
+    margin-top: 1.8rem;
   }
   .home {
     display: none;
