@@ -120,7 +120,7 @@ export default {
       var mailformat =
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
       if (this.user.mail.match(mailformat)) {
-        api.update_profile(this.$socket, user, localStorage.token);
+        api.update_profile(this.$socket, user, this.$store.getters.token);
       } else {
         msg[0].textContent =
           "Insert a valid email and/or check that the passwords are the same";
