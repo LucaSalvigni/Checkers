@@ -77,7 +77,7 @@ describe('SidebarLink Test', () => {
     it('should work', async () => {
         const sideBar = mount(SideBar, {
             global: {
-                plugins: [router]
+                plugins: [router, store]
             },
             props: {
                 invites: ["test@test.com"]
@@ -103,7 +103,7 @@ describe('SidebarLink Test', () => {
                 to: ""
             },
             global: {
-                plugins: [router]
+                plugins: [router, store]
             }
         })
 

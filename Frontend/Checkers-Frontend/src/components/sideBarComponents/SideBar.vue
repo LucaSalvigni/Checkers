@@ -65,7 +65,7 @@
         </div>
       </div>
 
-      <div v-if="!$store.getters.token">
+      <div v-if="!token">
         <SideBarLink
           class="mx-3 w-44 login mt-96 p-0.5"
           to="/login"
@@ -88,6 +88,7 @@
 
 <script>
 import SideBarLink from "./SideBarLink.vue";
+import { useStore } from "vuex";
 
 export default {
   name: "SideBar",
@@ -102,6 +103,13 @@ export default {
     return {
       buttonSound: this.$BUTTON_CLICK,
     };
+  },
+  computed: {
+    token() {
+      let store = useStore();
+      let token = store.getters.token;
+      return token;
+    },
   },
   methods: {
     // Check invites sent by another players
