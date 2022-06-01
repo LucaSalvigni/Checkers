@@ -1,5 +1,7 @@
+import store from "./store";
+
 function getToken() {
-  return sessionStorage.token;
+  return store.getters.token;
 }
 
 var api = {
@@ -9,6 +11,10 @@ var api = {
 
   login(socket, email, password) {
     socket.emit("login", email, password);
+  },
+
+  logout(socket, email, password) {
+    socket.emit("logout", email, password);
   },
 
   build_lobby(socket, name, max_stars) {

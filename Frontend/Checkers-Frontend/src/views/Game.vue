@@ -24,7 +24,7 @@
 <script>
 import CheckerBoard from "../components/boardComponents/CheckerBoard.vue";
 import Chat from "../components/boardComponents/Chat.vue";
-import api from "../../api.js";
+import api from "../api.js";
 
 var modal = document.getElementsByClassName("modal-change-location");
 

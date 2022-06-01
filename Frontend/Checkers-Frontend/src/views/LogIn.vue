@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import api from "../../api";
+import api from "../api";
 
 var mail = document.getElementsByClassName("mail");
 var password = document.getElementsByClassName("password");

@@ -65,14 +65,23 @@
         </div>
       </div>
 
-      <!--<div v-if="!$store.loading.value">-->
-      <SideBarLink
-        class="w-44 login mt-96 p-0.5"
-        to="/login"
-        icon="fas fa-user-lock"
-        >Sign in</SideBarLink
-      >
-      <!--</div>-->
+      <div v-if="!$store.getters.token">
+        <SideBarLink
+          class="mx-3 w-44 login mt-96 p-0.5"
+          to="/login"
+          icon="fas fa-user-lock"
+          >Sign in</SideBarLink
+        >
+      </div>
+      <div v-else>
+        <SideBarLink
+          class="mx-3 w-44 login mt-96 p-0.5"
+          to=""
+          icon="fas fa-user-lock"
+          @click="$emit('logout')"
+          >Logout</SideBarLink
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -88,7 +97,7 @@ export default {
   props: {
     invites: { type: Array, default: [] },
   },
-  emits: ["check-invite", "needs-login"],
+  emits: ["check-invite", "needs-login", "logout"],
   data() {
     return {
       buttonSound: this.$BUTTON_CLICK,

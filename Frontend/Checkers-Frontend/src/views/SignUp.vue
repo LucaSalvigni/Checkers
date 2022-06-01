@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import api from "../../api.js";
+import api from "../api.js";
 
 var signupModal = document.getElementsByClassName("signup-modal");
 var msg = document.getElementsByClassName("msg");

@@ -5,10 +5,11 @@
         class="sidebar h-screen"
         :invites="invites"
         @check-invite="checkInvite"
-        @needs-login="show"
+        @needs-login="loginNotification"
+        @logout="logout"
       />
       <div class="middle w-screen min-w-fit h-screen min-h-fit">
-        <router-view @needs-login="show" />
+        <router-view @needs-login="loginNotification" />
       </div>
     </div>
 
@@ -42,35 +43,17 @@
         </div>
       </div>
     </div>
-
-    <div class="modal alert-modal">
-      <div class="flex flex-col items-center modal-box">
-        <img
-          alt="Modal Logo Image"
-          class="w-40 h-28"
-          src="./assets/msg_image.png"
-        />
-        <p class="text-base font-semibold alert-msg">Ciao</p>
-        <div class="modal-action">
-          <label class="btn text-base" @click="close('alert-modal')">
-            Accept
-          </label>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 import SideBar from "./components/sideBarComponents/SideBar.vue";
-import api from "../api.js";
+import api from "./api.js";
 
 var message = document.getElementsByClassName("invites-msg");
 var modal = document.getElementsByClassName("modal-invites");
 var modalNotification = document.getElementsByClassName("modal-notification");
 var messageNotification = document.getElementsByClassName("notification-msg");
-var modalAlert = document.getElementsByClassName("alert-modal");
-var messageAlert = document.getElementsByClassName("alert-msg");
 
 export default {
   name: "App",
@@ -132,9 +115,17 @@ export default {
         `modal ` + el.toString();
     },
     // Show modal
-    show() {
-      messageAlert[0].innerHTML = "You need to login first!";
-      modalAlert[0].className = "modal alert-modal modal-open";
+    loginNotification() {
+      messageNotification[0].innerHTML = "You need to login first!";
+      modalNotification[0].className = "modal modal-notification modal-open";
+    },
+    logout() {
+      if (this.$store.getters.token) {
+        api.logout(this.socket, this.$store.getters.user.mail);
+      } else {
+        messageNotification[0].innerHTML = "You are not logged in!";
+        modalNotification[0].className = "modal modal-notification modal-open";
+      }
     },
   },
   sockets: {
@@ -142,14 +133,12 @@ export default {
     /* c8 ignore start */
     token_ok(res) {
       this.$store.commit("setToken", res.token);
-      sessionStorage.token = res.token;
       this.$store.commit("setUser", res.user);
       console.log("got a fresh new token for ya");
     },
     // Response from backend that denies user authentication
     token_error() {
       console.log("something wrong with tokens boy");
-      sessionStorage.token = "";
       this.$store.commit("unsetToken");
       this.$router.push("/404");
       messageNotification[0].innerHTML =
@@ -228,6 +217,15 @@ export default {
     },
     // Notification error from backend when a player try to invite a player that is not online or doesn't exist.
     invite_error(msg) {
+      messageNotification[0].innerHTML = msg.message;
+      modalNotification[0].className = "modal modal-notification modal-open";
+    },
+    // Response for logout method
+    logout_ok() {
+      this.$store.commit("unsetToken");
+      this.$router.push("/");
+    },
+    logout_error(msg) {
       messageNotification[0].innerHTML = msg.message;
       modalNotification[0].className = "modal modal-notification modal-open";
     },

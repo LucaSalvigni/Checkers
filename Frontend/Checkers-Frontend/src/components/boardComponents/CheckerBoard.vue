@@ -31,7 +31,7 @@
 <script>
 import Cell from "./Cell.vue";
 import Player from "./Player.vue";
-import api from "../../../api.js";
+import api from "../../api.js";
 
 export default {
   components: {

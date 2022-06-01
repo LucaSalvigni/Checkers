@@ -5,7 +5,7 @@ import VueSocketIO from "vue-3-socket.io";
 import SocketIO from "socket.io-client";
 import store from "./store";
 import Chat from "vue3-beautiful-chat";
-import api from "../api";
+import api from "./api";
 import "./index.css";
 import "@fortawesome/fontawesome-free/js/all";
 
@@ -44,13 +44,11 @@ app
   .use(router);
 
 async function load_old_token() {
-  if (sessionStorage.token) {
+  if (store.getters.token) {
     console.log("there was a token!");
-    api.refresh_token(connection, sessionStorage.token);
+    api.refresh_token(connection, store.getters.token);
   } else {
     console.log("no token, sry");
-    //sessionStorage.token = ""
-    //store.commit('unsetToken')
   }
   token_timeout(token_time);
   app.mount("#app");
@@ -59,7 +57,7 @@ async function load_old_token() {
 async function token_timeout(time) {
   setTimeout(async function () {
     console.log("refreshing token");
-    api.refresh_token(connection, sessionStorage.token);
+    api.refresh_token(connection, store.getters.token);
     token_timeout(time);
   }, time);
 }

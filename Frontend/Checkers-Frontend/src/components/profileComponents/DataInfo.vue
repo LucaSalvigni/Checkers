@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import api from "../../../api.js";
+import api from "../../api.js";
 
 var update_modal = document.getElementsByClassName("update-modal");
 var msg = document.getElementsByClassName("msg");

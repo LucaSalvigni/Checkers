@@ -11,6 +11,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
   },
+  ignorePatterns: ['**/build/*.js'],
   rules: {
     'no-param-reassign': 0,
     'no-console': 'off',

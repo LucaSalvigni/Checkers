@@ -246,7 +246,7 @@
 </template>
 
 <script>
-import api from "../../api.js";
+import api from "../api.js";
 
 var lobbyName = document.getElementsByClassName("input-name");
 var starTextBox = document.getElementsByClassName("input-star");

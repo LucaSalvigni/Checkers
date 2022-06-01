@@ -352,6 +352,16 @@ exports.socket = async function (server) {
       }
     });
 
+    client.on('logout', async (mail) => {
+      log(`loggin out user ${mail}`);
+      if (onlineUsers.hasValue(mail)) {
+        onlineUsers.deleteValue(mail);
+        client.emit('logout_ok');
+      } else {
+        client.emit('logout_error', { message: 'User not logged in' });
+      }
+    });
+
     client.on('signup', async (mail, password, username, firstName, lastName) => {
       log('a user is trying to sign up');
       const newUser = await network.askService('post', `${userService}/access/signup`, {

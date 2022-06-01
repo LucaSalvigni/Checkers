@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import api from "../../api.js";
+import api from "../api.js";
 
 export default {
   name: "LeaderBoard",

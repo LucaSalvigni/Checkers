@@ -86,7 +86,7 @@
 <script>
 import DataInfo from "../components/profileComponents/DataInfo.vue";
 import MatchInfo from "../components/profileComponents/MatchInfo.vue";
-import api from "../../api.js";
+import api from "../api.js";
 
 export default {
   name: "UserProfile",

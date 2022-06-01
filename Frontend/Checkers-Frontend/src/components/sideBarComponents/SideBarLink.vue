@@ -36,7 +36,7 @@ export default {
   methods: {
     buttonClick(sound) {
       sound.play();
-      if (!sessionStorage.token && this.needslogin) {
+      if (!this.$store.getters.token && this.needslogin) {
         this.$emit("needs-login");
       }
     },

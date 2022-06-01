@@ -7,6 +7,7 @@ import Profile from "../views/Profile.vue";
 import SignUp from "../views/SignUp.vue";
 import Lobbies from "../views/Lobbies.vue";
 import Game from "../views/Game.vue";
+import store from "../store";
 
 const routes = [
   {
@@ -70,7 +71,7 @@ const router = createRouter({
 
 router.beforeEach((to, _, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!sessionStorage.token) {
+    if (!store.getters.token) {
       next({
         path: "/login",
       });
