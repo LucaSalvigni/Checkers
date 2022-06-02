@@ -8,9 +8,7 @@
       class="main-logo self-center"
     />
 
-    <div
-      class="card items-center w-64 flex flex-col rightMenu self-center ml-10"
-    >
+    <div class="card items-center w-64 flex flex-col rightMenu self-center">
       <h1 class="font-bold text-2xl my-5">Play Checkers</h1>
       <figure>
         <img
@@ -138,7 +136,7 @@
       >
         <li class="mt-3">
           <label
-            id="btn-menu"
+            id="btn-`1`"
             for="create-lobby-modal"
             class="drop-create-lobby btn text-sm"
             @click="buttonClick(buttonSound)"
@@ -300,7 +298,11 @@ export default {
 </script>
 
 <style scoped>
+.main-div {
+  padding-left: 0;
+}
 .rightMenu {
+  margin-left: auto;
   min-width: 250px;
   background-color: #1f1e1e;
 }
@@ -315,12 +317,16 @@ export default {
   background-color: #343232;
 }
 .dropdown {
-  visibility: hidden;
+  display: none;
 }
 .main-logo {
   height: 80%;
+  margin-left: auto;
 }
 @media only screen and (max-width: 1200px) {
+  .menu {
+    width: 95%;
+  }
   .main-div {
     flex-direction: column;
   }
@@ -330,13 +336,14 @@ export default {
     height: 0;
   }
   .dropdown {
-    visibility: visible;
+    display: inline-block;
   }
   .main-logo {
     padding: 0;
     margin-top: 6rem;
     width: 25rem;
     height: 25rem;
+    margin-left: unset;
   }
   .checkers-img {
     min-width: 5rem;
@@ -348,6 +355,12 @@ export default {
   .main-div {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .menu {
+    width: 92%;
   }
 }
 

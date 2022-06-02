@@ -1,7 +1,7 @@
 <!-- This is the Checkerboard component -->
 
 <template>
-  <div class="content flex flex-col w-full">
+  <div class="content flex flex-col w-5/12">
     <appPlayer1 :player="player2" />
     <div class="wrapper">
       <div class="subwrapper">
@@ -376,6 +376,9 @@ export default {
 @media only screen and (max-width: 850px) {
   .grid {
     min-width: 350px;
+  }
+  .content {
+    width: 100% !important;
   }
 }
 
