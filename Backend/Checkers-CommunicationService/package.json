@@ -1,0 +1,44 @@
+{
+  "name": "communicationservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "coverage": "nyc npm run test",
+    "deploy": "node build.js",
+    "gulp": "gulp",
+    "lint": "eslint ./**/*.js --fix",
+    "test": "mocha ./test/test.js --timeout 20000 --exit"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "axios-retry": "^3.2.5",
+    "bidirectional-map": "^1.1.1",
+    "chai": "^4.3.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "http": "^0.0.1-security",
+    "https": "^1.0.0",
+    "mongoose": "^6.3.4",
+    "socket.io": "^4.5.0",
+    "socket.io-client": "^4.5.1"
+  },
+  "devDependencies": {
+    "crypto": "^1.0.1",
+    "del": "^6.1.1",
+    "eslint": "^8.16.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-mocha": "^10.0.5",
+    "fancy-log": "^2.0.0",
+    "fs": "^0.0.1-security",
+    "gulp": "^4.0.2",
+    "gulp-zip": "^5.1.0",
+    "mocha": "^10.0.0",
+    "nyc": "^15.1.0",
+    "webpack-stream": "^7.0.0"
+  }
+}

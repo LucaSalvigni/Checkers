@@ -1,0 +1,41 @@
+name: userservice
+
+on:
+  push:
+    paths:
+      - 'Backend/Checkers-UserService/**'
+  workflow_dispatch:
+  workflow_call:
+
+env:
+  UserService_PORT: 3031
+  DB_PSW: ${{ secrets.DB_PSW }}
+  USER_KEY: ${{ secrets.USER_KEY }}
+  USER_CERT: ${{ secrets.USER_CERT }}
+  CERTIFICATE: ${{ secrets.CERTIFICATE }}
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [ 14, 16, 18]
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          cd Backend/Checkers-UserService
+          npm ci
+      - name: Debug Info
+        run: |
+          cd Backend/Checkers-UserService
+          npm run test
+      - name: Test
+        run: |
+          cd Backend/Checkers-UserService
+          npm run gulp test

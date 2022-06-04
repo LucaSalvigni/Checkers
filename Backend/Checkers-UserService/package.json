@@ -1,0 +1,45 @@
+{
+  "name": "userservice",
+  "version": "1.0.0",
+  "description": "User Management Service",
+  "main": "index.js",
+  "scripts": {
+    "coverage": "nyc npm run test",
+    "gulp": "gulp",
+    "deploy": "node build.js",
+    "lint": "eslint ./**/*.js --fix",
+    "test": "mocha ./test/test.js --timeout 20000 --exit"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "email-validator": "^2.0.4",
+    "express": "^4.18.1",
+    "http": "^0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "mongoose": "^6.3.4",
+    "password-validator": "^5.3.0"
+  },
+  "devDependencies": {
+    "axios-retry": "^3.2.5",
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
+    "crypto": "^1.0.1",
+    "del": "^6.1.1",
+    "eslint": "^8.16.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-mocha": "^10.0.5",
+    "fancy-log": "^2.0.0",
+    "fs": "^0.0.1-security",
+    "gulp": "^4.0.2",
+    "gulp-zip": "^5.1.0",
+    "mocha": "^10.0.0",
+    "nyc": "^15.1.0",
+    "webpack-stream": "^7.0.0"
+  }
+}

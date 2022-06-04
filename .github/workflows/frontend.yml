@@ -1,0 +1,33 @@
+name: frontend
+
+on:
+  push:
+    paths:
+      - 'Frontend/Checkers-Frontend/**'
+  workflow_dispatch:
+  workflow_call:
+
+env:
+  COMMUNICATION_SERVICE: http://localhost:3030
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [ 14, 16, 18]
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          cd Frontend/Checkers-Frontend
+          npm ci
+      - name: Test
+        run: |
+          cd Frontend/Checkers-Frontend
+          npm run gulp test

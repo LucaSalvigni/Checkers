@@ -1,0 +1,15 @@
+{
+    "name": "checkers",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "workspaces": [
+        "Frontend/Checkers-Frontend",
+        "Backend/Checkers-GameService",
+        "Backend/Checkers-UserService",
+        "Backend/Checkers-CommunicationService"
+    ],
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}

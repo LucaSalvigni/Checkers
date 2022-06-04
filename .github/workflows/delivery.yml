@@ -1,0 +1,151 @@
+# Automatic Versioning and Delivery
+name: Delivery
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+env:
+  REGISTRY: "registry.digitalocean.com/checkers-cr"
+  IMAGE_NAME: "checkers"
+
+jobs:
+  frontend:
+    uses: ./.github/workflows/frontend.yml
+  gameservice:
+    uses: ./.github/workflows/gameservice.yml
+    secrets: inherit
+  userservice:
+    uses: ./.github/workflows/userservice.yml
+    secrets: inherit
+  communicationservice:
+    uses: ./.github/workflows/communicationservice.yml
+    secrets: inherit
+
+  build_and_push:
+    runs-on: ubuntu-latest
+    needs: [ frontend, gameservice, userservice, communicationservice ]
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - uses: actions/checkout@v2
+
+      - name: Build GameService
+        run: |
+          cd Backend/Checkers-GameService
+          npm ci
+          npm run gulp build
+
+      - name: Build UserService
+        run: |
+          cd Backend/Checkers-UserService
+          npm ci
+          npm run gulp build
+
+      - name: Build CommunicationService
+        run: |
+          cd Backend/Checkers-CommunicationService
+          npm ci
+          npm run gulp build
+
+      - name: Build Frontend
+        run: |
+          cd Frontend/Checkers-Frontend
+          npm ci
+          npm run gulp build
+        env:
+          VUE_APP_COMMUNICATION_SERVICE: http://134.209.205.242:3030
+
+      - name: Build container images
+        run: docker-compose build
+        env:
+          CommunicationService_PORT: 3030
+          UserService_PORT: 3031
+          GameService_PORT: 3032
+          USER_SERVICE: https://134.209.205.242:3031
+          GAME_SERVICE: https://134.209.205.242:3032
+          DB_PSW: ${{ secrets.DB_PSW }}
+          COMM_KEY: ${{ secrets.COMM_KEY }}
+          COMM_CERT: ${{ secrets.COMM_CERT }}
+          USER_KEY: ${{ secrets.USER_KEY }}
+          USER_CERT: ${{ secrets.USER_CERT }}
+          GAME_KEY: ${{ secrets.GAME_KEY }}
+          GAME_CERT: ${{ secrets.GAME_CERT }}
+          CERTIFICATE: ${{ secrets.CERTIFICATE }}
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 600
+      
+      - name: Remove all old images
+        run: if [ ! -z "$(doctl registry repository list | grep "$(echo $IMAGE_NAME)")" ]; then doctl registry repository delete-manifest $(echo $IMAGE_NAME) $(doctl registry repository list-tags $(echo $IMAGE_NAME) | grep -o "sha.*") --force; else echo "No repository"; fi
+
+      - name: Push image to DigitalOcean Container Registry
+        run: |
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):communicationservice
+          docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):frontend
+        
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push   
+    steps:
+      - uses: actions/checkout@v2
+      - name: Copy file via scp
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USERNAME }}
+          key: ${{ secrets.DO_SSHKEY }}
+          passphrase: ${{ secrets.DO_PASSPHRASE }}
+          source: "docker-compose.yml"
+          target: "."
+          
+      - name: Deploy to Digital Ocean droplet via SSH action
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USERNAME }}
+          key: ${{ secrets.DO_SSHKEY }}
+          passphrase: ${{ secrets.DO_PASSPHRASE }}
+          envs: IMAGE_NAME,REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          script: |
+            # Login to registry
+            docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
+            # Stop running containers
+            docker stop userservice gameservice communicationservice frontend
+            # Remove old containers
+            docker rm userservice gameservice communicationservice frontend
+            # Run new containers from new images
+            docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):gameservice
+            docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):userservice
+            docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):communicationservice
+            docker pull $(echo $REGISTRY)/$(echo $IMAGE_NAME):frontend
+            docker compose up -d
+
+  release:
+    name: Create Release
+    needs: [ deploy ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: v${{ github.ref_name }}
+          release_name: v${{ github.ref_name }}
+          body: ${{ github.event.head_commit.message }}
+          draft: true
+          prerelease: true
