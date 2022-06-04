@@ -4,7 +4,7 @@ name: Delivery
 on:
   push:
     branches:
-      - wip-deploy
+      - main
   workflow_dispatch:
 
 env:
