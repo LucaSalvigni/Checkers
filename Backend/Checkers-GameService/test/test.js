@@ -110,7 +110,7 @@ describe('Game', async () => {
       await resetGame(testGame._id);
     });
 
-    it('should move a piece from player2 into a game', async () => {
+    it('should move a piece from player2', async () => {
       const gameMove = {
         gameId: testGame._id,
         from: 31,
@@ -120,8 +120,8 @@ describe('Game', async () => {
       expect(afterMove.status).to.equal(200);
     });
 
-    // Player1 just moved a piece, trying to move a piece from the same player as before
-    it('should fail to move another piece from player1 into a game', async () => {
+    // Player2 just moved a piece, trying to move a piece from the same player as before
+    it('should fail to move another piece from player2', async () => {
       const wrongMove = {
         gameId: testGame._id,
         from: 33,
@@ -131,8 +131,8 @@ describe('Game', async () => {
       expect(afterMove.status).to.equal(400);
     });
 
-    // Moving a piece from player2
-    it('should move a piece from player2', async () => {
+    // Moving a piece from player1
+    it('should move a piece from player1', async () => {
       const gameMove = {
         gameId: testGame._id,
         from: 20,
