@@ -19,7 +19,7 @@
     "daisyui": "^2.15.2",
     "socket.io-client": "^4.5.1",
     "toasty": "^6.0.3",
-    "vue": "^3.2.36",
+    "vue": "^3.2.37",
     "vue-3-socket.io": "^1.0.5",
     "vue-router": "^4.0.15",
     "vue3-beautiful-chat": "^3.2.0",
