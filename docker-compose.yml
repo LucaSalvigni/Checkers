@@ -57,6 +57,8 @@ services:
     image: registry.digitalocean.com/checkers-cr/checkers:frontend
     build: 
       context: ./Frontend/Checkers-Frontend
+      args:
+        - ARG_VUE_APP_COMMUNICATION_SERVICE=${VUE_APP_COMMUNICATION_SERVICE}
     restart: always
     ports:
       - 8080:80

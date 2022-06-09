@@ -36,6 +36,7 @@ export default {
   methods: {
     buttonClick(sound) {
       sound.play();
+      console.log("ADDR: " + process.env.VUE_APP_COMMUNICATION_SERVICE);
       if (!this.$store.getters.token && this.needslogin) {
         this.$emit("needs-login");
       }

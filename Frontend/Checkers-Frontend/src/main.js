@@ -10,6 +10,7 @@ import "./index.css";
 import "@fortawesome/fontawesome-free/js/all";
 
 const communicationServiceAddress = process.env.VUE_APP_COMMUNICATION_SERVICE;
+console.log("ADDR: " + communicationServiceAddress);
 const connection = SocketIO(communicationServiceAddress);
 const token_time = 86400000;
 

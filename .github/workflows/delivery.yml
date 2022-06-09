@@ -51,17 +51,10 @@ jobs:
           npm ci
           npm run gulp build
 
-      - name: Build Frontend
-        run: |
-          cd Frontend/Checkers-Frontend
-          npm ci
-          npm run gulp build
-        env:
-          VUE_APP_COMMUNICATION_SERVICE: http://134.209.205.242:3030
-
       - name: Build container images
         run: docker-compose build
         env:
+          VUE_APP_COMMUNICATION_SERVICE: http://134.209.205.242:3030
           CommunicationService_PORT: 3030
           UserService_PORT: 3031
           GameService_PORT: 3032
