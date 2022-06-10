@@ -13,11 +13,7 @@ In alternativa se si desidera eseguire il codice in locale è possibile farlo co
 
     `cd Checkers`
 - Creare un file .env contenente tutti i secret
-- Eseguire i comandi per buildare i file
 
-    `npm ci --workspaces`
-
-     `npm run gulp build --workspaces`
 - Avviare il sistema mediante comando 
     `docker compose up --build`
 - Accedere al sistema dall'indirizzo http://localhost:8080/.
