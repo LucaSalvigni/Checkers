@@ -26,7 +26,6 @@ export default {
     };
   },
   mounted() {
-    console.log("aaa");
     this.toasty.trigger();
   },
   methods: {

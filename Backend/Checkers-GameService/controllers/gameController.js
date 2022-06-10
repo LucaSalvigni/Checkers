@@ -102,6 +102,10 @@ function parseFEN(game) {
 }
 
 // Exports 
+
+/**
+ * Handles game creation
+ */
 exports.createGame = async function createGame(req, res) {
   try {
     const { gameId } = req.body;
@@ -131,7 +135,9 @@ exports.createGame = async function createGame(req, res) {
   }
 };
 
-// Tie game
+/**
+ * Handles game tieing
+ */
 exports.tieGame = async function tieGame(req, res) {
   const { gameId } = req.body;
 
@@ -273,6 +279,9 @@ exports.movePiece = async function movePiece(req, res) {
   }
 };
 
+/**
+ * Given an User mail ID retrieves all games
+ */
 exports.getGamesByUser = async function getGames(req, res) {
   try {
     const { user } = req.query;

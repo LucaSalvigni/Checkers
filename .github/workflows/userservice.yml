@@ -31,10 +31,6 @@ jobs:
         run: |
           cd Backend/Checkers-UserService
           npm ci
-      - name: Debug Info
-        run: |
-          cd Backend/Checkers-UserService
-          npm run test
       - name: Test
         run: |
           cd Backend/Checkers-UserService
