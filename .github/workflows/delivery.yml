@@ -54,6 +54,9 @@ jobs:
         run: docker-compose build
         env:
           VUE_APP_COMMUNICATION_SERVICE: http://134.209.205.242:3030
+          CommunicationService_PORT: 3030
+          UserService_PORT: 3031
+          GameService_PORT: 3032
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
