@@ -33,24 +33,6 @@ jobs:
           node-version: '16'
       - uses: actions/checkout@v2
 
-      - name: Build GameService
-        run: |
-          cd Backend/Checkers-GameService
-          npm ci
-          npm run gulp build
-
-      - name: Build UserService
-        run: |
-          cd Backend/Checkers-UserService
-          npm ci
-          npm run gulp build
-
-      - name: Build CommunicationService
-        run: |
-          cd Backend/Checkers-CommunicationService
-          npm ci
-          npm run gulp build
-
       - name: Build container images
         run: docker-compose build
         env:
