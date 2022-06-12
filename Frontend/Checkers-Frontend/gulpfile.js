@@ -14,7 +14,7 @@ const paths = {
 
 function cleanPreviousBuild() {
   log("removing the old files in the directory");
-  return del(`${paths.prod_build}/**`, { force: true });
+  return del(`${paths.prod_build}`, { force: true });
 }
 
 function qualityAssurance(cb) {

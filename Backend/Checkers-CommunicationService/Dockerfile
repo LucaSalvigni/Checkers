@@ -1,11 +1,4 @@
-FROM node:lts-alpine as build-stage
-
-WORKDIR /builddir
-COPY . .
-RUN npm install --unsafe-perm
-RUN npm run gulp build
-
-FROM node:lts-alpine as production-stage
+FROM node:lts-alpine
 
 ARG ARG_PORT
 ARG ARG_GAMESERVICE_PORT
@@ -36,8 +29,11 @@ ENV USER_SERVICE=$ARG_USER_SERVICE
 ENV GAME_SERVICE=$ARG_GAME_SERVICE
 
 RUN mkdir -p /app/
-WORKDIR /app/
-COPY --from=build-stage /builddir/build .
+WORKDIR /app
+COPY . .
 RUN npm install --unsafe-perm
+RUN npm run gulp build
+
+WORKDIR /app/build
 EXPOSE $ARG_PORT
 CMD npm run deploy
