@@ -23,6 +23,6 @@ Questo progetto è stato svolto per i corsi di Sistemi Distribuiti e Laboratoriu
 Dai un'occhiata alla [documentazione](https://github.com/LucaSalvigni/Checkers/blob/main/doc/Checkers_final_report.pdf) del progetto.
 
 ## Authors
-[Luca Salvigni](https://github.com/LucaSalvigni)
-[Konrad Gomulka](https://github.com/mcnuggetboii)
-[Manuele Pasini](https://github.com/ManuelePasini)
+* [Luca Salvigni](https://github.com/LucaSalvigni)
+* [Konrad Gomulka](https://github.com/mcnuggetboii)
+* [Manuele Pasini](https://github.com/ManuelePasini)
