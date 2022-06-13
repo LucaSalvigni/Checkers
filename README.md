@@ -2,7 +2,8 @@
 Checkers Web App rappresenta una versione multiplayer online del gioco da tavolo dama. 
 
 ## Report
-Questo progetto è stato svolto per i corsi di Sistemi Distribuiti e Laboratoriuo di Sistemi Software dell'università di Bologna, campus di Cesena (IT).
+Questo progetto è stato svolto per i corsi di Sistemi Distribuiti e Laboratorio di Sistemi Software dell'università di Bologna, campus di Cesena (IT).
+
 Dai un'occhiata alla [documentazione](https://github.com/LucaSalvigni/Checkers/blob/main/doc/Checkers_final_report.pdf) del progetto.
 
 ## Istruzioni per il deployement
