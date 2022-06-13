@@ -101,7 +101,7 @@ function parseFEN(game) {
   return data;
 }
 
-// Exports 
+// Exports
 
 /**
  * Handles game creation

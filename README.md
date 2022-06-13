@@ -17,3 +17,12 @@ In alternativa se si desidera eseguire il codice in locale è possibile farlo co
 - Avviare il sistema mediante comando 
     `docker compose up --build`
 - Accedere al sistema dall'indirizzo http://localhost:8080/.
+
+## Report
+Questo progetto è stato svolto per i corsi di Sistemi Distribuiti e Laboratoriuo di Sistemi Software dell'università di Bologna, campus di Cesena (IT).
+Dai un'occhiata alla [documentazione](https://github.com/LucaSalvigni/Checkers/blob/main/doc/Checkers_final_report.pdf) del progetto.
+
+## Authors
+[Luca Salvigni](https://github.com/LucaSalvigni)
+[Konrad Gomulka](https://github.com/mcnuggetboii)
+[Manuele Pasini](https://github.com/ManuelePasini)
