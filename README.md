@@ -1,6 +1,10 @@
 # Checkers
 Checkers Web App rappresenta una versione multiplayer online del gioco da tavolo dama. 
 
+[![GitHub license](https://img.shields.io/github/license/LucaSalvigni/Checkers)](https://github.com/LucaSalvigni/Checkers/blob/main/LICENSE)
+![GitHub last commit](https://img.shields.io/github/last-commit/LucaSalvigni/Checkers)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/LucaSalvigni/Checkers/Delivery)
+
 ## Report
 Questo progetto è stato svolto per i corsi di Sistemi Distribuiti e Laboratorio di Sistemi Software dell'università di Bologna, campus di Cesena (IT).
 
