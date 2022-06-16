@@ -34,7 +34,7 @@
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.6",
     "@vue/cli-plugin-vuex": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
+    "@vue/cli-service": "~5.0.6",
     "@vue/test-utils": "^2.0.1",
     "autoprefixer": "^10.4.7",
     "c8": "^7.11.3",
