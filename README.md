@@ -10,7 +10,7 @@ Questo progetto è stato svolto per i corsi di Sistemi Distribuiti e Laboratorio
 
 Dai un'occhiata alla [documentazione](https://github.com/LucaSalvigni/Checkers/blob/main/doc/Checkers_final_report.pdf) del progetto.
 
-## Istruzioni per il deployement
+## Istruzioni per il deployment
 Il sistema viene deployato mediante un workflow su DigitalOcean pertanto è possibile utilizzare direttamente l'ultima versione rilasciata dall'indirizzo http://134.209.205.242:8080/.
 
 In alternativa se si desidera eseguire il codice in locale è possibile farlo come descritto in seguito:
