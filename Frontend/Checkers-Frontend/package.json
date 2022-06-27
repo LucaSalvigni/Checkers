@@ -41,7 +41,7 @@
     "del": "^6.1.1",
     "eslint": "^8.18.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-prettier": "^4.1.0",
     "eslint-plugin-vue": "^9.1.1",
     "fancy-log": "^2.0.0",
     "glob-parent": "^6.0.2",
