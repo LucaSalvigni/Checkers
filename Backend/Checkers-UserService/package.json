@@ -25,7 +25,7 @@
     "password-validator": "^5.3.0"
   },
   "devDependencies": {
-    "axios-retry": "^3.3.0",
+    "axios-retry": "^3.3.1",
     "chai": "^4.3.6",
     "chai-http": "^4.3.0",
     "crypto": "^1.0.1",
